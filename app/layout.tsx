@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { AvisoFonte } from "@/components/avisos/AvisoFonte";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -24,8 +26,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
+      {/* Altura fixa da janela: a tela do mapa ocupa o que sobra abaixo do aviso de fonte. */}
+      <body className="flex h-dvh flex-col">
+        <Providers>
+          {/* O aviso aparece em todas as rotas, inclusive /postos/[cnpj] (SC-008). */}
+          <Suspense fallback={null}>
+            <AvisoFonte />
+          </Suspense>
+          {children}
+        </Providers>
       </body>
     </html>
   );

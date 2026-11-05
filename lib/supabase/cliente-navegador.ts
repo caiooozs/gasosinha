@@ -3,12 +3,13 @@ import type { Database } from "./tipos";
 
 // As variáveis NEXT_PUBLIC_ precisam ser lidas por extenso para o Next embuti-las no código do
 // navegador (uma leitura dinâmica não seria substituída no build).
+// A chave pública aceita os dois nomes: "publishable" (o atual do painel do Supabase) e "anon".
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const chavePublica = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const chavePublica = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!url || !chavePublica) {
   throw new Error(
-    "Supabase: faltam NEXT_PUBLIC_SUPABASE_URL e/ou NEXT_PUBLIC_SUPABASE_ANON_KEY. Copie o .env.example para .env.local e preencha.",
+    "Supabase: faltam NEXT_PUBLIC_SUPABASE_URL e/ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (ou NEXT_PUBLIC_SUPABASE_ANON_KEY). Copie o .env.example para .env.local e preencha.",
   );
 }
 
