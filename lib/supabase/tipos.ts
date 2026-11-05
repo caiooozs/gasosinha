@@ -258,7 +258,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      postos_na_area: {
+        Args: { leste: number; norte: number; oeste: number; sul: number }
+        Returns: {
+          bandeira: string
+          cnpj: string
+          data_anterior: string
+          data_atual: string
+          fonte: string
+          lat: number
+          lng: number
+          municipio: string
+          nome: string
+          preco_anterior: number
+          preco_atual: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

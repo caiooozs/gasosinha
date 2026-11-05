@@ -601,7 +601,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
 
 ### Tests for User Story 1 (escrever primeiro; devem falhar) ⚠️
 
-- [ ] T043 [P] [US1] Escrever `features/postos/domain/idade.test.ts` para
+- [X] T043 [P] [US1] Escrever `features/postos/domain/idade.test.ts` para
   `calcularIdade(dataColeta: string, hoje: string): IdadeColeta`. Casos:
   - 0 dia → `dias, 0`;
   - 7 dias → `{unidade: 'dias', valor: 7, antiga: false}`;
@@ -613,7 +613,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - 84 dias → `{semanas, 12}`;
   - 85 dias → `{meses, 2}`, com meses = `floor(dias/30)`;
   - 22/09/2026 a 27/10/2026 → 5 semanas e `antiga: true`.
-- [ ] T044 [P] [US1] Escrever `features/postos/domain/ordenar-lista.test.ts` para
+- [X] T044 [P] [US1] Escrever `features/postos/domain/ordenar-lista.test.ts` para
   `ordenarLista(postos, hoje, sentido: 'asc' | 'desc')`. Casos:
   - os grupos ficam fixos e nesta ordem: recentes (até 28 dias), antigas, sem preço (FR-011);
   - dentro de cada grupo com preço, a ordem é por `precoMilesimos` no sentido pedido;
@@ -621,7 +621,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - um posto antigo mais barato fica depois de todos os recentes;
   - inverter o sentido não muda a ordem dos grupos;
   - cada item informa o `grupo`.
-- [ ] T045 [P] [US1] Escrever `features/postos/domain/bbox.test.ts` para duas funções.
+- [X] T045 [P] [US1] Escrever `features/postos/domain/bbox.test.ts` para duas funções.
 
   **`quantizarBbox([oeste, sul, leste, norte])`**:
   - expande **para fora** numa grade de 0,02°, com aritmética inteira em centésimos para evitar
@@ -633,12 +633,12 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - posto dentro da área → fica;
   - posto fora da área visível, mas dentro da área quantizada → sai;
   - posto exatamente na borda → fica.
-- [ ] T046 [P] [US1] Escrever `features/postos/domain/agrupar.test.ts` para `agruparPostos(postos,
+- [X] T046 [P] [US1] Escrever `features/postos/domain/agrupar.test.ts` para `agruparPostos(postos,
   bbox, zoom)`, usando `supercluster` com `radius: 60` e `maxZoom: 15`. Casos:
   - postos sobrepostos em zoom 10 viram um grupo com `quantidade` e `zoomExpansao`;
   - em zoom 16, todos viram marcadores individuais;
   - postos sem coordenada não entram.
-- [ ] T047 [P] [US1] Escrever `features/postos/domain/rotulos.test.ts`.
+- [X] T047 [P] [US1] Escrever `features/postos/domain/rotulos.test.ts`.
 
   **`rotuloMarcador(posto, hoje)`**:
   - posto com preço → `'R$ 6,59 · há 7 d'`;
@@ -649,14 +649,14 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
     R$ 6,59, coletado em 20/10/2026'`;
   - posto sem bandeira → `'bandeira não informada'`;
   - posto sem coleta → `'…, sem preço'`.
-- [ ] T048 [P] [US1] Escrever `features/busca/domain/buscar-municipio.test.ts` para
+- [X] T048 [P] [US1] Escrever `features/busca/domain/buscar-municipio.test.ts` para
   `buscarMunicipio(texto)`. Casos:
   - `'jaboatao'` encontra "Jaboatão dos Guararapes";
   - `'SAO lou'` encontra "São Lourenço da Mata";
   - `'cabo'` encontra "Cabo de Santo Agostinho";
   - texto vazio → `[]`;
   - `'caruaru'` → `[]`.
-- [ ] T049 [P] [US1] Escrever `features/status-fontes/domain/avaliar-status.test.ts` para
+- [X] T049 [P] [US1] Escrever `features/status-fontes/domain/avaliar-status.test.ts` para
   `avaliarStatus(estados, hoje)`. Casos:
   - `em_problema` em qualquer fonte → aviso;
   - `precos.ultima_edicao_fim` com mais de 14 dias → aviso, mesmo sem `em_problema`;
@@ -665,7 +665,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - o texto do aviso é "Alguns dados podem estar desatualizados. Última atualização bem-sucedida
     em dd/mm/aaaa.", usando a data mais antiga entre as fontes com problema, formatada por
     `lib/formato`.
-- [ ] T050 [P] [US1] Escrever `features/postos/domain/variacao.test.ts` para
+- [X] T050 [P] [US1] Escrever `features/postos/domain/variacao.test.ts` para
   `calcularVariacao(atual: Coleta, anterior?: Coleta)`. Casos:
   - 6490 → 6590 resulta em `{diferencaMilesimos: 100, percentual: 1.5, desde: '2026-10-13'}`;
   - 6590 → 6390 resulta em `{-200, -3.0}`;
@@ -674,14 +674,14 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - percentual com 1 casa, arredondando para longe do zero, calculado com inteiros.
 
   A lista (FR-010) e o detalhe (FR-015) usam esta mesma função.
-- [ ] T051 [P] [US1] Escrever `components/mapa/MarcadorPosto.test.tsx`, com Testing Library:
+- [X] T051 [P] [US1] Escrever `components/mapa/MarcadorPosto.test.tsx`, com Testing Library:
   - renderiza um `<button>` com `aria-label` igual ao `nomeAcessivel` da VM;
   - mostra o `rotulo`;
   - com `semPreco`, tem forma diferente (atributo `data-variante="sem-preco"` e texto "sem
     preço");
   - com `antigo`, mostra um ícone e o texto da idade além da cor;
   - clicar chama `onSelecionar`.
-- [ ] T052 [P] [US1] Escrever `components/lista/ListaPostos.test.tsx`:
+- [X] T052 [P] [US1] Escrever `components/lista/ListaPostos.test.tsx`:
   - renderiza os grupos com os títulos "Coletas recentes", "Coletas antigas (mais de 4 semanas)"
     e "Sem preço", na ordem recebida;
   - cada item com preço mostra nome, bandeira, preço, "coletado em dd/mm/aaaa", idade, a fonte e
@@ -699,7 +699,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
 
 ### Implementation for User Story 1
 
-- [ ] T053 [US1] 🔒 Criar `supabase/migrations/20261028120300_rpc_postos_na_area.sql`, conforme
+- [X] T053 [US1] 🔒 Criar `supabase/migrations/20261028120300_rpc_postos_na_area.sql`, conforme
   [contracts/supabase-rpc.md](./contracts/supabase-rpc.md).
 
   **Assinatura**: `create function public.postos_na_area(oeste double precision, sul double
@@ -719,30 +719,30 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
     data_coleta desc limit 2)`;
   - ordena por `cnpj`;
   - `grant execute` para `anon` e `authenticated`.
-- [ ] T054 [US1] 🙋 Aplicar `supabase/migrations/20261028120300_rpc_postos_na_area.sql` com
+- [X] T054 [US1] 🙋 Aplicar `supabase/migrations/20261028120300_rpc_postos_na_area.sql` com
   aprovação humana, depois da revisão do diff do T053 (`npx supabase db push --remote`). Em seguida,
   regenerar `lib/supabase/tipos.ts` com
   `npx supabase gen types --remote --lang typescript > lib/supabase/tipos.ts`, para que as chamadas ao
   RPC passem no `typecheck`.
-- [ ] T055 [P] [US1] Implementar `features/postos/domain/idade.ts` (`calcularIdade` e tipo
+- [X] T055 [P] [US1] Implementar `features/postos/domain/idade.ts` (`calcularIdade` e tipo
   `IdadeColeta`, usando `diasEntre` de `lib/formato`) até o T043 passar.
-- [ ] T056 [P] [US1] Implementar `features/postos/domain/ordenar-lista.ts` até o T044 passar.
-- [ ] T057 [P] [US1] Implementar `features/postos/domain/bbox.ts` (`quantizarBbox` e
+- [X] T056 [P] [US1] Implementar `features/postos/domain/ordenar-lista.ts` até o T044 passar.
+- [X] T057 [P] [US1] Implementar `features/postos/domain/bbox.ts` (`quantizarBbox` e
   `filtrarNaAreaVisivel`, importando `RMR_LIMITES` de
   `@/supabase/functions/_shared/regiao-rmr`) até o T045 passar.
-- [ ] T058 [P] [US1] Implementar `features/postos/domain/agrupar.ts` até o T046 passar.
-- [ ] T059 [P] [US1] Implementar `features/postos/domain/rotulos.ts` (com `lib/formato`) até o
+- [X] T058 [P] [US1] Implementar `features/postos/domain/agrupar.ts` até o T046 passar.
+- [X] T059 [P] [US1] Implementar `features/postos/domain/rotulos.ts` (com `lib/formato`) até o
   T047 passar. Criar também `features/postos/domain/tipos.ts` com `PostoNoMapa` e `Coleta`
   (`{ data: string, precoMilesimos: number, fonte: string }`).
-- [ ] T060 [P] [US1] Criar `features/busca/data/municipios-rmr.ts`. Ele reexporta
+- [X] T060 [P] [US1] Criar `features/busca/data/municipios-rmr.ts`. Ele reexporta
   `MUNICIPIOS_RMR` e exporta `REGIAO_PADRAO = RMR_LIMITES` a partir de
   `supabase/functions/_shared/regiao-rmr.ts`, que é a fonte única. Implementar
   `features/busca/domain/buscar-municipio.ts` até o T048 passar.
-- [ ] T061 [P] [US1] Implementar `features/status-fontes/domain/avaliar-status.ts` até o T049
+- [X] T061 [P] [US1] Implementar `features/status-fontes/domain/avaliar-status.ts` até o T049
   passar.
-- [ ] T062 [P] [US1] Implementar `features/postos/domain/variacao.ts` (`calcularVariacao` e tipo
+- [X] T062 [P] [US1] Implementar `features/postos/domain/variacao.ts` (`calcularVariacao` e tipo
   `Variacao`) até o T050 passar.
-- [ ] T063 [US1] Implementar o acesso a dados em `features/postos/services/postos.service.ts` e `features/status-fontes/services/estado-fontes.service.ts`.
+- [X] T063 [US1] Implementar o acesso a dados em `features/postos/services/postos.service.ts` e `features/status-fontes/services/estado-fontes.service.ts`.
   Depende do T054, por causa dos tipos do RPC.
 
   **`features/postos/services/postos.service.ts`**: `buscarPostosNaArea(bbox)`. Chama
@@ -752,7 +752,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
 
   **`features/status-fontes/services/estado-fontes.service.ts`**: `buscarEstadoFontes()`. Lê
   as colunas listadas no contrato.
-- [ ] T064 [US1] Implementar `features/postos/viewmodels/chaves.ts`, `features/postos/viewmodels/hoje.server.ts`, `features/postos/viewmodels/useHoje.ts` e
+- [X] T064 [US1] Implementar `features/postos/viewmodels/chaves.ts`, `features/postos/viewmodels/hoje.server.ts`, `features/postos/viewmodels/useHoje.ts` e
   `features/postos/viewmodels/usePostosNaArea.ts`, depois de ler a seção "Cache server-provided
   data with Cache Components" do guia de TanStack Query do Next instalado.
   - **`chaves.ts`** define `['postos-na-area', ...bboxQuantizada]` e `['detalhe-posto', cnpj]`.
@@ -774,7 +774,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
     - `estado` é `'carregando'` sem dados, `'erro'` quando a última busca falhou (os dados
       anteriores continuam em `postos`) e `'pronto'` no resto; `tentarDeNovo` chama o
       `refetch`.
-- [ ] T065 [P] [US1] Implementar `features/postos/viewmodels/useListaPostos.ts`. Recebe
+- [X] T065 [P] [US1] Implementar `features/postos/viewmodels/useListaPostos.ts`. Recebe
   `(postos, hoje)`, em que `postos` são os `postosVisiveis` e `hoje` passa por `useHoje`, e
   guarda o sentido em estado local.
   - Devolve `{ grupos: {titulo, itens: ItemListaVM[]}[], vazia, sentido, alternarSentido }`.
@@ -783,43 +783,43 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
   - Usa `ordenarLista`, `calcularIdade`, `calcularVariacao` e `lib/formato`.
   - `variacao` é `null` quando não há coleta anterior, e então a view mostra "sem coleta
     anterior".
-- [ ] T066 [P] [US1] Implementar `features/busca/viewmodels/useBuscaCidade.ts`, que devolve
+- [X] T066 [P] [US1] Implementar `features/busca/viewmodels/useBuscaCidade.ts`, que devolve
   `{ texto, setTexto, resultados, selecionar }`. `selecionar` chama o callback recebido com os
   `limites` do município.
-- [ ] T067 [P] [US1] Implementar `features/localizacao/viewmodels/useLocalizacao.ts`:
+- [X] T067 [P] [US1] Implementar `features/localizacao/viewmodels/useLocalizacao.ts`:
   - `pedir()` chama `navigator.geolocation.getCurrentPosition` **só nessa chamada**;
   - devolve `'centralizado' | 'negado' | 'indisponivel' | 'fora_da_regiao'`;
   - a coordenada é entregue **apenas** ao callback `aoCentralizar(lng, lat)`;
   - a coordenada não vai para estado React persistente, `localStorage`, URL nem `console`
     (Princípio III);
   - fora da RMR (`dentroDaRmr`), não centraliza e devolve `'fora_da_regiao'`.
-- [ ] T068 [P] [US1] Implementar `features/status-fontes/viewmodels/useStatusFontes.ts`, com
+- [X] T068 [P] [US1] Implementar `features/status-fontes/viewmodels/useStatusFontes.ts`, com
   `useQuery` sobre `buscarEstadoFontes` e `avaliarStatus`. Devolve `{ aviso: null | { texto } }`.
   Se a leitura falhar, devolve `aviso: null`, sem travar o site.
-- [ ] T069 [P] [US1] Implementar `components/mapa/MarcadorPosto.tsx` e
+- [X] T069 [P] [US1] Implementar `components/mapa/MarcadorPosto.tsx` e
   `components/mapa/MarcadorGrupo.tsx`, até o T051 passar. São `<button>` com Tailwind, alvo de
   toque de pelo menos 24×24 px e foco visível (`focus-visible:ring`).
   - **"Sem preço"**: borda tracejada e forma de pílula vazada.
   - **"Antigo"**: ícone de relógio, vindo do `lucide-react` instalado pelo shadcn.
   - **Grupo**: o `aria-label` é "N postos, aproximar".
-- [ ] T070 [P] [US1] Implementar `components/lista/ListaPostos.tsx` até o T052 passar:
+- [X] T070 [P] [US1] Implementar `components/lista/ListaPostos.tsx` até o T052 passar:
   - usa `<ul>` e `<li>` semânticos e `<Link href="/postos/<cnpj>">` em cada item;
   - mostra preço, data, idade, fonte e variação, com o ícone de relógio e o texto "coleta
     antiga" quando for o caso;
   - tem os estados vazio, carregando e erro com "Tentar de novo".
-- [ ] T071 [P] [US1] Implementar `components/busca/BuscaCidade.tsx` com o `Command` do shadcn,
+- [X] T071 [P] [US1] Implementar `components/busca/BuscaCidade.tsx` com o `Command` do shadcn,
   ligado a `useBuscaCidade`:
   - rótulo visível "Buscar cidade da Região Metropolitana do Recife";
   - mensagem "Cidade fora da RMR ou não encontrada" quando não houver resultado.
-- [ ] T072 [P] [US1] Implementar `components/mapa/BotaoLocalizacao.tsx`:
+- [X] T072 [P] [US1] Implementar `components/mapa/BotaoLocalizacao.tsx`:
   - botão "Usar minha localização", ligado a `useLocalizacao`;
   - mostra uma mensagem curta, em `role="status"`, para `'negado'`, `'indisponivel'` e
     `'fora_da_regiao'` ("Você está fora da área coberta");
   - não pede permissão ao montar (FR-003).
-- [ ] T073 [P] [US1] Implementar `components/avisos/AvisoFonte.tsx`, ligado a
+- [X] T073 [P] [US1] Implementar `components/avisos/AvisoFonte.tsx`, ligado a
   `useStatusFontes`. Usa `role="status"`, fica no topo e não cobre o mapa. Não renderiza nada
   quando `aviso` é `null`.
-- [ ] T074 [US1] Implementar `components/mapa/MapaPostos.tsx` (`'use client'`) e
+- [X] T074 [US1] Implementar `components/mapa/MapaPostos.tsx` (`'use client'`) e
   `components/mapa/MapaCarregavel.tsx`, depois de ler
   `node_modules/next/dist/docs/01-app/02-guides/lazy-loading.md`.
   - **`MapaPostos.tsx`**:
@@ -837,7 +837,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
       e a lista continua utilizável.
   - **Comandos expostos**: centralizar em `limites` (busca) e em `lng, lat` (localização).
   - **`MapaCarregavel.tsx`**: carrega `MapaPostos` sob demanda, sem SSR, conforme o guia.
-- [ ] T075 [US1] Substituir o template em `app/page.tsx` pela composição do mapa, criando `components/mapa/TelaMapa.tsx` e `app/error.tsx` e editando `app/layout.tsx`,
+- [X] T075 [US1] Substituir o template em `app/page.tsx` pela composição do mapa, criando `components/mapa/TelaMapa.tsx` e `app/error.tsx` e editando `app/layout.tsx`,
   depois de ler `error.md` em `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/`.
   - **`components/mapa/TelaMapa.tsx`** (`'use client'`), com as props `{ hoje, centroInicial?,
     painel? }`. Layout mobile-first:
@@ -861,9 +861,16 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
 
   A página e os componentes **não** buscam nem calculam dados: tudo vem dos viewmodels
   (Princípio IV).
-- [ ] T076 [US1] Validar `app/page.tsx` com `npm run dev` nos cenários de US1 do quickstart,
+- [X] T076 [US1] Validar `app/page.tsx` com `npm run dev` nos cenários de US1 do quickstart,
   seção 6, inclusive "Falha ao carregar". Conferir nas ferramentas de desenvolvedor que nenhuma
   requisição leva coordenadas da pessoa, só a área quantizada.
+
+  Validado em 2026-11-05, no Chrome, contra o Supabase de produção: mapa inicial, marcador com
+  preço (nome acessível com a data completa), sem preço, busca ("jaboatao" e "caruaru"), lista
+  (grupos e inversão da ordem), falha ao carregar (com os postos já carregados mantidos e
+  "Tentar de novo") e corpo das requisições (só a área quantizada). Pendente de conferência pela
+  pessoa: o cenário "Localização" no navegador (permitir e negar a permissão), coberto até aqui
+  pelos testes de `pedirLocalizacao`, e o layout no celular (360 px).
 
 **Checkpoint**: a US1 funciona sozinha e é o MVP que pode ser publicado. Antes de seguir,
 `npm run typecheck`, `npm run lint` e `npm test` passam.

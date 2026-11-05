@@ -2,12 +2,13 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./tipos";
 
+// A chave pública aceita os dois nomes: "publishable" (o atual do painel do Supabase) e "anon".
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const chavePublica = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const chavePublica = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!url || !chavePublica) {
   throw new Error(
-    "Supabase: faltam NEXT_PUBLIC_SUPABASE_URL e/ou NEXT_PUBLIC_SUPABASE_ANON_KEY. Copie o .env.example para .env.local e preencha.",
+    "Supabase: faltam NEXT_PUBLIC_SUPABASE_URL e/ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (ou NEXT_PUBLIC_SUPABASE_ANON_KEY). Copie o .env.example para .env.local e preencha.",
   );
 }
 
