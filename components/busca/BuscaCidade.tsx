@@ -1,35 +1,49 @@
 "use client";
 
+import { Command } from "cmdk";
+import { cn } from "cn";
 import { useState } from "react";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { IconeBusca } from "@/components/marca/Icones";
+import { PoseGasosinha } from "@/components/marca/Marca";
 import type { Limites } from "@/features/busca/data/municipios-rmr";
 import { useBuscaCidade } from "@/features/busca/viewmodels/useBuscaCidade";
 
 const ROTULO = "Buscar cidade da Região Metropolitana do Recife";
 
+export type BuscaCidadeProps = {
+  aoSelecionar: (limites: Limites) => void;
+  /** "flutuante": branca, com sombra, sobre o mapa (celular). "painel": em superfície, no painel da lista. */
+  variante?: "flutuante" | "painel";
+};
+
 /**
- * Busca de cidade da RMR (FR-006). O `cmdk` liga o campo ao próprio rótulo (oculto); o texto
- * visível é o mesmo, e por isso fica fora da árvore de acessibilidade para não ser lido duas vezes.
+ * Busca de cidade da RMR (FR-006), na forma da identidade visual. O `cmdk` liga o campo a um rótulo
+ * próprio, oculto, com o nome completo da busca; o texto de exemplo fica visível no campo.
  */
-export function BuscaCidade({ aoSelecionar }: { aoSelecionar: (limites: Limites) => void }) {
+export function BuscaCidade({ aoSelecionar, variante = "painel" }: BuscaCidadeProps) {
   const { texto, setTexto, resultados, selecionar } = useBuscaCidade(aoSelecionar);
   const [aberta, setAberta] = useState(false);
   const mostrarResultados = aberta && texto.trim() !== "";
 
   return (
-    <div className="flex flex-col gap-1">
-      <span aria-hidden="true" className="text-xs font-medium">
-        {ROTULO}
-      </span>
-      <Command
-        label={ROTULO}
-        shouldFilter={false}
-        className="relative overflow-visible bg-transparent p-0"
-        onKeyDown={(e) => {
-          if (e.key === "Escape") setAberta(false);
-        }}
+    <Command
+      label={ROTULO}
+      shouldFilter={false}
+      className="relative"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setAberta(false);
+      }}
+    >
+      <div
+        className={cn(
+          "flex h-12 items-center gap-2.5 rounded-[14px] px-3.5 focus-within:shadow-[inset_0_0_0_2px_var(--color-ink)]",
+          variante === "flutuante"
+            ? "bg-white shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171A]"
+            : "bg-surface",
+        )}
       >
-        <CommandInput
+        <IconeBusca className="size-[18px] shrink-0 text-ink" />
+        <Command.Input
           value={texto}
           onValueChange={(valor) => {
             setTexto(valor);
@@ -37,30 +51,45 @@ export function BuscaCidade({ aoSelecionar }: { aoSelecionar: (limites: Limites)
           }}
           onFocus={() => setAberta(true)}
           onBlur={() => setAberta(false)}
-          placeholder="Ex.: Olinda, Jaboatão"
+          placeholder="Buscar cidade da região"
+          className={cn(
+            "min-w-0 flex-1 bg-transparent text-base leading-[18px] text-ink outline-none",
+            // ink-3 sobre o branco dá 4,8:1; sobre a superfície, ink-2 mantém o AA.
+            variante === "flutuante" ? "placeholder:text-ink-3" : "placeholder:text-ink-2",
+          )}
         />
-        {mostrarResultados && (
-          <CommandList
-            // Evita que o clique num resultado tire o foco do campo e feche a lista antes da seleção.
-            onMouseDown={(e) => e.preventDefault()}
-            className="absolute top-full right-1 left-1 z-30 mt-1 rounded-lg border bg-popover p-1 shadow-lg"
-          >
-            <CommandEmpty className="px-2 py-3 text-left text-sm">Cidade fora da RMR ou não encontrada</CommandEmpty>
-            {resultados.map((municipio) => (
-              <CommandItem
-                key={municipio.codigoIbge}
-                value={municipio.codigoIbge}
-                onSelect={() => {
-                  selecionar(municipio);
-                  setAberta(false);
-                }}
-              >
-                {municipio.nome}
-              </CommandItem>
-            ))}
-          </CommandList>
-        )}
-      </Command>
-    </div>
+      </div>
+
+      {mostrarResultados && (
+        <Command.List
+          // Evita que o clique num resultado tire o foco do campo e feche a lista antes da seleção.
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute top-full right-0 left-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-[14px] bg-white p-1.5 shadow-[0_0_0_1px_#1C191714,0_12px_32px_#1C19171F]"
+        >
+          <Command.Empty className="flex items-center gap-3 px-2 py-2 text-left">
+            <PoseGasosinha pose="pensando" className="size-14" />
+            <span className="flex flex-col gap-0.5">
+              <span className="font-serif text-lg font-semibold text-ink">Não achei “{texto.trim()}”</span>
+              <span className="text-sm text-ink-2">
+                A busca cobre só as cidades da Região Metropolitana do Recife. O mapa continua onde estava.
+              </span>
+            </span>
+          </Command.Empty>
+          {resultados.map((municipio) => (
+            <Command.Item
+              key={municipio.codigoIbge}
+              value={municipio.codigoIbge}
+              onSelect={() => {
+                selecionar(municipio);
+                setAberta(false);
+              }}
+              className="flex h-11 cursor-pointer items-center rounded-[10px] px-3 text-base text-ink data-[selected=true]:bg-surface"
+            >
+              {municipio.nome}
+            </Command.Item>
+          ))}
+        </Command.List>
+      )}
+    </Command>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { LocateFixedIcon } from "lucide-react";
+import { cn } from "cn";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { IconeLocalizacao } from "@/components/marca/Icones";
 import { useLocalizacao, type ResultadoLocalizacao } from "@/features/localizacao/viewmodels/useLocalizacao";
 
 const MENSAGENS: Record<ResultadoLocalizacao, string | null> = {
@@ -12,11 +12,17 @@ const MENSAGENS: Record<ResultadoLocalizacao, string | null> = {
   fora_da_regiao: "Você está fora da área coberta",
 };
 
+export type BotaoLocalizacaoProps = {
+  aoCentralizar: (lng: number, lat: number) => void;
+  /** "redondo": só o ícone, no canto do mapa (celular). "pilula": ícone e texto (computador). */
+  variante?: "redondo" | "pilula";
+};
+
 /**
  * "Usar minha localização" (FR-003 a FR-005). Só pede permissão no clique, nunca ao montar. Guarda
  * apenas o resultado (para a mensagem), nunca a coordenada (Princípio III).
  */
-export function BotaoLocalizacao({ aoCentralizar }: { aoCentralizar: (lng: number, lat: number) => void }) {
+export function BotaoLocalizacao({ aoCentralizar, variante = "pilula" }: BotaoLocalizacaoProps) {
   const { pedir } = useLocalizacao(aoCentralizar);
   const [resultado, setResultado] = useState<ResultadoLocalizacao | null>(null);
   const [pedindo, setPedindo] = useState(false);
@@ -33,13 +39,32 @@ export function BotaoLocalizacao({ aoCentralizar }: { aoCentralizar: (lng: numbe
 
   const mensagem = resultado ? MENSAGENS[resultado] : null;
   return (
-    <div className="flex flex-col gap-1">
-      <Button type="button" variant="outline" onClick={aoClicar} disabled={pedindo} className="h-9">
-        <LocateFixedIcon aria-hidden="true" />
-        Usar minha localização
-      </Button>
+    <div className="relative">
+      <button
+        type="button"
+        onClick={aoClicar}
+        disabled={pedindo}
+        aria-label={variante === "redondo" ? "Usar minha localização" : undefined}
+        className={cn(
+          "flex cursor-pointer items-center justify-center bg-white text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-wait disabled:opacity-70",
+          variante === "redondo"
+            ? "size-12 rounded-full shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171F]"
+            : "h-11 gap-2 rounded-[12px] pr-4 pl-3 text-sm leading-4 font-semibold shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171A]",
+        )}
+      >
+        <IconeLocalizacao className={variante === "redondo" ? "size-[22px]" : "size-5"} />
+        {variante === "pilula" && "Usar minha localização"}
+      </button>
       {/* A região fica sempre no documento, para a mensagem ser anunciada quando aparecer. */}
-      <p role="status" className="text-xs text-muted-foreground">
+      <p
+        role="status"
+        className={cn(
+          mensagem
+            ? "absolute bottom-full mb-2 w-max max-w-[260px] rounded-[10px] bg-ink px-3 py-2 text-sm text-white shadow-[0_6px_16px_#1C19171F]"
+            : "sr-only",
+          variante === "redondo" ? "right-0" : "left-0",
+        )}
+      >
         {mensagem}
       </p>
     </div>

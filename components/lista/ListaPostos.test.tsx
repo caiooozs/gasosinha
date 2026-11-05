@@ -17,7 +17,10 @@ const recente: ItemListaVM = {
   idade: "há 7 dias",
   antiga: false,
   fonte: FONTE,
+  fonteCurta: "ANP",
   variacao: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
+  direcaoVariacao: "subiu",
+  maisBarato: true,
 };
 const antiga: ItemListaVM = {
   cnpj: "05648920000134",
@@ -29,7 +32,10 @@ const antiga: ItemListaVM = {
   idade: "há 5 semanas",
   antiga: true,
   fonte: FONTE,
+  fonteCurta: "ANP",
   variacao: null,
+  direcaoVariacao: null,
+  maisBarato: false,
 };
 const semPreco: ItemListaVM = {
   cnpj: "08220930000162",
@@ -38,6 +44,8 @@ const semPreco: ItemListaVM = {
   semPreco: true,
   antiga: false,
   variacao: null,
+  direcaoVariacao: null,
+  maisBarato: false,
 };
 
 const grupos: GrupoListaVM[] = [
@@ -46,22 +54,31 @@ const grupos: GrupoListaVM[] = [
   { titulo: "Sem preço", itens: [semPreco] },
 ];
 
-function renderizar(props: Partial<ListaPostosProps> = {}) {
-  const padrao: ListaPostosProps = {
+function props(extra: Partial<ListaPostosProps> = {}): ListaPostosProps {
+  return {
+    titulo: "3 postos nesta área",
     grupos,
     vazia: false,
     sentido: "asc",
-    onAlternarSentido: () => {},
+    onDefinirSentido: () => {},
     estado: "pronto",
     onTentarDeNovo: () => {},
+    onVerRegiaoInteira: () => {},
+    ...extra,
   };
-  return render(<ListaPostos {...padrao} {...props} />);
 }
 
+const renderizar = (extra: Partial<ListaPostosProps> = {}) => render(<ListaPostos {...props(extra)} />);
+
 describe("ListaPostos", () => {
-  it("renderiza os grupos com os títulos, na ordem recebida", () => {
+  it("mostra a contagem da área como título", () => {
     renderizar();
-    const titulos = screen.getAllByRole("heading").map((h) => h.textContent);
+    expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("3 postos nesta área");
+  });
+
+  it("renderiza os grupos com os títulos, na ordem recebida (FR-011)", () => {
+    renderizar();
+    const titulos = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
     expect(titulos).toEqual(["Coletas recentes", "Coletas antigas (mais de 4 semanas)", "Sem preço"]);
   });
 
@@ -79,10 +96,15 @@ describe("ListaPostos", () => {
     expect(texto).not.toContain("coleta antiga");
   });
 
+  it("o mais barato da área tem o selo 'mais barato'", () => {
+    renderizar();
+    expect(screen.getByRole("link", { name: /IGUEP/ }).textContent).toContain("mais barato");
+    expect(screen.getByRole("link", { name: /POSTO ANTIGO/ }).textContent).not.toContain("mais barato");
+  });
+
   it("item sem coleta anterior mostra 'sem coleta anterior'", () => {
     renderizar();
-    const item = screen.getByRole("link", { name: /POSTO ANTIGO/ });
-    expect(item.textContent).toContain("sem coleta anterior");
+    expect(screen.getByRole("link", { name: /POSTO ANTIGO/ }).textContent).toContain("sem coleta anterior");
   });
 
   it("coleta antiga mostra o ícone de relógio e o texto 'coleta antiga' junto da idade (FR-029)", () => {
@@ -90,13 +112,12 @@ describe("ListaPostos", () => {
     const item = screen.getByRole("link", { name: /POSTO ANTIGO/ });
     expect(item.textContent).toContain("coleta antiga");
     expect(item.textContent).toContain("há 5 semanas");
-    expect(item.querySelector("svg")).not.toBeNull();
+    expect(item.querySelector('[data-icone="relogio"]')).not.toBeNull();
   });
 
   it("item sem preço mostra nome, bandeira e 'sem preço'", () => {
     renderizar();
-    const item = screen.getByRole("link", { name: /POSTO SEM COLETA/ });
-    const texto = item.textContent ?? "";
+    const texto = screen.getByRole("link", { name: /POSTO SEM COLETA/ }).textContent ?? "";
     expect(texto).toContain("POSTO SEM COLETA LTDA");
     expect(texto).toContain("BRANCA");
     expect(texto).toContain("sem preço");
@@ -109,21 +130,24 @@ describe("ListaPostos", () => {
     expect(hrefs).toEqual(["/postos/11694577000167", "/postos/05648920000134", "/postos/08220930000162"]);
   });
 
-  it("os itens estão numa lista semântica", () => {
+  it("os itens estão em listas semânticas", () => {
     renderizar();
     const listas = screen.getAllByRole("list");
     expect(listas).toHaveLength(3);
     expect(within(listas[0]).getAllByRole("listitem")).toHaveLength(1);
   });
 
-  it("lista vazia mostra 'Nenhum posto nesta área'", () => {
-    renderizar({ grupos: [], vazia: true });
+  it("lista vazia mostra 'Nenhum posto nesta área' e 'Ver a região inteira'", async () => {
+    const onVerRegiaoInteira = vi.fn();
+    renderizar({ grupos: [], vazia: true, titulo: "0 postos nesta área", onVerRegiaoInteira });
     expect(screen.getByText("Nenhum posto nesta área")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Ver a região inteira" }));
+    expect(onVerRegiaoInteira).toHaveBeenCalledTimes(1);
   });
 
-  it("carregando mostra 'Carregando postos…' em role=status", () => {
+  it("carregando mostra 'Buscando os preços…' em role=status", () => {
     renderizar({ grupos: [], vazia: true, estado: "carregando" });
-    expect(screen.getByRole("status").textContent).toContain("Carregando postos…");
+    expect(screen.getByRole("status").textContent).toContain("Buscando os preços…");
     expect(screen.queryByText("Nenhum posto nesta área")).toBeNull();
   });
 
@@ -137,33 +161,22 @@ describe("ListaPostos", () => {
   });
 
   it("erro com itens anteriores mantém os itens e mostra a mensagem acima deles", () => {
-    const { container } = renderizar({ estado: "erro" });
+    renderizar({ estado: "erro" });
     const mensagem = screen.getByText("Não foi possível carregar os postos.");
     const primeiroLink = screen.getAllByRole("link")[0];
     expect(screen.getAllByRole("link")).toHaveLength(3);
-    // A mensagem vem antes dos itens no documento.
-    const posicao = mensagem.compareDocumentPosition(primeiroLink);
-    expect(posicao & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(container.textContent).toContain("Tentar de novo");
+    expect(mensagem.compareDocumentPosition(primeiroLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
   });
 
-  it("o botão de ordem alterna entre 'Mais barato primeiro' e 'Mais caro primeiro'", async () => {
-    const onAlternarSentido = vi.fn();
-    const { rerender } = renderizar({ onAlternarSentido });
-    const botao = screen.getByRole("button", { name: /Mais barato primeiro/ });
-    await userEvent.click(botao);
-    expect(onAlternarSentido).toHaveBeenCalledTimes(1);
-
-    rerender(
-      <ListaPostos
-        grupos={grupos}
-        vazia={false}
-        sentido="desc"
-        onAlternarSentido={onAlternarSentido}
-        estado="pronto"
-        onTentarDeNovo={() => {}}
-      />,
-    );
-    expect(screen.getByRole("button", { name: /Mais caro primeiro/ })).toBeTruthy();
+  it("a ordem de preço é um controle segmentado: Menor preço / Maior preço", async () => {
+    const onDefinirSentido = vi.fn();
+    renderizar({ onDefinirSentido });
+    const menor = screen.getByRole("button", { name: /Menor preço/ });
+    const maior = screen.getByRole("button", { name: /Maior preço/ });
+    expect(menor.getAttribute("aria-pressed")).toBe("true");
+    expect(maior.getAttribute("aria-pressed")).toBe("false");
+    await userEvent.click(maior);
+    expect(onDefinirSentido).toHaveBeenCalledWith("desc");
   });
 });

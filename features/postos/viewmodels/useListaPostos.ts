@@ -4,15 +4,21 @@ import { useMemo, useState } from "react";
 import type { DataISO } from "@/lib/formato";
 import type { SentidoPreco } from "../domain/ordenar-lista";
 import type { PostoNoMapa } from "../domain/tipos";
-import { montarGruposLista } from "./montar-vm";
-import type { GrupoListaVM } from "./tipos";
+import { montarGruposLista, tituloContagem } from "./montar-vm";
+import type { GrupoListaVM, ItemListaVM } from "./tipos";
 import { useHoje } from "./useHoje";
+
+const QUANTOS_NA_FOLHA = 2;
 
 export type ListaPostosVM = {
   grupos: GrupoListaVM[];
+  /** As primeiras linhas, na ordem escolhida: a folha do mapa no celular mostra estas. */
+  primeiros: ItemListaVM[];
   vazia: boolean;
+  /** "8 postos nesta área". */
+  titulo: string;
   sentido: SentidoPreco;
-  alternarSentido: () => void;
+  definirSentido: (sentido: SentidoPreco) => void;
 };
 
 /**
@@ -21,12 +27,15 @@ export type ListaPostosVM = {
  */
 export function useListaPostos(postos: readonly PostoNoMapa[], hoje: DataISO): ListaPostosVM {
   const hojeAtual = useHoje(hoje);
-  const [sentido, setSentido] = useState<SentidoPreco>("asc");
+  const [sentido, definirSentido] = useState<SentidoPreco>("asc");
   const grupos = useMemo(() => montarGruposLista(postos, hojeAtual, sentido), [postos, hojeAtual, sentido]);
+  const primeiros = useMemo(() => grupos.flatMap((g) => g.itens).slice(0, QUANTOS_NA_FOLHA), [grupos]);
   return {
     grupos,
+    primeiros,
     vazia: postos.length === 0,
+    titulo: tituloContagem(postos.length),
     sentido,
-    alternarSentido: () => setSentido((s) => (s === "asc" ? "desc" : "asc")),
+    definirSentido,
   };
 }

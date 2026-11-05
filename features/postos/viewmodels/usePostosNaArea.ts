@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { DataISO } from "@/lib/formato";
 import { agruparPostos } from "../domain/agrupar";
 import { filtrarNaAreaVisivel, quantizarBbox } from "../domain/bbox";
+import { cnpjsMaisBaratos } from "../domain/mais-barato";
 import type { Bbox, PostoNoMapa } from "../domain/tipos";
 import { buscarPostosNaArea } from "../services/postos.service";
 import { chaves } from "./chaves";
@@ -66,8 +67,10 @@ export function usePostosNaArea({ bboxVisivel, zoom, hoje }: EntradaPostosNaArea
 
   const { marcadores, grupos } = useMemo(() => {
     if (!bboxVisivel) return { marcadores: [], grupos: [] };
-    return montarMarcadores(agruparPostos(postos, bboxQuantizada ?? bboxVisivel, zoom), hojeAtual);
-  }, [postos, bboxVisivel, bboxQuantizada, zoom, hojeAtual]);
+    // O "mais barato" é o da área visível, o mesmo que a lista mostra.
+    const maisBaratos = cnpjsMaisBaratos(postosVisiveis, hojeAtual);
+    return montarMarcadores(agruparPostos(postos, bboxQuantizada ?? bboxVisivel, zoom), hojeAtual, maisBaratos);
+  }, [postos, postosVisiveis, bboxVisivel, bboxQuantizada, zoom, hojeAtual]);
 
   let estado: EstadoCarga = "pronto";
   if (consulta.isError && !foraDaRegiao) estado = "erro";
