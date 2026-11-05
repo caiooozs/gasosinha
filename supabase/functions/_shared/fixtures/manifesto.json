@@ -1,0 +1,550 @@
+{
+  "geradoEm": "2026-11-02",
+  "geradoPor": "scripts/fixtures/recortar-fontes-anp.ts",
+  "fontes": {
+    "api": "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=PE&numeropagina=1",
+    "paginaLpc": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas",
+    "arquivoSemana": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2026/revendas_lpc_2026_10_18-2026_10_24.xlsx"
+  },
+  "revendedores": [
+    {
+      "cnpj": "01457180000106",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "motivo": "RMR (Jaboatão dos Guararapes)"
+    },
+    {
+      "cnpj": "00216435000259",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "motivo": "RMR (Jaboatão dos Guararapes)"
+    },
+    {
+      "cnpj": "00304243000113",
+      "municipio": "RECIFE",
+      "motivo": "RMR com complemento: endereco e complemento unidos"
+    },
+    {
+      "cnpj": "01389571000122",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "motivo": "RMR (Jaboatão dos Guararapes)"
+    },
+    {
+      "cnpj": "05648920000134",
+      "municipio": "OLINDA",
+      "motivo": "RMR sem coordenada: localizacao null e localizacaoInvalida"
+    },
+    {
+      "cnpj": "00338804000103",
+      "municipio": "OLINDA",
+      "motivo": "RMR (Olinda)"
+    },
+    {
+      "cnpj": "00199825000187",
+      "municipio": "PETROLINA",
+      "motivo": "fora da RMR (Petrolina): deve ser ignorado"
+    },
+    {
+      "cnpj": "01214408000129",
+      "municipio": "RECIFE",
+      "motivo": "RMR com bandeira branca"
+    },
+    {
+      "cnpj": "01339156000164",
+      "municipio": "CARUARU",
+      "motivo": "fora da RMR (Caruaru): deve ser ignorado"
+    },
+    {
+      "cnpj": "00191498001431",
+      "municipio": "OLINDA",
+      "motivo": "RMR (Olinda)"
+    },
+    {
+      "cnpj": "00191498001350",
+      "municipio": "RECIFE",
+      "motivo": "RMR (Recife)"
+    },
+    {
+      "cnpj": "00191498001601",
+      "municipio": "RECIFE",
+      "motivo": "RMR com estimativaAcuracia vazia (posição declarada pelo posto)"
+    }
+  ],
+  "paginaLpc": {
+    "linksRevendas": [
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2026/revendas_lpc_2026_10_18-2026_10_24.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2026/revendas_lpc_2026_10_11-2026_10_17.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2025/revendas_lpc_2025-12-21_2025-12-27.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2025/revendas_lpc_2025-12-14_2025-12-20.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2025/revendas_lpc-17112025-a-23112025.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2025/revendas_lpc-1.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2025/revendas_lpc.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2024/revendas_lpc_2024-12-15_2024-12-21.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2024/revendas_lpc_2024-12-08_2024-12-14.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2023/revendas_lpc_2023-12-24_2023-12-30.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2023/revendas_lpc_2023-12-17_2023-12-23.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2022/revendas-lpc-2022-12-25-2022-12-31.xlsx",
+      "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2022/revendas_lpc_2022-12-18_2022-12-24.xlsx"
+    ],
+    "linkDuplicado": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/arquivos-lpc/2026/revendas_lpc_2026_10_18-2026_10_24.xlsx"
+  },
+  "lpc": {
+    "periodo": "PERÍODO: 18/10/2026 A 24/10/2026",
+    "posicaoPeriodo": {
+      "posicao": 5,
+      "r": 6
+    },
+    "posicaoCabecalho": {
+      "posicao": 8,
+      "r": 10
+    },
+    "celulaInlineStr": "C24",
+    "linhas": [
+      {
+        "posicao": 9,
+        "r": 11,
+        "grupo": "outro_estado_outro_produto",
+        "cnpjBruto": "61602199002409",
+        "digitosCnpj": 14,
+        "estado": "MATO GROSSO DO SUL",
+        "municipio": "CAMPO GRANDE",
+        "produto": "GLP",
+        "precoBruto": "100"
+      },
+      {
+        "posicao": 10,
+        "r": 12,
+        "grupo": "outro_estado_outro_produto",
+        "cnpjBruto": "19791896007024",
+        "digitosCnpj": 14,
+        "estado": "MINAS GERAIS",
+        "municipio": "MONTES CLAROS",
+        "produto": "GLP",
+        "precoBruto": "120"
+      },
+      {
+        "posicao": 11,
+        "r": 13,
+        "grupo": "outro_estado_outro_produto",
+        "cnpjBruto": "198451000185",
+        "digitosCnpj": 12,
+        "estado": "CEARA",
+        "municipio": "JUAZEIRO DO NORTE",
+        "produto": "GLP",
+        "precoBruto": "125"
+      },
+      {
+        "posicao": 12,
+        "r": 14,
+        "grupo": "outro_estado_gasolina_comum",
+        "cnpjBruto": "8220930000162",
+        "digitosCnpj": 13,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "7.19"
+      },
+      {
+        "posicao": 13,
+        "r": 15,
+        "grupo": "outro_estado_outro_produto",
+        "cnpjBruto": "8220930000162",
+        "digitosCnpj": 13,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "GASOLINA ADITIVADA",
+        "precoBruto": "7.29"
+      },
+      {
+        "posicao": 14,
+        "r": 16,
+        "grupo": "outro_estado_gasolina_comum",
+        "cnpjBruto": "6003183000185",
+        "digitosCnpj": 13,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "7.29"
+      },
+      {
+        "posicao": 15,
+        "r": 17,
+        "grupo": "outro_estado_gasolina_comum",
+        "cnpjBruto": "529581000153",
+        "digitosCnpj": 12,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "7.39"
+      },
+      {
+        "posicao": 16,
+        "r": 18,
+        "grupo": "outro_estado_gasolina_comum",
+        "cnpjBruto": "6321359000147",
+        "digitosCnpj": 13,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "7.25"
+      },
+      {
+        "posicao": 17,
+        "r": 19,
+        "grupo": "outro_estado_outro_produto_artefato_float",
+        "cnpjBruto": "6321359000147",
+        "digitosCnpj": 13,
+        "estado": "ACRE",
+        "municipio": "RIO BRANCO",
+        "produto": "ETANOL",
+        "precoBruto": "4.4000000000000004"
+      },
+      {
+        "posicao": 18,
+        "r": 20,
+        "grupo": "pe_fora_da_rmr_gasolina_comum",
+        "cnpjBruto": "4965564000381",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "ARARIPINA",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "7.19"
+      },
+      {
+        "posicao": 19,
+        "r": 21,
+        "grupo": "pe_fora_da_rmr_gasolina_comum",
+        "cnpjBruto": "3254669000106",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "ARCOVERDE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.49"
+      },
+      {
+        "posicao": 20,
+        "r": 22,
+        "grupo": "pe_fora_da_rmr_gasolina_comum",
+        "cnpjBruto": "8072308000316",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "ARCOVERDE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.49"
+      },
+      {
+        "posicao": 21,
+        "r": 23,
+        "grupo": "pe_fora_da_rmr_gasolina_comum",
+        "cnpjBruto": "10583052000191",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "ARCOVERDE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.49"
+      },
+      {
+        "posicao": 22,
+        "r": 24,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "8894271000140",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 23,
+        "r": 25,
+        "grupo": "rmr_etanol",
+        "cnpjBruto": "8894271000140",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "ETANOL",
+        "precoBruto": "4.8899999999999997"
+      },
+      {
+        "posicao": 24,
+        "r": 26,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "5346818000184",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.99"
+      },
+      {
+        "posicao": 25,
+        "r": 27,
+        "grupo": "rmr_gasolina_aditivada",
+        "cnpjBruto": "5346818000184",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA ADITIVADA",
+        "precoBruto": "7.09"
+      },
+      {
+        "posicao": 26,
+        "r": 28,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "5097635000172",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 27,
+        "r": 29,
+        "grupo": "rmr_gasolina_aditivada",
+        "cnpjBruto": "5097635000172",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA ADITIVADA",
+        "precoBruto": "7.15"
+      },
+      {
+        "posicao": 28,
+        "r": 30,
+        "grupo": "rmr_etanol",
+        "cnpjBruto": "5097635000172",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "ETANOL",
+        "precoBruto": "4.95"
+      },
+      {
+        "posicao": 29,
+        "r": 31,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "4556651000113",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "CABO DE SANTO AGOSTINHO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 30,
+        "r": 32,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "5822300000170",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "GOIANA",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 31,
+        "r": 33,
+        "grupo": "rmr_gasolina_comum_cnpj13",
+        "cnpjBruto": "5220548000160",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "GOIANA",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 32,
+        "r": 34,
+        "grupo": "rmr_gasolina_aditivada",
+        "cnpjBruto": "5220548000160",
+        "digitosCnpj": 13,
+        "estado": "PERNAMBUCO",
+        "municipio": "GOIANA",
+        "produto": "GASOLINA ADITIVADA",
+        "precoBruto": "7.25"
+      },
+      {
+        "posicao": 33,
+        "r": 35,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "11117785000527",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "GOIANA",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 34,
+        "r": 36,
+        "grupo": "rmr_gasolina_aditivada",
+        "cnpjBruto": "11117785000527",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "GOIANA",
+        "produto": "GASOLINA ADITIVADA",
+        "precoBruto": "7.25"
+      },
+      {
+        "posicao": 35,
+        "r": 37,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "11117785001337",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "JABOATAO DOS GUARARAPES",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 36,
+        "r": 38,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "69943686000665",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "JABOATAO DOS GUARARAPES",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 37,
+        "r": 39,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "35353465000100",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "JABOATAO DOS GUARARAPES",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 38,
+        "r": 40,
+        "grupo": "rmr_gasolina_comum_cnpj12",
+        "cnpjBruto": "672715000352",
+        "digitosCnpj": 12,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.97"
+      },
+      {
+        "posicao": 39,
+        "r": 41,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "10973568000142",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.97"
+      },
+      {
+        "posicao": 40,
+        "r": 42,
+        "grupo": "rmr_gasolina_comum_cnpj12",
+        "cnpjBruto": "672715000190",
+        "digitosCnpj": 12,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.97"
+      },
+      {
+        "posicao": 41,
+        "r": 43,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "10544641000160",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 42,
+        "r": 44,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "11694577000400",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.97"
+      },
+      {
+        "posicao": 43,
+        "r": 45,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "11694577000167",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.97"
+      },
+      {
+        "posicao": 44,
+        "r": 46,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "11310737000127",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "RECIFE",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.8"
+      },
+      {
+        "posicao": 45,
+        "r": 47,
+        "grupo": "outro_estado_gasolina_comum_artefato_float",
+        "cnpjBruto": "1233953000162",
+        "digitosCnpj": 13,
+        "estado": "SAO PAULO",
+        "municipio": "SAO PAULO",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "8.9700000000000006"
+      },
+      {
+        "posicao": 46,
+        "r": 48,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "69943686000401",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "IGARASSU",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 47,
+        "r": 49,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "24140204000196",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "IGARASSU",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      },
+      {
+        "posicao": 48,
+        "r": 50,
+        "grupo": "rmr_gasolina_comum_cnpj14",
+        "cnpjBruto": "10821115000109",
+        "digitosCnpj": 14,
+        "estado": "PERNAMBUCO",
+        "municipio": "OLINDA",
+        "produto": "GASOLINA COMUM",
+        "precoBruto": "6.95"
+      }
+    ]
+  },
+  "observacoes": [
+    "Nenhuma linha de gasolina comum da RMR nesta semana tem preço com artefato de float. As linhas dos grupos *_artefato_float trazem preços reais com artefato, para o T013. O caso do T017 deve copiar uma linha da RMR em memória e trocar só o preço por um desses valores.",
+    "A célula C24 foi gravada como inlineStr, com o mesmo texto, para o T016 cobrir esse formato. O arquivo original só usa sharedStrings.",
+    "Nenhum registro da RMR na API tem distribuidora vazia (a bandeira branca vem como \"BANDEIRA BRANCA\"). O caso de distribuidora vazia do T018 deve alterar uma cópia do registro em memória.",
+    "Nenhum registro da RMR na API tem coordenada fora da RMR. O caso do T018 deve alterar uma cópia do registro em memória.",
+    "O arquivo semanal não tem linhas repetidas de posto e data. Os casos de conflito do T017 devem ser montados em memória."
+  ]
+}

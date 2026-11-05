@@ -1,0 +1,710 @@
+{
+  "status": 200,
+  "title": "Dados Encontrados",
+  "succeeded": true,
+  "data": [
+    {
+      "codigoSIMP": "1002843",
+      "autorizacao": "PR/PE0021523",
+      "dataPublicacao": "28/02/2002",
+      "razaoSocial": "GUARUJA COMERCIO E DISTRIBUICAO DE PETROLEO LTDA",
+      "cnpj": "01457180000106",
+      "endereco": "ESTRADA DA BATALHA,  371",
+      "complemento": "",
+      "bairro": "PRAZERES",
+      "cep": "54315010",
+      "uf": "PE",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "distribuidora": "VIBRA",
+      "dataVinculacao": "28/02/2002",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 20,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 6
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 4
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 6
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 4
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.157605",
+      "longitude": "-34.924955",
+      "latitude_ANP4C": "-08:09:27,378",
+      "longitude_ANP4C": "-34:55:29,838",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "2",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "15/06/2018",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "158447",
+      "autorizacao": "PR/PE0168834",
+      "dataPublicacao": "17/05/2004",
+      "razaoSocial": "CUNHA DERIVADOS DE PETROLEO LTDA",
+      "cnpj": "00216435000259",
+      "endereco": "RODOVIÁRIA BR 101,  S/N",
+      "complemento": "KM 80,7",
+      "bairro": "PRAZERES",
+      "cep": "54325650",
+      "uf": "PE",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "distribuidora": "VIBRA",
+      "dataVinculacao": "19/01/2017",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 7.5,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 22.5,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        }
+      ],
+      "latitude": "-8.15641847",
+      "longitude": "-34.94450302",
+      "latitude_ANP4C": "-08:09:23,106",
+      "longitude_ANP4C": "-34:56:40,211",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "8",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "15/08/2017",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1000822",
+      "autorizacao": "PR/PE0008425",
+      "dataPublicacao": "08/05/2001",
+      "razaoSocial": "MC COMERCIO DERIVADOS DE PETROLEO LTDA",
+      "cnpj": "00304243000113",
+      "endereco": "AVENIDA NORTE,  4390",
+      "complemento": "0",
+      "bairro": "TAMARINEIRA",
+      "cep": "52051000",
+      "uf": "PE",
+      "municipio": "RECIFE",
+      "distribuidora": "VIBRA",
+      "dataVinculacao": "08/05/2001",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 30,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 8
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.026505",
+      "longitude": "-34.90493333",
+      "latitude_ANP4C": "-08:01:35,418",
+      "longitude_ANP4C": "-34:54:17,760",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "4",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "31/01/2019",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1002691",
+      "autorizacao": "PR/PE0011194",
+      "dataPublicacao": "25/07/2001",
+      "razaoSocial": "SANTO ALEIXO COMERCIO DE COMBUSTIVEIS LTDA",
+      "cnpj": "01389571000122",
+      "endereco": "ESTRADA DA LUZ,  2284",
+      "complemento": "",
+      "bairro": "SANTO ALEIXO",
+      "cep": "54120050",
+      "uf": "PE",
+      "municipio": "JABOATAO DOS GUARARAPES",
+      "distribuidora": "BANDEIRA BRANCA",
+      "dataVinculacao": "19/01/2023",
+      "classe": "1 ÁREA  - Classe I - Port. DNC 27/96",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.09267667",
+      "longitude": "-35.02324",
+      "latitude_ANP4C": "-08:05:33,636",
+      "longitude_ANP4C": "-35:01:23,664",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "4",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "12/04/2018",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "161809",
+      "autorizacao": "PR/PE0168052",
+      "dataPublicacao": "22/03/2004",
+      "razaoSocial": "POSTO MACHADO LTDA",
+      "cnpj": "05648920000134",
+      "endereco": "AVENIDA PRESIDENTE KENNEDY,  308",
+      "complemento": "",
+      "bairro": "SÃO BENEDITO",
+      "cep": "53010120",
+      "uf": "PE",
+      "municipio": "OLINDA",
+      "distribuidora": "VIBRA",
+      "dataVinculacao": "22/03/2004",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 4
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 30,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        }
+      ],
+      "latitude": "",
+      "longitude": "",
+      "latitude_ANP4C": "",
+      "longitude_ANP4C": "",
+      "validacao": "",
+      "estimativaAcuracia": "",
+      "srid": "",
+      "src": "",
+      "dataObtencao": "29/03/2023",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "400",
+      "observacao": "Local onde tinha o posto de combustíveis atualmente é um terminal de ônibus.",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1000880",
+      "autorizacao": "PR/PE0026258",
+      "dataPublicacao": "01/08/2002",
+      "razaoSocial": "POSTO ENSEADA DO NORTE LTDA",
+      "cnpj": "00338804000103",
+      "endereco": "AVENIDA GOV CARLOS DE LIMA CAVALCANTI,  2314",
+      "complemento": "",
+      "bairro": "CASA CAIADA",
+      "cep": "53030260",
+      "uf": "PE",
+      "municipio": "OLINDA",
+      "distribuidora": "VIBRA",
+      "dataVinculacao": "04/11/2009",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO ADITIVADO",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 8
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 25,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 8
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 8
+        },
+        {
+          "produto": "GASOLINA C PREMIUM ADITIVADA",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-7.9849641",
+      "longitude": "-34.8381451",
+      "latitude_ANP4C": "-07:59:05,871",
+      "longitude_ANP4C": "-34:50:17,322",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "5",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "13/06/2023",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1000629",
+      "autorizacao": "PR/PE0066620",
+      "dataPublicacao": "18/03/2009",
+      "razaoSocial": "POSTO COMBUSTIVEL NOSSA SENHORA DE FATIMA LTDA",
+      "cnpj": "00199825000187",
+      "endereco": "AVENIDA DAS NACOES,  170",
+      "complemento": "",
+      "bairro": "CENTRO",
+      "cep": "56304360",
+      "uf": "PE",
+      "municipio": "PETROLINA",
+      "distribuidora": "BANDEIRA BRANCA",
+      "dataVinculacao": "22/02/2024",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 30,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-9.3963683",
+      "longitude": "-40.5053216",
+      "latitude_ANP4C": "-09:23:46,926",
+      "longitude_ANP4C": "-40:30:19,158",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "3",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "17/03/2021",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1002321",
+      "autorizacao": "PR/PE0031932",
+      "dataPublicacao": "06/05/2003",
+      "razaoSocial": "MONTENESES LTDA",
+      "cnpj": "01214408000129",
+      "endereco": "AVENIDA MAL MASC DE MORAIS,  3000",
+      "complemento": "",
+      "bairro": "IMBIRIBEIRA",
+      "cep": "52050310",
+      "uf": "PE",
+      "municipio": "RECIFE",
+      "distribuidora": "BANDEIRA BRANCA",
+      "dataVinculacao": "01/06/2020",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        }
+      ],
+      "latitude": "-8.11760667",
+      "longitude": "-34.91377333",
+      "latitude_ANP4C": "-08:07:03,384",
+      "longitude_ANP4C": "-34:54:49,584",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "5",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "13/06/2018",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1002603",
+      "autorizacao": "PR/PE0015677",
+      "dataPublicacao": "19/10/2001",
+      "razaoSocial": "J E PETROLEO LTDA",
+      "cnpj": "01339156000164",
+      "endereco": "RUA LEAO DOURADO,  382",
+      "complemento": "",
+      "bairro": "CAIUCA",
+      "cep": "55000000",
+      "uf": "PE",
+      "municipio": "CARUARU",
+      "distribuidora": "RAIZEN",
+      "dataVinculacao": "12/11/2014",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 7.5,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 7.5,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.288165",
+      "longitude": "-35.98483",
+      "latitude_ANP4C": "-08:17:17,394",
+      "longitude_ANP4C": "-35:59:05,388",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "4",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "14/06/2019",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1201781",
+      "autorizacao": "PR/PE0132748",
+      "dataPublicacao": "01/11/2013",
+      "razaoSocial": "247 COMERCIO LTDA",
+      "cnpj": "00191498001431",
+      "endereco": "AVENIDA GOVERNADOR CARLOS DE LIMA CAVALCANTI,  2935",
+      "complemento": "",
+      "bairro": "CASA CAIADA",
+      "cep": "53040000",
+      "uf": "PE",
+      "municipio": "OLINDA",
+      "distribuidora": "BANDEIRA BRANCA",
+      "dataVinculacao": "08/05/2023",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 3
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 1
+        }
+      ],
+      "latitude": "-7.9795417",
+      "longitude": "-34.8368295",
+      "latitude_ANP4C": "-07:58:46,350",
+      "longitude_ANP4C": "-34:50:12,586",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "4",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "18/10/2022",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1261335",
+      "autorizacao": "PR/PE0197368",
+      "dataPublicacao": "30/01/2020",
+      "razaoSocial": "247 COMERCIO LTDA",
+      "cnpj": "00191498001350",
+      "endereco": "RUA ANTONIO MACARIO,  110",
+      "complemento": "",
+      "bairro": "AFOGADOS",
+      "cep": "50770070",
+      "uf": "PE",
+      "municipio": "RECIFE",
+      "distribuidora": "TDC DISTRIBUIDORA",
+      "dataVinculacao": "30/01/2020",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 25,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 4
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 15,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 4
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.080445",
+      "longitude": "-34.9046214",
+      "latitude_ANP4C": "-08:04:49,602",
+      "longitude_ANP4C": "-34:54:16,637",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "4",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "19/10/2022",
+      "origemInformacao": "Agente de fiscalização da ANP",
+      "situacaoConstatada": "200",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    },
+    {
+      "codigoSIMP": "1281575",
+      "autorizacao": "PR/PE0221316",
+      "dataPublicacao": "22/02/2022",
+      "razaoSocial": "247 COMERCIO LTDA",
+      "cnpj": "00191498001601",
+      "endereco": "ESTRADA DOS REMEDIOS,  436",
+      "complemento": "",
+      "bairro": "AFOGADOS",
+      "cep": "50750360",
+      "uf": "PE",
+      "municipio": "RECIFE",
+      "distribuidora": "TDC DISTRIBUIDORA",
+      "dataVinculacao": "22/02/2022",
+      "classe": "",
+      "produtos": [
+        {
+          "produto": "ETANOL HIDRATADO COMUM",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "GÁS NATURAL VEICULAR",
+          "tancagem": 0,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 0
+        },
+        {
+          "produto": "GASOLINA C COMUM",
+          "tancagem": 20,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 6
+        },
+        {
+          "produto": "GASOLINA C COMUM ADITIVADA",
+          "tancagem": 20,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        },
+        {
+          "produto": "ÓLEO DIESEL B S10 - COMUM",
+          "tancagem": 10,
+          "unidMedidaTancagem": "m³",
+          "qtdeBicos": 2
+        }
+      ],
+      "latitude": "-8.07634301",
+      "longitude": "-34.90707508",
+      "latitude_ANP4C": "-08:04:34,835",
+      "longitude_ANP4C": "-34:54:25,470",
+      "validacao": "Posição Geográfica não validada",
+      "estimativaAcuracia": "",
+      "srid": "4674",
+      "src": "SIRGAS2000",
+      "dataObtencao": "15/02/2022",
+      "origemInformacao": "Preposto da empresa",
+      "situacaoConstatada": "",
+      "observacao": "",
+      "statusSIGAF": "",
+      "inadimplenciaPMQC": []
+    }
+  ],
+  "searchPageFilter": {
+    "filtroPesquisa": "",
+    "numeroPagina": 1,
+    "tamanhoPagina": 5000,
+    "totalRegistro": 12,
+    "totalPagina": 1
+  }
+}
