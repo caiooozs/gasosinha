@@ -6,8 +6,9 @@
  *   npx tsx --env-file-if-exists=.env.local scripts/backfill-precos.ts --dry-run
  *   npx tsx --env-file-if-exists=.env.local scripts/backfill-precos.ts [--desde=AAAA-MM-DD]
  *
- * - Credenciais: SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY, do .env.local. São segredos de servidor:
- *   nunca use o prefixo NEXT_PUBLIC_ nelas (Princípio II).
+ * - Credenciais: SUPABASE_SERVICE_ROLE_KEY (a chave secreta), do .env.local. É segredo de servidor:
+ *   nunca use o prefixo NEXT_PUBLIC_ nela (Princípio II). A URL vem de SUPABASE_URL ou, sem ela, de
+ *   NEXT_PUBLIC_SUPABASE_URL, que é pública.
  * - Grava pelo mesmo caminho do sync-precos (`ingerirArquivoLpc`): rodar de novo não duplica nada
  *   (SC-006), e uma edição interrompida é retomada (FR-022).
  * - `--dry-run` só lê: baixa e confere cada arquivo e mostra o que seria gravado.
@@ -48,12 +49,13 @@ function argumentos(argv: readonly string[]): { dryRun: boolean; desde: string |
 }
 
 function credenciais(): { url: string; chave: string } {
-  const url = process.env.SUPABASE_URL;
+  // A URL do projeto é pública: sem SUPABASE_URL, vale a mesma do site. A chave, nunca.
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const chave = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !chave) {
     throw new Error(
-      "faltam SUPABASE_URL e/ou SUPABASE_SERVICE_ROLE_KEY no .env.local (veja o .env.example). " +
-        "Elas são segredos de servidor: nunca use o prefixo NEXT_PUBLIC_.",
+      "faltam SUPABASE_SERVICE_ROLE_KEY e/ou a URL do projeto (SUPABASE_URL ou NEXT_PUBLIC_SUPABASE_URL) no .env.local " +
+        "(veja o .env.example). A service role é segredo de servidor: nunca use o prefixo NEXT_PUBLIC_ nela.",
     );
   }
   return { url, chave };
