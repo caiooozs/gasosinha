@@ -956,7 +956,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
   - **`--dry-run`**: faz o parse e mostra as contagens sem gravar nada;
   - **relatório final**: uma tabela por semana, as edições `fora_da_janela` e a lista das
     **semanas faltando** na janela.
-- [ ] T082 [US2] 🙋 Rodar `scripts/backfill-precos.ts` contra produção, com aprovação humana
+- [X] T082 [US2] 🙋 Rodar `scripts/backfill-precos.ts` contra produção, com aprovação humana
   depois da revisão do diff do T081:
   1. o script de carga com `--dry-run`, mostrando o relatório à pessoa;
   2. o script de carga para valer, só depois do aval;
