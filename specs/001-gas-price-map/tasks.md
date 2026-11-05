@@ -1047,10 +1047,23 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
   - **Foco**: ao fechar, o foco volta ao elemento que abriu o detalhe. Guardar o `cnpj` de
     origem num `ref` do viewmodel da página e focar o item correspondente depois do
     `router.back()` (US2, cenário 6).
-- [ ] T091 [US2] Validar `app/postos/[cnpj]/page.tsx` com `npm run dev` nos cenários "Detalhe", "Link", "Link antigo" e
+- [X] T091 [US2] Validar `app/postos/[cnpj]/page.tsx` com `npm run dev` nos cenários "Detalhe", "Link", "Link antigo" e
   "Teclado" do quickstart, seção 6. Rodar `npm run build` e confirmar que `/postos/[cnpj]` é
   pré-renderizado, que o HTML contém o nome e o preço, e que o build não acusa nenhum erro de
   "current-time prerender".
+
+  Validado em 2026-11-05, no Chrome, contra o Supabase de produção:
+  - **Detalhe:** abrir pela lista abre o modal sobre o mapa, com nome, bandeira, endereço, preço,
+    data, idade, fonte, variação e 51 coletas no histórico;
+  - **Teclado:** Enter abre o modal com o foco dentro dele, Esc fecha, e o foco volta ao item;
+  - **Link:** o link direto abre a página com o detalhe no painel e o mapa centralizado no posto;
+    título, descrição e "Voltar ao mapa" (`/`) corretos;
+  - **Link antigo:** `/postos/00000000000000` mostra "Posto não encontrado" com `noindex`. Não há
+    posto inativo hoje; o aviso de inativo está coberto pelos testes do T077 e do T078;
+  - posto sem coleta e posto com uma coleta só exibem "sem preço" e "Ainda não há coleta anterior
+    para comparar", respectivamente.
+
+  O `next build` pré-renderiza as 403 páginas sem erro, com nome, preço, título e descrição no HTML.
 
 **Checkpoint**: US1 e US2 funcionam, cada uma de forma independente. Antes de seguir,
 `npm run typecheck`, `npm run lint` e `npm test` passam.
