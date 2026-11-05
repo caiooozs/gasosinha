@@ -936,7 +936,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
 
   Criar também a função `public.cnpjs_postos_ativos() returns setof text`, usada pelo
   `generateStaticParams`.
-- [ ] T080 [US2] 🙋 Aplicar `supabase/migrations/20261028120400_rpc_detalhe_posto.sql` com
+- [X] T080 [US2] 🙋 Aplicar `supabase/migrations/20261028120400_rpc_detalhe_posto.sql` com
   aprovação humana, depois da revisão do diff do T079 (`npx supabase db push --remote`). Em seguida,
   regenerar `lib/supabase/tipos.ts` com
   `npx supabase gen types --remote --lang typescript > lib/supabase/tipos.ts`.
