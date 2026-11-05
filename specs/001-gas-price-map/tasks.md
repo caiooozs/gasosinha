@@ -719,7 +719,7 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
     data_coleta desc limit 2)`;
   - ordena por `cnpj`;
   - `grant execute` para `anon` e `authenticated`.
-- [ ] T054 [US1] 🙋 Aplicar `supabase/migrations/20261028120300_rpc_postos_na_area.sql` com
+- [X] T054 [US1] 🙋 Aplicar `supabase/migrations/20261028120300_rpc_postos_na_area.sql` com
   aprovação humana, depois da revisão do diff do T053 (`npx supabase db push --remote`). Em seguida,
   regenerar `lib/supabase/tipos.ts` com
   `npx supabase gen types --remote --lang typescript > lib/supabase/tipos.ts`, para que as chamadas ao
@@ -861,9 +861,16 @@ quickstart, seção 6. Não depende do detalhe nem do mascote.
 
   A página e os componentes **não** buscam nem calculam dados: tudo vem dos viewmodels
   (Princípio IV).
-- [ ] T076 [US1] Validar `app/page.tsx` com `npm run dev` nos cenários de US1 do quickstart,
+- [X] T076 [US1] Validar `app/page.tsx` com `npm run dev` nos cenários de US1 do quickstart,
   seção 6, inclusive "Falha ao carregar". Conferir nas ferramentas de desenvolvedor que nenhuma
   requisição leva coordenadas da pessoa, só a área quantizada.
+
+  Validado em 2026-11-05, no Chrome, contra o Supabase de produção: mapa inicial, marcador com
+  preço (nome acessível com a data completa), sem preço, busca ("jaboatao" e "caruaru"), lista
+  (grupos e inversão da ordem), falha ao carregar (com os postos já carregados mantidos e
+  "Tentar de novo") e corpo das requisições (só a área quantizada). Pendente de conferência pela
+  pessoa: o cenário "Localização" no navegador (permitir e negar a permissão), coberto até aqui
+  pelos testes de `pedirLocalizacao`, e o layout no celular (360 px).
 
 **Checkpoint**: a US1 funciona sozinha e é o MVP que pode ser publicado. Antes de seguir,
 `npm run typecheck`, `npm run lint` e `npm test` passam.

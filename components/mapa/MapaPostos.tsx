@@ -1,6 +1,6 @@
 "use client";
 
-import type { Map as MapaMapLibre } from "maplibre-gl";
+import { setWorkerUrl, type Map as MapaMapLibre } from "maplibre-gl";
 import { useRouter } from "next/navigation";
 import { useCallback, useImperativeHandle, useRef, useState, type RefObject } from "react";
 import { Map as Mapa, Marker, type MapRef } from "react-map-gl/maplibre";
@@ -29,6 +29,11 @@ export type MapaPostosProps = {
   centroInicial?: { lng: number; lat: number };
   controleRef: RefObject<ControleMapa | null>;
 };
+
+// O MapLibre 6 procura o worker ao lado do próprio arquivo (`./maplibre-gl-worker.mjs`), caminho
+// que deixa de existir depois do bundle. O `new URL(..., import.meta.url)` faz o bundler publicar o
+// arquivo do worker (autocontido, sem imports) e devolver a URL dele.
+setWorkerUrl(new URL("../../node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url).href);
 
 const ESTILO = "https://tiles.openfreemap.org/styles/positron";
 const MARGEM_PAN = 0.3;
