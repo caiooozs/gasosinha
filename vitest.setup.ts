@@ -5,3 +5,18 @@ import { afterEach } from "vitest";
 afterEach(() => {
   cleanup();
 });
+
+// O jsdom não implementa matchMedia; os componentes o usam para ler a largura da tela e
+// "reduzir movimento". Nos testes, nenhuma consulta casa.
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = (consulta: string): MediaQueryList => ({
+    matches: false,
+    media: consulta,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  });
+}

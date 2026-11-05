@@ -258,6 +258,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cnpjs_postos_ativos: { Args: never; Returns: string[] }
+      detalhe_posto: { Args: { p_cnpj: string }; Returns: Json }
       postos_na_area: {
         Args: { leste: number; norte: number; oeste: number; sul: number }
         Returns: {

@@ -5,6 +5,11 @@ import type { PostoNoMapa } from "./tipos";
 export const SEM_PRECO = "sem preço";
 export const BANDEIRA_NAO_INFORMADA = "bandeira não informada";
 
+/** "ANP – Levantamento de Preços de Combustíveis" → "ANP": a sigla, antes do travessão. */
+export function siglaDaFonte(fonte: string): string {
+  return fonte.split(" – ")[0].trim() || fonte;
+}
+
 /** A bandeira para exibição: nula ou vazia vira "bandeira não informada". */
 export function bandeiraParaExibir(bandeira: string | null): string {
   const limpa = bandeira?.trim();

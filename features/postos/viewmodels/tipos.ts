@@ -3,10 +3,11 @@
  * formatados: as views não formatam nada (Princípios IV e VIII).
  */
 
-export type EstadoCarga = "carregando" | "erro" | "pronto";
+import type { DirecaoVariacao } from "../domain/variacao";
 
-/** Direção da variação desde a coleta anterior: decide a cor e o ícone do selo. */
-export type DirecaoVariacao = "subiu" | "caiu" | "igual";
+export type { DirecaoVariacao };
+
+export type EstadoCarga = "carregando" | "erro" | "pronto";
 
 export type MarcadorVM = {
   cnpj: string;

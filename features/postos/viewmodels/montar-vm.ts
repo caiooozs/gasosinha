@@ -7,10 +7,10 @@ import type { ItemAgrupado } from "../domain/agrupar";
 import { calcularIdade } from "../domain/idade";
 import { cnpjsMaisBaratos } from "../domain/mais-barato";
 import { ordenarLista, type GrupoLista, type PostoOrdenado, type SentidoPreco } from "../domain/ordenar-lista";
-import { bandeiraParaExibir, nomeAcessivelMarcador, partesRotuloMarcador } from "../domain/rotulos";
+import { bandeiraParaExibir, nomeAcessivelMarcador, partesRotuloMarcador, siglaDaFonte } from "../domain/rotulos";
 import type { PostoNoMapa } from "../domain/tipos";
-import { calcularVariacao, type Variacao } from "../domain/variacao";
-import type { DirecaoVariacao, GrupoListaVM, GrupoVM, ItemListaVM, MarcadorVM } from "./tipos";
+import { calcularVariacao, direcaoDaVariacao } from "../domain/variacao";
+import type { GrupoListaVM, GrupoVM, ItemListaVM, MarcadorVM } from "./tipos";
 
 export const TITULOS_GRUPO: Record<GrupoLista, string> = {
   recente: "Coletas recentes",
@@ -23,16 +23,6 @@ export function tituloContagem(quantidade: number): string {
   return `${quantidade} ${quantidade === 1 ? "posto" : "postos"} nesta área`;
 }
 
-/** "ANP – Levantamento de Preços de Combustíveis" → "ANP": a sigla, antes do travessão. */
-function siglaDaFonte(fonte: string): string {
-  return fonte.split(" – ")[0].trim() || fonte;
-}
-
-function direcao(variacao: Variacao): DirecaoVariacao {
-  if (variacao.diferencaMilesimos > 0) return "subiu";
-  if (variacao.diferencaMilesimos < 0) return "caiu";
-  return "igual";
-}
 
 function montarItemLista(posto: PostoOrdenado, hoje: DataISO, maisBaratos: ReadonlySet<string>): ItemListaVM {
   const comum = { cnpj: posto.cnpj, nome: posto.nome, bandeira: bandeiraParaExibir(posto.bandeira) };
@@ -51,7 +41,7 @@ function montarItemLista(posto: PostoOrdenado, hoje: DataISO, maisBaratos: Reado
     fonte: coleta.fonte,
     fonteCurta: siglaDaFonte(coleta.fonte),
     variacao: variacao ? formatarVariacao(variacao) : null,
-    direcaoVariacao: variacao ? direcao(variacao) : null,
+    direcaoVariacao: variacao ? direcaoDaVariacao(variacao) : null,
     maisBarato: maisBaratos.has(posto.cnpj),
   };
 }

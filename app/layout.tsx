@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children, detalhe }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${faustina.variable} h-full antialiased`}>
       {/* Altura fixa da janela: a tela do mapa ocupa o que sobra abaixo do aviso de fonte. */}
@@ -40,6 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <AvisoFonte />
           </Suspense>
           {children}
+          {/* Detalhe do posto como modal sobre o mapa (rota interceptada @detalhe/(.)postos/[cnpj]). */}
+          {detalhe}
         </Providers>
       </body>
     </html>

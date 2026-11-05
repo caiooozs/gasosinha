@@ -1,6 +1,9 @@
 import type { DataISO } from "@/lib/formato";
 import type { PrecoDatado } from "./tipos";
 
+/** Direção da variação desde a coleta anterior: decide a cor e o ícone do selo. */
+export type DirecaoVariacao = "subiu" | "caiu" | "igual";
+
 export type Variacao = {
   diferencaMilesimos: number;
   /** Percentual com 1 casa decimal, arredondado para longe do zero. */
@@ -25,4 +28,10 @@ export function calcularVariacao(atual: PrecoDatado, anterior?: PrecoDatado): Va
   const decimos = Math.floor((2 * numerador + base) / (2 * base));
   const percentual = decimos === 0 ? 0 : (Math.sign(diferencaMilesimos) * decimos) / 10;
   return { diferencaMilesimos, percentual, desde: anterior.data };
+}
+
+export function direcaoDaVariacao(variacao: Variacao): DirecaoVariacao {
+  if (variacao.diferencaMilesimos > 0) return "subiu";
+  if (variacao.diferencaMilesimos < 0) return "caiu";
+  return "igual";
 }

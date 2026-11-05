@@ -889,7 +889,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
 
 ### Tests for User Story 2 (escrever primeiro; devem falhar) ⚠️
 
-- [ ] T077 [P] [US2] Escrever `features/postos/domain/detalhe.test.ts` para duas funções.
+- [X] T077 [P] [US2] Escrever `features/postos/domain/detalhe.test.ts` para duas funções.
 
   **`montarDetalheVM(detalheRpc, hoje)`**. Casos:
   - **várias coletas**: devolve `precoAtual`, `dataAtual` em dd/mm/aaaa, `idadeTexto`
@@ -905,7 +905,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
   - com preço → `{ titulo: 'IGUEP INCORPORADORA GUEDES PEREIRA LTDA — Gasosinha', descricao:
     'Gasolina comum R$ 6,59, coletado em 20/10/2026 (ANP)' }`;
   - sem coleta → descrição `'Gasolina comum: sem preço'`.
-- [ ] T078 [P] [US2] Escrever `components/posto/DetalhePosto.test.tsx` para os quatro estados do
+- [X] T078 [P] [US2] Escrever `components/posto/DetalhePosto.test.tsx` para os quatro estados do
   T077:
   - o título é o nome do posto;
   - a idade antiga tem destaque com ícone e texto;
@@ -921,7 +921,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
 
 ### Implementation for User Story 2
 
-- [ ] T079 [US2] 🔒 Criar `supabase/migrations/20261028120400_rpc_detalhe_posto.sql`, conforme
+- [X] T079 [US2] 🔒 Criar `supabase/migrations/20261028120400_rpc_detalhe_posto.sql`, conforme
   [contracts/supabase-rpc.md](./contracts/supabase-rpc.md).
 
   **Assinatura**: `create function public.detalhe_posto(p_cnpj text) returns json`.
@@ -940,7 +940,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
   aprovação humana, depois da revisão do diff do T079 (`npx supabase db push --remote`). Em seguida,
   regenerar `lib/supabase/tipos.ts` com
   `npx supabase gen types --remote --lang typescript > lib/supabase/tipos.ts`.
-- [ ] T081 [US2] 🔒 Criar `scripts/backfill-precos.ts`, que roda com `npx tsx
+- [X] T081 [US2] 🔒 Criar `scripts/backfill-precos.ts`, que roda com `npx tsx
   --env-file-if-exists=.env.local`:
   - **cliente**: Supabase com `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`, que nunca são lidos
     de variáveis `NEXT_PUBLIC_`;
@@ -965,13 +965,13 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
 
   Rodar longe das 12:00 UTC (09:00 em Brasília), o horário do `sync-precos-diario`. A gravação
   aguenta as duas execuções juntas (T034), mas assim os logs não se misturam.
-- [ ] T083 [US2] Implementar `features/postos/domain/detalhe.ts` (`montarDetalheVM`,
+- [X] T083 [US2] Implementar `features/postos/domain/detalhe.ts` (`montarDetalheVM`,
   `montarMetadadosPosto` e tipo `DetalheVM`) até o T077 passar. Depende de T062 e T040.
-- [ ] T084 [P] [US2] Criar `lib/hydrate.ts` com o helper de hidratação pré-renderizável, copiado
+- [X] T084 [P] [US2] Criar `lib/hydrate.ts` com o helper de hidratação pré-renderizável, copiado
   da seção "Build a prerenderable hydration state" do guia de TanStack Query do Next instalado:
   `getHydrationUpdatedAt` com `'use cache'`, `cacheTag` e `cacheLife('max')`, e `dehydrate`
   montado à mão. Importa `'server-only'`.
-- [ ] T085 [US2] Implementar o acesso a dados do detalhe em `features/postos/services/postos.service.ts` e `features/postos/services/postos.server.ts`.
+- [X] T085 [US2] Implementar o acesso a dados do detalhe em `features/postos/services/postos.service.ts` e `features/postos/services/postos.server.ts`.
   Depende do T080, por causa dos tipos do RPC.
 
   **`features/postos/services/postos.service.ts`**: acrescentar `buscarDetalhePosto(cnpj)`, que
@@ -982,7 +982,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
     `cacheTag('posto:' + cnpj)`;
   - `listarCnpjsAtivos()` usa `'use cache'` e `cacheLife('hours')`;
   - os dois usam o cliente do servidor e só são chamados pelo viewmodel de servidor (T086).
-- [ ] T086 [US2] Implementar os viewmodels do detalhe em `features/postos/viewmodels/useDetalhePosto.ts` e `features/postos/viewmodels/detalhe-posto.server.ts`.
+- [X] T086 [US2] Implementar os viewmodels do detalhe em `features/postos/viewmodels/useDetalhePosto.ts` e `features/postos/viewmodels/detalhe-posto.server.ts`.
 
   **`features/postos/viewmodels/useDetalhePosto.ts`**: `useDetalhePosto(cnpj, hoje)`, com
   `useSuspenseQuery` na chave `['detalhe-posto', cnpj]` e `staleTime` de 1 h. Devolve
@@ -997,9 +997,9 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
     vier vazia, porque o `generateStaticParams` não aceita lista vazia;
   - `metadadosPosto(cnpj)` devolve `{ titulo, descricao } | null`, com `montarMetadadosPosto`
     sobre o resultado de `buscarDetalhePostoServidor`, que já está em cache.
-- [ ] T087 [P] [US2] Implementar `components/posto/HistoricoPrecos.tsx`: uma `<ol>` com a data e
+- [X] T087 [P] [US2] Implementar `components/posto/HistoricoPrecos.tsx`: uma `<ol>` com a data e
   o preço de cada coleta, sem gráfico (R14).
-- [ ] T088 [US2] Implementar `components/posto/DetalhePosto.tsx` e `components/posto/PainelDetalhe.tsx` até o T078 passar:
+- [X] T088 [US2] Implementar `components/posto/DetalhePosto.tsx` e `components/posto/PainelDetalhe.tsx` até o T078 passar:
   - **`DetalhePosto`** recebe `DetalheVM` e mostra nome, bandeira, endereço, preço atual,
     "coletado em dd/mm/aaaa", fonte, idade (com destaque se antiga), `variacaoTexto` ou
     `semAnteriorTexto`, `HistoricoPrecos` e o aviso de inativo;
@@ -1012,7 +1012,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
       `<section aria-labelledby>`, **sem portal**, para que o nome e o preço entrem no HTML
       (FR-013). O portal do `Sheet` não renderiza no servidor. Um link "Voltar ao mapa" leva
       para `/`, então fechar nunca leva para fora do site.
-- [ ] T089 [US2] Criar `app/postos/[cnpj]/page.tsx`, `app/postos/[cnpj]/not-found.tsx` e `app/postos/[cnpj]/error.tsx`, depois de
+- [X] T089 [US2] Criar `app/postos/[cnpj]/page.tsx`, `app/postos/[cnpj]/not-found.tsx` e `app/postos/[cnpj]/error.tsx`, depois de
   ler `generate-static-params.md` (seção "With Cache Components"), `generate-metadata.md`,
   `not-found.md` e `error.md` em `node_modules/next/dist/docs/01-app/03-api-reference/`.
   - **`generateStaticParams`**: usa `listarCnpjsParaPrerender()` do viewmodel de servidor
@@ -1030,7 +1030,7 @@ um sem coleta, de um inativo e de um CNPJ inexistente. Conferir os cenários "De
   - **`not-found.tsx`**: mostra "Posto não encontrado" e um link "Voltar ao mapa".
   - **`error.tsx`**: mostra "Não foi possível carregar este posto." e um botão "Tentar de novo",
     com a API de recuperação descrita em `error.md`.
-- [ ] T090 [US2] Implementar o detalhe como modal sobre o mapa em `app/@detalhe/(.)postos/[cnpj]/page.tsx`, ao navegar de dentro do site,
+- [X] T090 [US2] Implementar o detalhe como modal sobre o mapa em `app/@detalhe/(.)postos/[cnpj]/page.tsx`, ao navegar de dentro do site,
   depois de ler `parallel-routes.md` (seção "Modals"), `intercepting-routes.md` e `default.md`
   em `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/`.
   - **Arquivos**:

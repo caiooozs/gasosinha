@@ -10,6 +10,7 @@ export function LinhaPosto({ item }: { item: ItemListaVM }) {
   return (
     <Link
       href={`/postos/${item.cnpj}`}
+      data-cnpj={item.cnpj}
       className="flex items-center gap-3 border-b border-line px-5 py-3.5 transition-colors hover:bg-surface/70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink"
     >
       <span className="flex min-w-0 flex-1 flex-col gap-[3px]">

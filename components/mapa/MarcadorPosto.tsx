@@ -3,7 +3,7 @@ import { IconeRelogio, IconeSemPreco, IconeSetaBaixo } from "@/components/marca/
 import type { MarcadorVM } from "@/features/postos/viewmodels/tipos";
 
 export type MarcadorPostoProps = {
-  vm: Pick<MarcadorVM, "preco" | "idade" | "nomeAcessivel" | "antigo" | "semPreco" | "maisBarato">;
+  vm: Pick<MarcadorVM, "cnpj" | "preco" | "idade" | "nomeAcessivel" | "antigo" | "semPreco" | "maisBarato">;
   onSelecionar: () => void;
 };
 
@@ -22,6 +22,8 @@ export function MarcadorPosto({ vm, onSelecionar }: MarcadorPostoProps) {
   const comum = {
     type: "button" as const,
     "aria-label": vm.nomeAcessivel,
+    // Identifica a origem do detalhe, para o foco voltar aqui quando ele fechar.
+    "data-cnpj": vm.cnpj,
     "data-antigo": vm.antigo ? "true" : "false",
     "data-mais-barato": vm.maisBarato ? "true" : "false",
     onClick: onSelecionar,

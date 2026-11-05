@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "cn";
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { AtribuicaoFontes } from "@/components/avisos/AtribuicaoFontes";
 import { BuscaCidade } from "@/components/busca/BuscaCidade";
 import { ListaPostos } from "@/components/lista/ListaPostos";
@@ -42,6 +43,21 @@ export function TelaMapa({ hoje, centroInicial, painel }: TelaMapaProps) {
   const tituloListaRef = useRef<HTMLHeadingElement>(null);
   const verListaRef = useRef<HTMLButtonElement>(null);
 
+  // Ao abrir um posto pela lista ou pelo mapa, guarda o item de origem; quando o detalhe fecha e a
+  // rota volta para onde estava, o foco volta para ele (US2, cenário 6; FR-031).
+  const pathname = usePathname();
+  const origemRef = useRef<{ elemento: HTMLElement; rota: string } | null>(null);
+  const lembrarOrigem = (evento: MouseEvent<HTMLDivElement>) => {
+    const alvo = evento.target instanceof Element ? evento.target.closest<HTMLElement>("[data-cnpj]") : null;
+    if (alvo) origemRef.current = { elemento: alvo, rota: pathname };
+  };
+  useEffect(() => {
+    const origem = origemRef.current;
+    if (!origem || origem.rota !== pathname) return;
+    if (origem.elemento.isConnected) origem.elemento.focus();
+    origemRef.current = null;
+  }, [pathname]);
+
   const postos = usePostosNaArea({ bboxVisivel: area?.bboxVisivel ?? null, zoom: area?.zoom ?? 0, hoje });
   const lista = useListaPostos(postos.postosVisiveis, hoje);
   const { precosAtualizadosEm } = useStatusFontes();
@@ -68,7 +84,10 @@ export function TelaMapa({ hoje, centroInicial, painel }: TelaMapaProps) {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col md:grid md:grid-cols-[440px_minmax(0,1fr)] md:grid-rows-[minmax(0,1fr)]">
+    <div
+      onClickCapture={lembrarOrigem}
+      className="flex min-h-0 flex-1 flex-col md:grid md:grid-cols-[440px_minmax(0,1fr)] md:grid-rows-[minmax(0,1fr)]"
+    >
       <h1 className="sr-only">Gasosinha: preço da gasolina comum nos postos da Região Metropolitana do Recife</h1>
       <BarraApp variante="celular" className="md:hidden" />
 
