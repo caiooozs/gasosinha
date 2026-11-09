@@ -65,7 +65,8 @@ describe("montarGruposLista", () => {
       antiga: false,
       fonte: FONTE,
       fonteCurta: "ANP",
-      variacao: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
+      // O selo mostra a forma curta, numa linha (D3); o leitor de tela recebe o texto completo.
+      variacao: { valor: "+0,10 (+1,5%)", data: "13/10", acessivel: `Variação: +R$${NBSP}0,10 (+1,5%) desde 13/10/2026` },
       direcaoVariacao: "subiu",
       maisBarato: false,
       acimaDoMaisBarato: null,

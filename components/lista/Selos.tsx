@@ -34,13 +34,27 @@ const VARIACAO: Record<DirecaoVariacao, { classe: string; Icone: typeof IconeSet
   igual: { classe: "bg-surface text-ink-2", Icone: IconeIgual },
 };
 
-/** Variação desde a coleta anterior (FR-010): amarelo e seta para cima se subiu; verde e seta para baixo se caiu. */
-export function SeloVariacao({ texto, direcao }: { texto: string; direcao: DirecaoVariacao }) {
+/**
+ * Variação desde a coleta anterior (FR-010): amarelo e seta para cima se subiu; verde e seta para
+ * baixo se caiu. Compacto e numa linha só, no tamanho do "Mais barato" (D3): "−0,10 (−1,5%) desde
+ * 19/10". Em telas com menos de 360 px, o "desde" some e a letra diminui, para o selo caber ao lado
+ * do preço. É só visual: quem o usa põe o texto completo, com a data inteira, em `sr-only` ao lado.
+ */
+export function SeloVariacao({ valor, data, direcao }: { valor: string; data: string; direcao: DirecaoVariacao }) {
   const { classe, Icone } = VARIACAO[direcao];
   return (
-    <span className={cn(SELO, "tabular-nums", classe)}>
-      <Icone className="size-3" />
-      {texto}
+    <span
+      data-selo="variacao"
+      aria-hidden="true"
+      className={cn(
+        "inline-flex h-5 w-max items-center gap-[3px] rounded-full pr-[7px] pl-1.5 text-[11.5px] leading-none font-semibold whitespace-nowrap tabular-nums max-[359px]:text-[11px] md:h-[18px] md:text-[11px]",
+        classe,
+      )}
+    >
+      <Icone className="size-2.5 shrink-0" />
+      <span>
+        {valor} <span className="max-[359px]:hidden">desde</span> {data}
+      </span>
     </span>
   );
 }

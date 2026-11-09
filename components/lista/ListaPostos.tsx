@@ -1,10 +1,10 @@
 import { cn } from "cn";
-import { useId, type ReactNode, type Ref } from "react";
+import { useId, useRef, type ReactNode, type Ref } from "react";
 import { BOTAO_CONTORNO, BOTAO_PRIMARIO, EstadoGasosinha } from "@/components/estados/EstadoGasosinha";
 import { IconeSetaBaixo, IconeSetaCima } from "@/components/marca/Icones";
 import { PoseGasosinha } from "@/components/marca/Marca";
 import type { SentidoPreco } from "@/features/postos/domain/ordenar-lista";
-import type { EstadoCarga, GrupoListaVM, ReguaVM } from "@/features/postos/viewmodels/tipos";
+import type { EstadoCarga, GrupoListaVM, MostrarMaisVM, ReguaVM } from "@/features/postos/viewmodels/tipos";
 import { LinhaPosto } from "./LinhaPosto";
 import { ReguaPrecos } from "./ReguaPrecos";
 
@@ -24,6 +24,10 @@ export type ListaPostosProps = {
   tituloRef?: Ref<HTMLHeadingElement>;
   /** Régua de preços da área, abaixo do título. */
   regua?: ReguaVM | null;
+  /** Com o detalhe de um posto aberto, abrir outro troca o detalhe sem empilhar o histórico (D1). */
+  substituirHistorico?: boolean;
+  /** O botão abaixo da lista, quando ainda há postos da área fora da página (D2). */
+  mostrarMais?: MostrarMaisVM | null;
 };
 
 /**
@@ -32,12 +36,34 @@ export type ListaPostosProps = {
  * recebe do viewmodel.
  */
 export function ListaPostos(props: ListaPostosProps) {
-  const { titulo, grupos, vazia, sentido, onDefinirSentido, estado, onTentarDeNovo, onVerRegiaoInteira, busca, tituloRef, regua } =
-    props;
+  const {
+    titulo,
+    grupos,
+    vazia,
+    sentido,
+    onDefinirSentido,
+    estado,
+    onTentarDeNovo,
+    onVerRegiaoInteira,
+    busca,
+    tituloRef,
+    regua,
+    substituirHistorico = false,
+    mostrarMais,
+  } = props;
   const semNumeroAinda = estado === "carregando" && vazia;
+  const listaRef = useRef<HTMLDivElement>(null);
+
+  // Ao mostrar mais, o foco vai para o primeiro posto novo, para quem usa teclado ou leitor de tela
+  // continuar de onde parou (FR-031).
+  const aoMostrarMais = (acao: MostrarMaisVM) => {
+    const jaVisiveis = listaRef.current?.querySelectorAll("a[data-cnpj]").length ?? 0;
+    acao.onMostrarMais();
+    requestAnimationFrame(() => listaRef.current?.querySelectorAll<HTMLElement>("a[data-cnpj]")[jaVisiveis]?.focus());
+  };
 
   return (
-    <div className="flex flex-col">
+    <div ref={listaRef} className="flex flex-col">
       <div className="flex flex-col gap-5 border-b border-line px-4 pb-4 md:gap-3 md:px-3 md:pb-3">
         {busca}
         <div className="flex items-center gap-3 px-1">
@@ -109,8 +135,16 @@ export function ListaPostos(props: ListaPostosProps) {
       )}
 
       {grupos.map((grupo) => (
-        <GrupoDaLista key={grupo.titulo} grupo={grupo} />
+        <GrupoDaLista key={grupo.titulo} grupo={grupo} substituirHistorico={substituirHistorico} />
       ))}
+
+      {mostrarMais && (
+        <div className="px-4 pt-4 pb-2 md:px-3">
+          <button type="button" onClick={() => aoMostrarMais(mostrarMais)} className={BOTAO_CONTORNO}>
+            {mostrarMais.texto}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -147,7 +181,7 @@ export function OrdemPreco({ sentido, onDefinirSentido }: { sentido: SentidoPrec
   );
 }
 
-function GrupoDaLista({ grupo }: { grupo: GrupoListaVM }) {
+function GrupoDaLista({ grupo, substituirHistorico }: { grupo: GrupoListaVM; substituirHistorico: boolean }) {
   const idTitulo = useId();
   return (
     <section aria-labelledby={idTitulo}>
@@ -157,7 +191,7 @@ function GrupoDaLista({ grupo }: { grupo: GrupoListaVM }) {
       <ul className="border-t border-line">
         {grupo.itens.map((item) => (
           <li key={item.cnpj}>
-            <LinhaPosto item={item} />
+            <LinhaPosto item={item} substituirHistorico={substituirHistorico} />
           </li>
         ))}
       </ul>

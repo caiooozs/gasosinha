@@ -1200,6 +1200,153 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
 
 ---
 
+## Phase 7: Detalhes (ajustes de experiência apontados pelo usuário)
+
+**Purpose**: ajustes de interface e de experiência que o usuário apontou usando o site. Toda
+observação nova dele que não for para aplicar na hora entra aqui, como um bloco novo no fim da
+fase, com IDs seguindo o último.
+
+**Quando rodar**: de preferência antes da Fase 6, para que o build (T100), a medição (T102) e o
+Lighthouse (T103) validem a interface final.
+
+**Independent Test**: no computador, com o detalhe de um posto aberto, arrastar e dar zoom no
+mapa, rolar a lista e abrir outro posto sem fechar o detalhe. Numa área grande, a lista mostra os
+postos aos poucos. No detalhe, o histórico mostra as coletas recentes e o resto sob demanda. Na
+lista, o selo de variação cabe numa linha.
+
+### D1 — O detalhe não trava o mapa nem a lista (apontado em 09/11/2026)
+
+Hoje, no computador, o detalhe abre num `Sheet` modal (Radix Dialog). O fundo é transparente,
+mas a camada de sobreposição continua capturando os cliques, a rolagem fica travada e o resto da
+tela fica inerte. Um clique fora fecha o detalhe (`onOpenChange` → `router.back()`). Para mexer
+no mapa ou rolar a lista, a pessoa precisa fechar o detalhe ou clicar fora dele.
+
+- [X] T107 Escrever os testes primeiro, no bloco `PainelDetalhe` de
+  `components/posto/DetalhePosto.test.tsx`, simulando `(min-width: 768px)`:
+  - o painel não é modal: não há sobreposição, um botão fora dele continua clicável, e clicar fora
+    não chama `router.back()`;
+  - `Esc` e "Fechar" continuam fechando, com um `router.back()`;
+  - ao abrir, o foco vai para o painel.
+- [X] T108 Em `components/posto/PainelDetalhe.tsx`, no computador, usar `Sheet` com
+  `modal={false}`, sem sobreposição:
+  - cancelar `onInteractOutside` e `onFocusOutside`, para que arrastar ou dar zoom no mapa e
+    rolar a lista não fechem o detalhe;
+  - manter `role="dialog"`, o título acessível, o foco inicial no painel e a volta do foco ao
+    item de origem quando ele fecha, que o `TelaMapa` já faz;
+  - no celular, o detalhe continua modal, porque a folha cobre quase a tela toda. Confirmar com
+    o usuário na execução se ele quer outro comportamento ali.
+- [X] T109 Abrir outro posto com o detalhe aberto sem empilhar o histórico:
+  - hoje o marcador navega com `router.push` (`components/mapa/MapaPostos.tsx`) e a lista com
+    `Link` (`components/lista/LinhaPosto.tsx`). Abrir B com A aberto e fechar voltaria para A;
+  - com o detalhe aberto, os dois navegam com `replace`, para que "Fechar" volte ao mapa num
+    passo só;
+  - a informação "detalhe aberto" vem de um viewmodel (por exemplo, `useDetalheAberto()` sobre
+    `usePathname`), não da view (Princípio IV);
+  - teste: abrir A, abrir B e fechar leva a `/`.
+- [X] T110 Atualizar `specs/001-gas-price-map/contracts/ui.md`, que hoje descreve o
+  `<PainelDetalhe>` modal: no computador, painel lateral não modal; no celular, `Sheet` modal.
+  Se o cenário 6 da US2 mudar, atualizar também a seção 6 do quickstart.
+
+### D2 — Paginação da lista de postos e do histórico (apontado em 09/11/2026)
+
+Hoje, numa área grande, a lista mostra todos os postos de uma vez: centenas de linhas, com as
+coletas antigas e os postos sem preço no fim. O detalhe também lista de uma vez todas as coletas
+dos últimos 12 meses, que podem ser dezenas de linhas.
+
+Padrão proposto: um botão "Mostrar mais", em vez de páginas numeradas. Ele funciona bem no
+celular e no teclado, e o mais barato continua no topo (SC-004).
+
+- [X] T111 [P] Escrever `features/postos/domain/paginar.test.ts` para
+  `paginarGrupos(grupos, quantidade)`:
+  - corta na ordem dos grupos (recente, depois antiga, depois sem preço);
+  - omite os grupos que ficaram vazios;
+  - devolve quantos itens faltam;
+  - com `quantidade` maior que o total, devolve tudo.
+- [X] T112 Implementar `features/postos/domain/paginar.ts` e integrar em
+  `features/postos/viewmodels/useListaPostos.ts`:
+  - páginas de 20 postos (constante `POSTOS_POR_PAGINA`);
+  - volta para a primeira página quando a área visível ou a ordem de preço mudam;
+  - o título continua com o total da área ("143 postos nesta área");
+  - o texto do botão vem pronto do viewmodel ("Mostrar mais 20 de 123 restantes").
+- [X] T113 Em `components/lista/ListaPostos.tsx`, colocar o botão "Mostrar mais" abaixo da
+  lista; ao clicar, o foco vai para o primeiro item novo. Antes, atualizar
+  `components/lista/ListaPostos.test.tsx`:
+  - renderiza 20 itens e o botão;
+  - o clique mostra mais 20 e move o foco;
+  - o botão some quando não há mais itens.
+- [X] T114 No detalhe, "Todas as coletas" (`components/posto/HistoricoPrecos.tsx`) mostra as 6
+  mais recentes e um botão que revela mais 10 por vez:
+  - o estado da paginação fica num viewmodel, como o `sentido` da lista, e a view só renderiza;
+  - o FR-014 continua atendido, porque todas as coletas seguem acessíveis;
+  - na página `/postos/[cnpj]`, o HTML do servidor traz as 6 primeiras;
+  - antes, escrever os testes em `components/posto/DetalhePosto.test.tsx`.
+
+### D3 — Selo de variação da lista menor e numa linha só (apontado em 09/11/2026)
+
+Hoje, na lista, o selo "−R$ 0,10 (−1,5%) desde 22/10/2026" quebra em duas linhas e fica grande
+(captura do usuário, no tema escuro).
+
+- [X] T115 [P] Em `lib/formato/formato.test.ts`, testar
+  `formatarVariacaoCurta(variacao, dataAtual)`:
+  - sem "R$", que já está no preço da linha, como o "+0,40" do "acima do mais barato":
+    `"−0,10 (−1,5%) desde 22/10"`;
+  - com 3 casas: `"+0,015 (+0,2%) desde 22/10"`;
+  - mesmo preço: `"0,00 (0,0%) desde 22/10"`;
+  - coleta anterior de outro ano que a mais recente: `"desde 22/12/25"`.
+- [X] T116 Implementar `formatarVariacaoCurta` em `lib/formato/formato.ts` (Princípio VIII):
+  - trocar `ItemListaVM.variacao` por `{ curta, acessivel } | null` em
+    `features/postos/viewmodels/tipos.ts` e `features/postos/viewmodels/montar-vm.ts`,
+    atualizando antes `montar-vm.test.ts`;
+  - `curta` aparece no selo;
+  - `acessivel` fica em `sr-only`, com a data completa para leitores de tela: "Variação: −R$ 0,10
+    (−1,5%) desde 22/10/2026".
+- [X] T117 Em `components/lista/Selos.tsx` e `components/lista/LinhaPosto.tsx`, deixar o selo da
+  lista numa linha (`whitespace-nowrap`) e menor: texto de 11 px, ícone de 10 px e cerca de 18 px
+  de altura, como o "Mais barato". Atualizar `components/lista/ListaPostos.test.tsx`. O detalhe
+  não muda: o balão do Gasosinha mantém o texto completo.
+- [X] T118 Validar D1 a D3 no navegador, nos temas claro e escuro, com 320, 375 e 1280 px de
+  largura:
+  - **D1**: com o detalhe aberto, arrastar e dar zoom no mapa, rolar a lista, abrir outro posto
+    e fechar, voltando ao mapa. No teclado, o Tab chega ao painel, o `Esc` fecha e o foco volta
+    ao item;
+  - **D2**: a região inteira mostra 20 postos e o botão, e mudar a área volta à primeira página.
+    Um histórico longo mostra 6 coletas e o botão;
+  - **D3**: o selo cabe numa linha com 320 px. Se não couber, ajustar o formato curto (por
+    exemplo, `"−0,10 · −1,5% · 22/10"`) e registrar aqui.
+
+  Validado em 09/11/2026 no `next dev`, com dados de produção. Na primeira tentativa, o
+  `next dev` falhou ao abrir um posto ("Failed to generate static paths", processo auxiliar morto
+  com 0,7 GB de memória livre). O servidor foi reiniciado com a autorização do usuário.
+  - **D1**, no computador (1536 px):
+    - o detalhe abre sem sobreposição, sem `aria-modal`, sem trava de rolagem e com o foco no
+      painel;
+    - com ele aberto, o mapa arrasta e a lista rola (300 px), e o detalhe continua aberto;
+    - abrir outro posto pela lista e depois pelo marcador do mapa troca o detalhe sem crescer o
+      `history.length`;
+    - "Fechar" e o `Esc` voltam para `/` num passo só, com o foco no último posto escolhido (o item
+      da lista ou o marcador);
+    - pelo teclado, Enter no item abre o detalhe com o foco nele;
+    - o detalhe anterior fica oculto (`display: none`, largura 0), pela preservação de estado do
+      Next, fora da árvore de acessibilidade;
+    - no celular (375 px), o detalhe continua na folha de baixo, com sobreposição (modal).
+  - **D2**:
+    - na lista, 20 de 360 postos; o clique mostra 40 e põe o foco no item 21, e trocar a ordem
+      volta para 20;
+    - na página de um posto com 51 coletas, 6 coletas e "Mostrar mais 10 (faltam 45)"; o clique
+      mostra 16, com o foco na sétima;
+    - o botão quebrava em duas linhas no cartão de 336 px, então o texto passou a "Mostrar mais 20
+      (faltam 340)", numa linha só.
+  - **D3**, nos temas escuro e claro:
+    - o selo fica numa linha, com 18 px de altura no computador e 20 px no celular;
+    - em 375 px, "−0,10 (−1,4%) desde 21/10" cabe ao lado do preço;
+    - em 320 px, o selo passava 26 px da coluna. Por isso, abaixo de 360 px o "desde" some e a
+      letra cai para 11 px ("−0,10 (−1,4%) 16/10"), e agora nenhum selo passa da coluna. O texto
+      completo continua para leitores de tela.
+
+**Checkpoint**: `npm run typecheck`, `npm run lint` e `npm test` passam.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -1224,6 +1371,9 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
   - A rota `/postos/[cnpj]` funciona sozinha.
 - **US3 (Fase 5)**: depende da Fase 2 e usa o detalhe da US2 (T083, T088) para aparecer.
 - **Polish (Fase 6)**: depende das histórias que forem publicadas.
+- **Detalhes (Fase 7)**: depende das Fases 3 a 5, cujas telas ela ajusta. De preferência roda
+  antes da Fase 6. Os blocos D1, D2 e D3 são independentes entre si. Dentro de cada bloco, os
+  testes vêm antes da implementação. O T118 valida tudo no fim.
 
 ### User Story Dependencies
 
@@ -1253,6 +1403,9 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
   T065 a T068 e as views T069 a T073 em paralelo.
 - **US2**: os testes T077 e T078 em paralelo; T084 e T087 em paralelo.
 - **US3**: T092 e T093 em paralelo; o T095 em paralelo com o T094.
+- **Detalhes**: os blocos D1 (T107 a T110), D2 (T111 a T114) e D3 (T115 a T117) em paralelo,
+  porque mexem em arquivos diferentes. A exceção é o `components/posto/DetalhePosto.test.tsx`,
+  usado pelo T107 e pelo T114, que vão em sequência.
 
 ---
 
@@ -1308,7 +1461,8 @@ Task: "cnpj.test.ts (T012)", "preco.test.ts (T013)", "data-serial.test.ts (T014)
 2. A US1 entrega o mapa e a lista. Validar e publicar: é o MVP.
 3. A US2 entrega o detalhe, o histórico de 12 meses e o link próprio. Validar e publicar.
 4. A US3 entrega o Gasosinha. Validar e publicar.
-5. Polish: a auditoria, as medições do SC-003 e do SC-009 e o README.
+5. Detalhes: os ajustes de experiência apontados pelo usuário, antes do Polish.
+6. Polish: a auditoria, as medições do SC-003 e do SC-009 e o README.
 
 ### Antes do `/speckit-implement`
 
@@ -1325,9 +1479,10 @@ Task: "cnpj.test.ts (T012)", "preco.test.ts (T013)", "data-serial.test.ts (T014)
 - **[P]**: arquivos diferentes, sem dependência de tarefa incompleta.
 - **[USx]**: liga a tarefa à história, para rastreabilidade.
 - **🔒** exige revisão humana do diff. **🙋** exige autorização para executar no ambiente remoto.
-- Confirmar que cada teste falha antes de implementar. Commitar ao fim de cada grupo lógico (um
-  teste e a implementação que o faz passar contam como um grupo), só com `npm run typecheck`,
-  `npm run lint` e `npm test` passando.
+- Confirmar que cada teste falha antes de implementar.
+- O trabalho é feito direto na `main`, sem branch nem worktree. O agente não commita: o usuário
+  commita ao fim de cada fase, com `npm run typecheck`, `npm run lint` e `npm test` passando.
+  Se precisar de um commit no meio da fase, o agente pede ao usuário.
 - Parar em qualquer checkpoint para validar a história de forma independente.
 - Evitar: tarefas vagas, conflito no mesmo arquivo e dependências entre histórias que quebrem a
   independência.

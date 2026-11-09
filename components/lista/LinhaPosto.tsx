@@ -5,12 +5,14 @@ import { SeloIdadeAntiga, SeloMaisBarato, SeloSemPreco, SeloVariacao } from "./S
 
 /**
  * Uma linha da lista (FR-010, FR-012), na forma da identidade visual: nome e bandeira à esquerda,
- * preço e fonte à direita. A linha inteira é um link para o detalhe do posto.
+ * preço e fonte à direita. A linha inteira é um link para o detalhe do posto. Com o detalhe de
+ * outro posto aberto, `substituirHistorico` troca o detalhe sem empilhar o histórico (D1).
  */
-export function LinhaPosto({ item }: { item: ItemListaVM }) {
+export function LinhaPosto({ item, substituirHistorico = false }: { item: ItemListaVM; substituirHistorico?: boolean }) {
   return (
     <Link
       href={`/postos/${item.cnpj}`}
+      replace={substituirHistorico}
       data-cnpj={item.cnpj}
       className="flex items-center gap-3 border-b border-line px-5 py-3.5 transition-colors hover:bg-surface/70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink md:gap-2.5 md:px-4 md:py-2.5 md:hover:bg-glass-fill"
     >
@@ -32,7 +34,10 @@ export function LinhaPosto({ item }: { item: ItemListaVM }) {
             <span className="flex flex-wrap items-center gap-1.5 pt-[3px]">
               {item.antiga && item.idade && <SeloIdadeAntiga idade={item.idade} />}
               {item.variacao && item.direcaoVariacao ? (
-                <SeloVariacao texto={item.variacao} direcao={item.direcaoVariacao} />
+                <>
+                  <SeloVariacao valor={item.variacao.valor} data={item.variacao.data} direcao={item.direcaoVariacao} />
+                  <span className="sr-only">{item.variacao.acessivel}</span>
+                </>
               ) : (
                 <span className="text-xs text-ink-3">sem coleta anterior</span>
               )}

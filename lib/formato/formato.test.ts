@@ -9,6 +9,7 @@ import {
   formatarPercentualSemSinal,
   formatarPreco,
   formatarVariacao,
+  formatarVariacaoCurta,
   hojeEmSaoPaulo,
   separarMoeda,
 } from "./index";
@@ -131,5 +132,29 @@ describe("percentual sem sinal", () => {
   test("uma casa decimal, para distâncias que não têm direção", () => {
     expect(formatarPercentualSemSinal(6.5)).toBe("6,5%");
     expect(formatarPercentualSemSinal(-3)).toBe("3,0%");
+  });
+});
+
+describe("formatarVariacaoCurta (selo da lista, D3)", () => {
+  const ATUAL = "2026-10-29";
+
+  // Valor e data vêm separados: o selo escreve "desde" entre eles e o esconde em telas estreitas.
+  test("sem 'R$', que já está no preço da linha, e com a data curta da coleta anterior", () => {
+    expect(formatarVariacaoCurta({ diferencaMilesimos: -100, percentual: -1.5, desde: "2026-10-22" }, ATUAL)).toEqual({
+      valor: `${MENOS}0,10 (${MENOS}1,5%)`,
+      data: "22/10",
+    });
+  });
+
+  test("3 casas só quando o valor tem 3, como no preço", () => {
+    expect(formatarVariacaoCurta({ diferencaMilesimos: 15, percentual: 0.2, desde: "2026-10-22" }, ATUAL).valor).toBe("+0,015 (+0,2%)");
+  });
+
+  test("mesmo preço", () => {
+    expect(formatarVariacaoCurta({ diferencaMilesimos: 0, percentual: 0, desde: "2026-10-22" }, ATUAL).valor).toBe("0,00 (0,0%)");
+  });
+
+  test("coleta anterior de outro ano que a mais recente: a data leva o ano com 2 dígitos", () => {
+    expect(formatarVariacaoCurta({ diferencaMilesimos: 100, percentual: 1.5, desde: "2025-12-22" }, "2026-01-05").data).toBe("22/12/25");
   });
 });

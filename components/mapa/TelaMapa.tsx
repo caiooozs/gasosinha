@@ -8,6 +8,7 @@ import { BuscaCidade } from "@/components/busca/BuscaCidade";
 import { ListaPostos } from "@/components/lista/ListaPostos";
 import { IconeMapa } from "@/components/marca/Icones";
 import { REGIAO_PADRAO, type Limites } from "@/features/busca/data/municipios-rmr";
+import { useDetalheAberto } from "@/features/postos/viewmodels/useDetalheAberto";
 import { useListaPostos } from "@/features/postos/viewmodels/useListaPostos";
 import { usePostosNaArea } from "@/features/postos/viewmodels/usePostosNaArea";
 import { useStatusFontes } from "@/features/status-fontes/viewmodels/useStatusFontes";
@@ -77,12 +78,17 @@ export function TelaMapa({ hoje, centroInicial, painel }: TelaMapaProps) {
   }, []);
 
   // Ao abrir um posto pela lista ou pelo mapa, guarda o item de origem; quando o detalhe fecha e a
-  // rota volta para onde estava, o foco volta para ele (US2, cenário 6; FR-031).
+  // rota volta para onde estava, o foco volta para ele (US2, cenário 6; FR-031). Trocar de posto
+  // com o detalhe aberto mantém a rota de antes do primeiro posto, porque "Fechar" volta direto
+  // para ela (D1), e o foco vai para o último item escolhido.
   const pathname = usePathname();
+  const detalheAberto = useDetalheAberto();
   const origemRef = useRef<{ elemento: HTMLElement; rota: string } | null>(null);
   const lembrarOrigem = (evento: MouseEvent<HTMLDivElement>) => {
     const alvo = evento.target instanceof Element ? evento.target.closest<HTMLElement>("[data-cnpj]") : null;
-    if (alvo) origemRef.current = { elemento: alvo, rota: pathname };
+    if (!alvo) return;
+    const rota = detalheAberto && origemRef.current ? origemRef.current.rota : pathname;
+    origemRef.current = { elemento: alvo, rota };
   };
   useEffect(() => {
     const origem = origemRef.current;
@@ -146,6 +152,8 @@ export function TelaMapa({ hoje, centroInicial, painel }: TelaMapaProps) {
               onVerRegiaoInteira={verRegiaoInteira}
               tituloRef={tituloListaRef}
               regua={lista.regua}
+              substituirHistorico={detalheAberto}
+              mostrarMais={lista.mostrarMais}
               busca={<BuscaCidade variante="painel" aoSelecionar={centralizarEmLimites} />}
             />
           )}
@@ -177,6 +185,7 @@ export function TelaMapa({ hoje, centroInicial, painel }: TelaMapaProps) {
             controleRef={controleRef}
             escuro={tema === "escuro"}
             cobertura={cobertura}
+            substituirHistorico={detalheAberto}
             controles={
               <>
                 <BotaoTema variante="quadrado" />

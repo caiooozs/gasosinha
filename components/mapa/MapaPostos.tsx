@@ -40,6 +40,8 @@ export type MapaPostosProps = {
   /** Mapa base no estilo escuro (tema escuro). */
   escuro?: boolean;
   cobertura?: CoberturaMapa;
+  /** Com o detalhe de um posto aberto, tocar em outro troca o detalhe sem empilhar o histórico (D1). */
+  substituirHistorico?: boolean;
 };
 
 // O MapLibre 6 procura o worker ao lado do próprio arquivo (`./maplibre-gl-worker.mjs`), caminho
@@ -123,6 +125,7 @@ export function MapaPostos({
   controles,
   escuro = false,
   cobertura = SEM_COBERTURA,
+  substituirHistorico = false,
 }: MapaPostosProps) {
   const mapaRef = useRef<MapRef>(null);
   const carregouRef = useRef(false);
@@ -216,7 +219,15 @@ export function MapaPostos({
         {marcadores.map((marcador) => (
           // A pílula com preço tem uma ponta embaixo, que aponta para o posto; "sem preço" fica centralizado.
           <Marker key={marcador.cnpj} longitude={marcador.lng} latitude={marcador.lat} anchor={marcador.semPreco ? "center" : "bottom"}>
-            <MarcadorPosto vm={marcador} onSelecionar={() => router.push(`/postos/${marcador.cnpj}`)} />
+            <MarcadorPosto
+              vm={marcador}
+              onSelecionar={() => {
+                const rota = `/postos/${marcador.cnpj}`;
+                // Com um detalhe aberto, troca de posto sem empilhar o histórico (D1).
+                if (substituirHistorico) router.replace(rota);
+                else router.push(rota);
+              }}
+            />
           </Marker>
         ))}
       </Mapa>

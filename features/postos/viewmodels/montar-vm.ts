@@ -9,6 +9,7 @@ import {
   formatarPercentualSemSinal,
   formatarPreco,
   formatarVariacao,
+  formatarVariacaoCurta,
   type DataISO,
 } from "@/lib/formato";
 import type { ItemAgrupado } from "../domain/agrupar";
@@ -58,7 +59,9 @@ function montarItemLista(
     antiga: idade.antiga,
     fonte: coleta.fonte,
     fonteCurta: siglaDaFonte(coleta.fonte),
-    variacao: variacao ? formatarVariacao(variacao) : null,
+    variacao: variacao
+      ? { ...formatarVariacaoCurta(variacao, coleta.data), acessivel: `Variação: ${formatarVariacao(variacao)}` }
+      : null,
     direcaoVariacao: variacao ? direcaoDaVariacao(variacao) : null,
     maisBarato: maisBaratos.has(posto.cnpj),
     acimaDoMaisBarato:

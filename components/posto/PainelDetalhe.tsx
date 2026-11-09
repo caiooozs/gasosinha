@@ -6,6 +6,8 @@ import { useId, useSyncExternalStore } from "react";
 import { EstadoGasosinha } from "@/components/estados/EstadoGasosinha";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { usePrefereMenosMovimento } from "@/features/gasosinha/viewmodels/usePrefereMenosMovimento";
+import { useMarcarDetalheAberto } from "@/features/postos/viewmodels/useDetalheAberto";
+import { useHistoricoPaginado } from "@/features/postos/viewmodels/useHistoricoPaginado";
 import { useDetalhePosto } from "@/features/postos/viewmodels/useDetalhePosto";
 import type { DataISO } from "@/lib/formato";
 import { DetalhePosto } from "./DetalhePosto";
@@ -58,12 +60,14 @@ const LINK_VOLTAR =
 export function PainelDetalhe({ modo, cnpj, hoje }: PainelDetalheProps) {
   const vm = useDetalhePosto(cnpj, hoje);
   const parado = usePrefereMenosMovimento();
+  const historico = useHistoricoPaginado(cnpj, vm?.historico.length ?? 0);
+  useMarcarDetalheAberto(modo === "modal");
   const router = useRouter();
   const computador = useComputador();
   const idTitulo = useId();
 
   const conteudo = vm ? (
-    <DetalhePosto vm={vm} parado={parado} idTitulo={idTitulo} />
+    <DetalhePosto vm={vm} parado={parado} idTitulo={idTitulo} historico={historico} />
   ) : (
     <EstadoGasosinha pose="pensando" titulo="Posto não encontrado" texto="Confira o link ou volte ao mapa para escolher outro posto." />
   );
@@ -81,9 +85,15 @@ export function PainelDetalhe({ modo, cnpj, hoje }: PainelDetalheProps) {
     );
   }
 
+  // No computador, o detalhe é um painel lateral não modal (D1): sem sobreposição nem trava de
+  // rolagem, o mapa e a lista continuam usáveis com ele aberto, e clicar ou focar fora dele não o
+  // fecha. Só "Fechar" e Esc fecham. No celular a folha cobre quase a tela toda e continua modal.
+  const manterAberto = computador ? (evento: Event) => evento.preventDefault() : undefined;
+
   return (
     <Sheet
       open
+      modal={!computador}
       onOpenChange={(aberto) => {
         if (!aberto) router.back();
       }}
@@ -92,8 +102,8 @@ export function PainelDetalhe({ modo, cnpj, hoje }: PainelDetalheProps) {
         side={computador ? "right" : "bottom"}
         showCloseButton={false}
         aria-describedby={undefined}
-        // No computador, o mapa continua à vista: o fundo não escurece nem desfoca.
-        overlayClassName={computador ? "bg-transparent supports-backdrop-filter:backdrop-blur-none" : undefined}
+        onInteractOutside={manterAberto}
+        onFocusOutside={manterAberto}
         className={
           computador
             ? // Cartão de vidro flutuante (336 px) à direita, com altura pelo conteúdo. O vidro fica num

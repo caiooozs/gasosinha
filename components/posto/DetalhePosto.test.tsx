@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DetalhePostoDados, DetalheVM } from "@/features/postos/domain/detalhe";
 import { DetalhePosto } from "./DetalhePosto";
 import { PainelDetalhe } from "./PainelDetalhe";
@@ -208,5 +208,95 @@ describe("PainelDetalhe", () => {
     expect(documento.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("true");
     const voltar = [...documento.querySelectorAll("a")].find((a) => a.textContent?.includes("Voltar ao mapa"));
     expect(voltar?.getAttribute("href")).toBe("/");
+  });
+
+  describe("histórico longo: as 6 coletas mais recentes e o resto sob demanda (D2)", () => {
+    // 15 coletas semanais, da mais recente (20/10) para a mais antiga.
+    const longo: DetalhePostoDados = {
+      ...dados,
+      coletas: Array.from({ length: 15 }, (_, i) => {
+        const data = new Date(Date.UTC(2026, 9, 20 - 7 * i)).toISOString().slice(0, 10);
+        return { data, precoMilesimos: 6590 - i * 10, fonte: FONTE };
+      }),
+    };
+    const clienteLongo = () => {
+      const cliente = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity, retry: false } } });
+      cliente.setQueryData(["detalhe-posto", longo.cnpj], longo);
+      return cliente;
+    };
+    const coletasNaLista = () => within(screen.getByRole("list", { name: "Todas as coletas" })).getAllByRole("listitem");
+
+    it("mostra as 6 mais recentes e o botão; cada clique traz mais, com o foco na primeira nova, até acabar", async () => {
+      render(
+        <QueryClientProvider client={clienteLongo()}>
+          <PainelDetalhe modo="modal" cnpj={longo.cnpj} hoje="2026-10-27" />
+        </QueryClientProvider>,
+      );
+      await screen.findByRole("dialog");
+      expect(coletasNaLista()).toHaveLength(6);
+      expect(screen.getByText("15 coletas")).toBeTruthy();
+      await userEvent.click(screen.getByRole("button", { name: "Mostrar as 9 coletas restantes" }));
+      expect(coletasNaLista()).toHaveLength(15);
+      await waitFor(() => expect(document.activeElement).toBe(coletasNaLista()[6]));
+      expect(screen.queryByRole("button", { name: /Mostrar/ })).toBeNull();
+    });
+
+    it("na página do posto, o HTML do servidor já traz as 6 primeiras", () => {
+      const html = renderToString(
+        <QueryClientProvider client={clienteLongo()}>
+          <PainelDetalhe modo="pagina" cnpj={longo.cnpj} hoje="2026-10-27" />
+        </QueryClientProvider>,
+      );
+      const documento = new DOMParser().parseFromString(html, "text/html");
+      expect(documento.querySelectorAll("ol[aria-label='Todas as coletas'] li")).toHaveLength(6);
+    });
+  });
+
+  describe("no computador, o detalhe não trava o mapa nem a lista (D1)", () => {
+    const original = window.matchMedia;
+    beforeEach(() => {
+      window.matchMedia = (consulta: string) => ({ ...original(consulta), matches: consulta === "(min-width: 768px)" });
+    });
+    afterEach(() => {
+      window.matchMedia = original;
+    });
+
+    function renderizarComOResto(aoClicarFora: () => void) {
+      render(
+        <QueryClientProvider client={clienteComDados()}>
+          {/* Faz o papel do mapa e da lista, que ficam fora do painel. */}
+          <button type="button" onClick={aoClicarFora}>
+            Fora do painel
+          </button>
+          <PainelDetalhe modo="modal" cnpj={dados.cnpj} hoje="2026-10-27" />
+        </QueryClientProvider>,
+      );
+    }
+
+    it("não há sobreposição, o resto da tela continua clicável e clicar fora não fecha o detalhe", async () => {
+      const aoClicarFora = vi.fn();
+      renderizarComOResto(aoClicarFora);
+      const dialogo = await screen.findByRole("dialog");
+      expect(document.querySelector("[data-slot='sheet-overlay']")).toBeNull();
+      await userEvent.click(screen.getByRole("button", { name: "Fora do painel" }));
+      expect(aoClicarFora).toHaveBeenCalledTimes(1);
+      expect(voltar).not.toHaveBeenCalled();
+      expect(dialogo.isConnected).toBe(true);
+    });
+
+    it("ao abrir, o foco vai para o painel", async () => {
+      renderizarComOResto(vi.fn());
+      const dialogo = await screen.findByRole("dialog");
+      expect(dialogo.contains(document.activeElement)).toBe(true);
+    });
+
+    it("Esc e \"Fechar\" continuam fechando, cada um com um router.back()", async () => {
+      renderizarComOResto(vi.fn());
+      await screen.findByRole("dialog");
+      await userEvent.keyboard("{Escape}");
+      expect(voltar).toHaveBeenCalledTimes(1);
+      await userEvent.click(screen.getByRole("button", { name: "Fechar" }));
+      expect(voltar).toHaveBeenCalledTimes(2);
+    });
   });
 });

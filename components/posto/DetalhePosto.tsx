@@ -4,6 +4,7 @@ import { IconeRelogio } from "@/components/marca/Icones";
 import { Moeda } from "@/components/numeros/Moeda";
 import type { DetalheVM } from "@/features/postos/domain/detalhe";
 import type { DirecaoVariacao } from "@/features/postos/domain/variacao";
+import type { HistoricoPaginadoVM } from "@/features/postos/viewmodels/useHistoricoPaginado";
 import { GradeVariacoes } from "./GradeVariacoes";
 import { GraficoHistorico } from "./GraficoHistorico";
 import { HistoricoPrecos } from "./HistoricoPrecos";
@@ -19,10 +20,22 @@ const COR_VARIACAO: Record<DirecaoVariacao, string> = {
 /**
  * Detalhe do posto (FR-013 a FR-020): nome, bandeira, endereço, preço mais recente com data, idade
  * e fonte, o Gasosinha apresentando a variação desde a coleta anterior e o histórico. Só renderiza
- * o que recebe: o `vm` e o `parado` vêm do `PainelDetalhe` (Princípio IV).
+ * o que recebe: o `vm`, o `parado` e a página do histórico vêm do `PainelDetalhe` (Princípio IV).
+ * Sem `historico`, a lista mostra todas as coletas.
  */
-export function DetalhePosto({ vm, parado, idTitulo }: { vm: DetalheVM; parado: boolean; idTitulo?: string }) {
+export function DetalhePosto({
+  vm,
+  parado,
+  idTitulo,
+  historico,
+}: {
+  vm: DetalheVM;
+  parado: boolean;
+  idTitulo?: string;
+  historico?: HistoricoPaginadoVM;
+}) {
   const gasosinha = <Gasosinha reacao={vm.reacao} texto={vm.textoReacao} parado={parado} />;
+  const coletasVisiveis = historico ? vm.historico.slice(0, historico.visiveis) : vm.historico;
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-1.5 px-5 pt-5 pb-5 md:gap-1 md:px-4 md:pt-2 md:pb-4">
@@ -98,7 +111,7 @@ export function DetalhePosto({ vm, parado, idTitulo }: { vm: DetalheVM; parado: 
           {vm.variacoesColetas.length > 0 && <GradeVariacoes itens={vm.variacoesColetas} />}
           {/* A lista traz todas as coletas (FR-014); o gráfico e a grade, só as mais recentes. */}
           {vm.grafico && <p className={cn(ROTULO, "pt-1")}>Todas as coletas</p>}
-          <HistoricoPrecos itens={vm.historico} />
+          <HistoricoPrecos itens={coletasVisiveis} mostrarMais={historico?.mostrarMais} />
         </section>
       )}
     </div>

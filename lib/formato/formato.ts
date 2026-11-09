@@ -124,3 +124,22 @@ export function formatarVariacao(variacao: { diferencaMilesimos: number; percent
   const sinal = diferencaMilesimos > 0 ? "+" : diferencaMilesimos < 0 ? MENOS : "";
   return `${sinal}${formatarPreco(Math.abs(diferencaMilesimos))} (${formatarPercentual(percentual)}) desde ${formatarData(desde)}`;
 }
+
+/**
+ * A variação no selo compacto da lista (D3), para caber numa linha: valor "−0,10 (−1,5%)" e data
+ * "22/10", que o selo junta como "−0,10 (−1,5%) desde 22/10". Vêm separados porque, em telas muito
+ * estreitas, o selo esconde o "desde". Sem "R$", que já está no preço da linha. A data da coleta
+ * anterior leva o ano ("22/12/25") só quando ele é diferente do ano da coleta mais recente
+ * (`dataAtual`). O texto completo, com a data inteira, continua em `formatarVariacao`, para
+ * leitores de tela.
+ */
+export function formatarVariacaoCurta(
+  variacao: { diferencaMilesimos: number; percentual: number; desde: DataISO },
+  dataAtual: DataISO,
+): { valor: string; data: string } {
+  const { diferencaMilesimos, percentual, desde } = variacao;
+  const [anoDesde] = partes(desde);
+  const [anoAtual] = partes(dataAtual);
+  const data = anoDesde === anoAtual ? formatarDataCurta(desde) : `${formatarDataCurta(desde)}/${String(anoDesde % 100).padStart(2, "0")}`;
+  return { valor: `${formatarDiferencaCurta(diferencaMilesimos)} (${formatarPercentual(percentual)})`, data };
+}

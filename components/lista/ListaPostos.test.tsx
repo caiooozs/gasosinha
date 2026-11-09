@@ -1,5 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import type { GrupoListaVM, ItemListaVM } from "@/features/postos/viewmodels/tipos";
 import { ListaPostos, type ListaPostosProps } from "./ListaPostos";
@@ -18,7 +19,7 @@ const recente: ItemListaVM = {
   antiga: false,
   fonte: FONTE,
   fonteCurta: "ANP",
-  variacao: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
+  variacao: { valor: "+0,10 (+1,5%)", data: "13/10", acessivel: `Variação: +R$${NBSP}0,10 (+1,5%) desde 13/10/2026` },
   direcaoVariacao: "subiu",
   maisBarato: true,
   acimaDoMaisBarato: null,
@@ -95,8 +96,22 @@ describe("ListaPostos", () => {
     expect(texto).toContain("coletado em 20/10/2026");
     expect(texto).toContain("há 7 dias");
     expect(texto).toContain(FONTE);
-    expect(texto).toContain(`+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+    expect(texto).toContain(`Variação: +R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
     expect(texto).not.toContain("coleta antiga");
+  });
+
+  it("o selo de variação mostra a forma curta numa linha, e o texto completo fica só para leitores de tela (D3)", () => {
+    renderizar();
+    const item = screen.getByRole("link", { name: /IGUEP/ });
+    const selo = item.querySelector("[data-selo='variacao']");
+    expect(selo?.textContent).toBe("+0,10 (+1,5%) desde 13/10");
+    expect(selo?.getAttribute("aria-hidden")).toBe("true");
+    expect(selo?.className).toContain("whitespace-nowrap");
+    // Em telas com menos de 360 px, o "desde" some para o selo caber ao lado do preço ("+0,10 (+1,5%) 13/10").
+    expect(within(selo as HTMLElement).getByText("desde").className).toContain("max-[359px]:hidden");
+    // Busca direta: o getByText troca o espaço inseparável do "R$" por um comum.
+    const completo = [...item.querySelectorAll("span")].find((s) => s.textContent === `Variação: +R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+    expect(completo?.className).toContain("sr-only");
   });
 
   it("o mais barato da área tem o selo 'mais barato'", () => {
@@ -212,5 +227,46 @@ describe("ListaPostos", () => {
     expect(maior.getAttribute("aria-pressed")).toBe("false");
     await userEvent.click(maior);
     expect(onDefinirSentido).toHaveBeenCalledWith("desc");
+  });
+
+  describe("'Mostrar mais' (D2)", () => {
+    const outro = (i: number): ItemListaVM => ({ ...recente, cnpj: `9${String(i).padStart(13, "0")}`, nome: `POSTO EXTRA ${i}`, maisBarato: false });
+
+    /** A lista com o viewmodel de verdade fazendo o papel de "mostrar mais": cada clique traz mais 2 itens. */
+    function ListaQueCresce({ total }: { total: number }) {
+      const [quantidade, setQuantidade] = useState(2);
+      const itens = Array.from({ length: Math.min(quantidade, total) }, (_, i) => outro(i));
+      const restantes = total - itens.length;
+      return (
+        <ListaPostos
+          {...props({ grupos: [{ titulo: "Coletas recentes", itens }] })}
+          mostrarMais={restantes > 0 ? { texto: `Mostrar mais (faltam ${restantes})`, onMostrarMais: () => setQuantidade((q) => q + 2) } : null}
+        />
+      );
+    }
+
+    it("sem mais itens, não há botão", () => {
+      renderizar({ mostrarMais: null });
+      expect(screen.queryByRole("button", { name: /Mostrar/ })).toBeNull();
+    });
+
+    it("o botão fica abaixo da lista, com o texto do viewmodel, e chama onMostrarMais", async () => {
+      const onMostrarMais = vi.fn();
+      renderizar({ mostrarMais: { texto: "Mostrar mais 20 (faltam 123)", onMostrarMais } });
+      const botao = screen.getByRole("button", { name: "Mostrar mais 20 (faltam 123)" });
+      const ultimoLink = screen.getAllByRole("link").at(-1)!;
+      expect(ultimoLink.compareDocumentPosition(botao) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      await userEvent.click(botao);
+      expect(onMostrarMais).toHaveBeenCalledTimes(1);
+    });
+
+    it("ao mostrar mais, o foco vai para o primeiro item novo, e o botão some no fim", async () => {
+      render(<ListaQueCresce total={3} />);
+      expect(screen.getAllByRole("link")).toHaveLength(2);
+      await userEvent.click(screen.getByRole("button", { name: "Mostrar mais (faltam 1)" }));
+      expect(screen.getAllByRole("link")).toHaveLength(3);
+      await waitFor(() => expect(document.activeElement?.textContent).toContain("POSTO EXTRA 2"));
+      expect(screen.queryByRole("button", { name: /Mostrar mais/ })).toBeNull();
+    });
   });
 });

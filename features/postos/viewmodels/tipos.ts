@@ -50,8 +50,12 @@ export type ItemListaVM = {
   fonte?: string;
   /** Sigla da fonte para o espaço compacto: "ANP". */
   fonteCurta?: string;
-  /** "+R$ 0,10 (+1,5%) desde 13/10/2026", ou `null` quando não há coleta anterior. */
-  variacao: string | null;
+  /**
+   * A variação desde a coleta anterior, ou `null` quando não há coleta anterior. `valor` e `data`
+   * formam o selo de uma linha ("+0,10 (+1,5%) desde 13/10", D3); `acessivel` é o texto completo
+   * para leitores de tela ("Variação: +R$ 0,10 (+1,5%) desde 13/10/2026").
+   */
+  variacao: { valor: string; data: string; acessivel: string } | null;
   direcaoVariacao: DirecaoVariacao | null;
   maisBarato: boolean;
   /**
@@ -80,4 +84,11 @@ export type ReguaVM = {
 export type GrupoListaVM = {
   titulo: string;
   itens: ItemListaVM[];
+};
+
+/** O botão "Mostrar mais" de uma lista paginada (D2), com o texto pronto. */
+export type MostrarMaisVM = {
+  /** "Mostrar mais 20 postos (faltam 123)", "Mostrar os 5 postos restantes"… */
+  texto: string;
+  onMostrarMais: () => void;
 };
