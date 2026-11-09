@@ -21,6 +21,7 @@ const recente: ItemListaVM = {
   variacao: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
   direcaoVariacao: "subiu",
   maisBarato: true,
+  acimaDoMaisBarato: null,
 };
 const antiga: ItemListaVM = {
   cnpj: "05648920000134",
@@ -36,6 +37,7 @@ const antiga: ItemListaVM = {
   variacao: null,
   direcaoVariacao: null,
   maisBarato: false,
+  acimaDoMaisBarato: null,
 };
 const semPreco: ItemListaVM = {
   cnpj: "08220930000162",
@@ -46,6 +48,7 @@ const semPreco: ItemListaVM = {
   variacao: null,
   direcaoVariacao: null,
   maisBarato: false,
+  acimaDoMaisBarato: null,
 };
 
 const grupos: GrupoListaVM[] = [
@@ -98,8 +101,39 @@ describe("ListaPostos", () => {
 
   it("o mais barato da área tem o selo 'mais barato'", () => {
     renderizar();
-    expect(screen.getByRole("link", { name: /IGUEP/ }).textContent).toContain("mais barato");
-    expect(screen.getByRole("link", { name: /POSTO ANTIGO/ }).textContent).not.toContain("mais barato");
+    expect(screen.getByRole("link", { name: /IGUEP/ }).textContent).toMatch(/mais barato/i);
+    expect(screen.getByRole("link", { name: /POSTO ANTIGO/ }).textContent).not.toMatch(/mais barato/i);
+  });
+
+  it("a linha mostra quanto o posto custa a mais que o mais barato, com o texto completo para leitores de tela", () => {
+    const acima: ItemListaVM = {
+      ...recente,
+      cnpj: "1",
+      nome: "POSTO MAIS CARO",
+      maisBarato: false,
+      acimaDoMaisBarato: { curto: "+0,40", acessivel: `R$${NBSP}0,40 acima do mais barato da área` },
+    };
+    renderizar({ grupos: [{ titulo: "Coletas recentes", itens: [acima] }] });
+    const linha = screen.getByRole("link", { name: /POSTO MAIS CARO/ });
+    expect(linha.textContent).toContain("+0,40 · ANP");
+    expect(linha.textContent).toContain(`R$${NBSP}0,40 acima do mais barato da área`);
+  });
+
+  it("a régua da área é lida como uma frase só", () => {
+    renderizar({
+      regua: {
+        diferenca: `R$${NBSP}0,40`,
+        percentual: "6,5%",
+        menor: `R$${NBSP}6,19`,
+        maior: `R$${NBSP}6,59`,
+        pontos: [
+          { cnpj: "a", posicao: 0, maisBarato: true },
+          { cnpj: "b", posicao: 1, maisBarato: false },
+        ],
+        descricao: "Preços das coletas recentes da área: de R$ 6,19 a R$ 6,59, diferença de R$ 0,40 (6,5%).",
+      },
+    });
+    expect(screen.getByRole("img", { name: /diferença de R\$ 0,40 \(6,5%\)/ })).toBeTruthy();
   });
 
   it("item sem coleta anterior mostra 'sem coleta anterior'", () => {

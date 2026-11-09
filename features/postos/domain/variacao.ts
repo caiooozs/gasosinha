@@ -22,12 +22,18 @@ export type Variacao = {
 export function calcularVariacao(atual: PrecoDatado, anterior?: PrecoDatado): Variacao | null {
   if (!anterior) return null;
   const diferencaMilesimos = atual.precoMilesimos - anterior.precoMilesimos;
+  return { diferencaMilesimos, percentual: percentualComUmaCasa(diferencaMilesimos, anterior.precoMilesimos), desde: anterior.data };
+}
+
+/**
+ * Diferença em relação a uma base, em %, com 1 casa decimal arredondada para longe do zero. Só
+ * com inteiros: décimos de ponto percentual = round(|diferença| × 1000 / base).
+ */
+export function percentualComUmaCasa(diferencaMilesimos: number, baseMilesimos: number): number {
   const numerador = Math.abs(diferencaMilesimos) * 1000;
-  const base = anterior.precoMilesimos;
   // round(n / base) com meio para cima, só com inteiros: floor((2n + base) / 2base).
-  const decimos = Math.floor((2 * numerador + base) / (2 * base));
-  const percentual = decimos === 0 ? 0 : (Math.sign(diferencaMilesimos) * decimos) / 10;
-  return { diferencaMilesimos, percentual, desde: anterior.data };
+  const decimos = Math.floor((2 * numerador + baseMilesimos) / (2 * baseMilesimos));
+  return decimos === 0 ? 0 : (Math.sign(diferencaMilesimos) * decimos) / 10;
 }
 
 export function direcaoDaVariacao(variacao: Variacao): DirecaoVariacao {

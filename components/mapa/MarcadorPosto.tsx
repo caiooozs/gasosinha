@@ -47,8 +47,8 @@ export function MarcadorPosto({ vm, onSelecionar }: MarcadorPostoProps) {
         className={cn(
           "flex items-center gap-[5px] rounded-full py-1.5 whitespace-nowrap tabular-nums",
           variante === "mais-barato" && "bg-green pr-2.5 pl-2 text-white shadow-[0_2px_6px_#0F7A4440]",
-          variante === "antigo" && "bg-yellow-soft pr-2.5 pl-2 text-ink shadow-[0_0_0_1px_#F2D675,0_2px_6px_#1C19171A]",
-          variante === "padrao" && "bg-white px-2.5 text-ink shadow-[0_0_0_1px_#1C19171A,0_2px_6px_#1C19171A]",
+          variante === "antigo" && "bg-yellow-soft pr-2.5 pl-2 text-ink shadow-[0_0_0_1px_var(--color-yellow-line),0_2px_6px_#1C19171A]",
+          variante === "padrao" && "bg-float px-2.5 text-ink shadow-[0_0_0_1px_var(--pin-ring),0_2px_6px_#1C19171A]",
         )}
       >
         {vm.maisBarato && <IconeSetaBaixo className="size-3.5" />}
@@ -70,7 +70,7 @@ export function MarcadorPosto({ vm, onSelecionar }: MarcadorPostoProps) {
         viewBox="0 0 12 6"
         className={cn(
           "-mt-px shrink-0",
-          variante === "mais-barato" ? "text-green" : variante === "antigo" ? "text-yellow-soft" : "text-white",
+          variante === "mais-barato" ? "text-green" : variante === "antigo" ? "text-yellow-soft" : "text-float",
         )}
       >
         <path d="M0 0h12L6 6z" fill="currentColor" />

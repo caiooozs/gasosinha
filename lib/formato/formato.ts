@@ -26,6 +26,8 @@ const moedaTresCasas = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 3,
 });
 const umaCasa = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const numeroDuasCasas = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const numeroTresCasas = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const dataSaoPaulo = new Intl.DateTimeFormat("en-CA", {
   timeZone: "America/Sao_Paulo",
   year: "numeric",
@@ -45,10 +47,25 @@ export function formatarPreco(milesimos: number): string {
   return formato.format(milesimos / 1000);
 }
 
+/**
+ * "R$ 6,59" → `{ simbolo: "R$", valor: "6,59" }`, para o valor aparecer maior que o símbolo
+ * (identidade visual: número grande, unidade pequena). Texto sem o símbolo volta inteiro no valor.
+ */
+export function separarMoeda(texto: string): { simbolo: string | null; valor: string } {
+  const m = /^(R\$)[\s ]*(.+)$/.exec(texto);
+  return m ? { simbolo: m[1], valor: m[2] } : { simbolo: null, valor: texto };
+}
+
 /** "2026-10-20" → "20/10/2026". */
 export function formatarData(data: DataISO): string {
   const [ano, mes, dia] = partes(data);
   return `${String(dia).padStart(2, "0")}/${String(mes).padStart(2, "0")}/${ano}`;
+}
+
+/** "2026-10-20" → "20/10", para os eixos e a grade de variações. */
+export function formatarDataCurta(data: DataISO): string {
+  const [, mes, dia] = partes(data);
+  return `${String(dia).padStart(2, "0")}/${String(mes).padStart(2, "0")}`;
 }
 
 /** A data de hoje (AAAA-MM-DD) no fuso America/Sao_Paulo. */
@@ -83,6 +100,22 @@ export function formatarPercentual(percentual: number): string {
   const texto = umaCasa.format(Math.abs(percentual));
   if (texto === "0,0") return "0,0%";
   return `${percentual > 0 ? "+" : MENOS}${texto}%`;
+}
+
+/** 6.5 → "6,5%": distância sem direção (a régua de preços da área). */
+export function formatarPercentualSemSinal(percentual: number): string {
+  return `${umaCasa.format(Math.abs(percentual))}%`;
+}
+
+/**
+ * Diferença de preço em milésimos, com sinal e sem o "R$", para espaços curtos: 200 → "+0,20";
+ * -60 → "−0,06"; 0 → "0,00"; 15 → "+0,015" (3 casas só quando o valor tem 3, como no preço).
+ */
+export function formatarDiferencaCurta(milesimos: number): string {
+  const formato = milesimos % 10 === 0 ? numeroDuasCasas : numeroTresCasas;
+  const texto = formato.format(Math.abs(milesimos) / 1000);
+  if (milesimos === 0) return texto;
+  return `${milesimos > 0 ? "+" : MENOS}${texto}`;
 }
 
 /** "+R$ 0,10 (+1,5%) desde 13/10/2026"; "−R$ 0,20 (−3,0%) desde …"; "R$ 0,00 (0,0%) desde …". */

@@ -3,6 +3,7 @@ import { Faustina, Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { AvisoFonte } from "@/components/avisos/AvisoFonte";
+import { ScriptTema } from "@/components/tema/ScriptTema";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -31,7 +32,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children, detalhe }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${faustina.variable} h-full antialiased`}>
+    // O script do tema muda a classe do <html> antes da hidratação: o DOM vence (guia "Preventing Flash").
+    <html
+      lang="pt-BR"
+      className={`${geistSans.variable} ${geistMono.variable} ${faustina.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Aplica o tema claro ou escuro antes da primeira pintura, sem piscar. */}
+        <ScriptTema />
+      </head>
       {/* Altura fixa da janela: a tela do mapa ocupa o que sobra abaixo do aviso de fonte. */}
       <body className="flex h-dvh flex-col">
         <Providers>

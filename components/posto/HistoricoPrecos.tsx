@@ -1,6 +1,9 @@
 import type { ItemHistoricoVM } from "@/features/postos/domain/detalhe";
 
-/** Histórico de coletas (FR-014): lista ordenada da mais recente para a mais antiga, sem gráfico (R14). */
+/**
+ * Histórico de coletas (FR-014): a lista completa, da mais recente para a mais antiga. Fica abaixo
+ * do gráfico das coletas mais recentes (R14, revista em 2026-11-09) e é a alternativa a ele.
+ */
 export function HistoricoPrecos({ itens }: { itens: ItemHistoricoVM[] }) {
   return (
     <ol className="flex flex-col">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Moeda } from "@/components/numeros/Moeda";
 import type { ItemListaVM } from "@/features/postos/viewmodels/tipos";
 import { SeloIdadeAntiga, SeloMaisBarato, SeloSemPreco, SeloVariacao } from "./Selos";
 
@@ -11,11 +12,11 @@ export function LinhaPosto({ item }: { item: ItemListaVM }) {
     <Link
       href={`/postos/${item.cnpj}`}
       data-cnpj={item.cnpj}
-      className="flex items-center gap-3 border-b border-line px-5 py-3.5 transition-colors hover:bg-surface/70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink"
+      className="flex items-center gap-3 border-b border-line px-5 py-3.5 transition-colors hover:bg-surface/70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink md:gap-2.5 md:px-4 md:py-2.5 md:hover:bg-glass-fill"
     >
       <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="text-base font-medium break-words text-ink">{item.nome}</span>
+          <span className="text-base font-medium break-words text-ink md:text-sm">{item.nome}</span>
           {item.maisBarato && <SeloMaisBarato />}
         </span>
 
@@ -40,15 +41,23 @@ export function LinhaPosto({ item }: { item: ItemListaVM }) {
         )}
       </span>
 
-      <span className="flex w-24 shrink-0 flex-col items-end gap-0.5">
+      <span className="flex w-24 shrink-0 flex-col items-end gap-0.5 md:w-[76px]">
         {item.semPreco ? (
           <SeloSemPreco />
         ) : (
           <>
-            <span className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-ink tabular-nums">{item.preco}</span>
-            <span aria-hidden="true" className="text-xs text-ink-3">
+            {item.preco && (
+              <Moeda
+                texto={item.preco}
+                className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-ink md:text-[17px] md:leading-[22px]"
+              />
+            )}
+            {/* "+0,40 · ANP": quanto custa a mais que o mais barato da área, e a fonte. */}
+            <span aria-hidden="true" className="text-xs whitespace-nowrap text-ink-3 tabular-nums">
+              {item.acimaDoMaisBarato && <>{item.acimaDoMaisBarato.curto} · </>}
               {item.fonteCurta}
             </span>
+            {item.acimaDoMaisBarato && <span className="sr-only">{item.acimaDoMaisBarato.acessivel}. </span>}
             <span className="sr-only">Fonte: {item.fonte}</span>
           </>
         )}

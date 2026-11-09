@@ -26,47 +26,85 @@ const comHistorico: DetalheVM = {
   idadeTexto: "coletado há 7 dias",
   idadeAntiga: false,
   fonte: FONTE,
-  variacaoTexto: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
+  variacaoPercentual: "+1,5%",
   direcaoVariacao: "subiu",
-  semAnteriorTexto: null,
+  reacao: "subiu",
+  textoReacao: `Subiu R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
   historico: [
     { data: "20/10/2026", preco: `R$${NBSP}6,59` },
     { data: "13/10/2026", preco: `R$${NBSP}6,49` },
   ],
+  grafico: {
+    pontos: [
+      { x: 0, y: 0.3 },
+      { x: 1, y: 0.7 },
+    ],
+    rotulosY: [
+      { texto: "6,50", y: 0.4 },
+      { texto: "6,60", y: 0.8 },
+    ],
+    referenciaY: 0.3,
+    inicio: "13/10",
+    fim: "20/10",
+    descricao: `Preço por coleta: 13/10, R$${NBSP}6,49; 20/10, R$${NBSP}6,59. A linha tracejada marca a coleta anterior.`,
+  },
+  variacoesColetas: [{ data: "20/10", texto: "+0,10", direcao: "subiu" }],
   avisoInativo: null,
 };
 
 describe("DetalhePosto", () => {
-  it("o título é o nome do posto e mostra preço, data, fonte e endereço (FR-013)", () => {
-    render(<DetalhePosto vm={comHistorico} />);
+  it("o título é o nome do posto e mostra preço, data, fonte, endereço e a variação (FR-013, FR-015)", () => {
+    render(<DetalhePosto vm={comHistorico} parado={false} />);
     expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("IGUEP INCORPORADORA GUEDES PEREIRA LTDA");
     const texto = document.body.textContent ?? "";
     expect(texto).toContain(`R$${NBSP}6,59`);
     expect(texto).toContain("Coletado em 20/10/2026");
     expect(texto).toContain(FONTE);
     expect(texto).toContain("AVENIDA ENG ABDIAS DE CARVALHO, 1142 · PRADO · Recife");
-    expect(texto).toContain(`+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+    expect(texto).toContain(`Subiu R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+  });
+
+  it("o Gasosinha apresenta a variação: pose da reação e o texto anunciado (FR-018, FR-019)", () => {
+    const { container } = render(<DetalhePosto vm={comHistorico} parado={false} />);
+    // Lido direto do elemento anunciado: o getByText troca o espaço inseparável do "R$" por um comum.
+    expect(container.querySelector("[aria-live='polite']")?.textContent).toBe(`Subiu R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+    const poses = [...container.querySelectorAll("img")].map((img) => decodeURIComponent(img.getAttribute("src") ?? ""));
+    expect(poses.some((src) => src.includes("/gasosinha/gasosinha-surpreso.png"))).toBe(true);
+    expect(container.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("false");
+  });
+
+  it("com menos movimento, o Gasosinha fica parado e diz o mesmo (FR-020)", () => {
+    const { container } = render(<DetalhePosto vm={comHistorico} parado />);
+    expect(container.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("true");
+    expect(container.querySelector("[aria-live='polite']")?.textContent).toBe(`Subiu R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
   });
 
   it("idade antiga tem destaque com ícone e texto (FR-029)", () => {
-    render(<DetalhePosto vm={{ ...comHistorico, idadeTexto: "coletado há 5 semanas", idadeAntiga: true }} />);
+    render(<DetalhePosto vm={{ ...comHistorico, idadeTexto: "coletado há 5 semanas", idadeAntiga: true }} parado={false} />);
     const destaque = screen.getByText(/coletado há 5 semanas/);
     expect(destaque.closest("[data-antiga='true']")).not.toBeNull();
     expect(document.querySelector('[data-icone="relogio"]')).not.toBeNull();
     expect(document.body.textContent).toContain("coleta antiga");
   });
 
-  it("sem coleta anterior mostra o texto em vez da variação (FR-016)", () => {
+  it("sem coleta anterior, o Gasosinha neutro diz que não há comparação, sem variação (FR-016)", () => {
     render(
       <DetalhePosto
-        vm={{ ...comHistorico, variacaoTexto: null, direcaoVariacao: null, semAnteriorTexto: "Ainda não há coleta anterior para comparar" }}
+        vm={{
+          ...comHistorico,
+          variacaoPercentual: null,
+          direcaoVariacao: null,
+          reacao: "neutro",
+          textoReacao: "Ainda não há coleta anterior para comparar",
+        }}
+        parado={false}
       />,
     );
     expect(document.body.textContent).toContain("Ainda não há coleta anterior para comparar");
     expect(document.body.textContent).not.toContain("desde 13/10/2026");
   });
 
-  it("'sem preço' não mostra valor nem variação", () => {
+  it("'sem preço' não mostra valor nem variação, e o Gasosinha diz que não há preço", () => {
     render(
       <DetalhePosto
         vm={{
@@ -76,28 +114,44 @@ describe("DetalhePosto", () => {
           dataAtual: null,
           idadeTexto: null,
           fonte: null,
-          variacaoTexto: null,
+          variacaoPercentual: null,
           direcaoVariacao: null,
+          reacao: "neutro",
+          textoReacao: "Sem preço coletado",
           historico: [],
         }}
+        parado={false}
       />,
     );
     const texto = document.body.textContent ?? "";
-    expect(texto).toContain("sem preço");
+    expect(texto).toContain("Sem preço coletado");
     expect(texto).not.toContain("R$");
     expect(texto).not.toContain("desde");
     expect(screen.queryByRole("list")).toBeNull();
   });
 
   it("o aviso de inativo aparece", () => {
-    render(<DetalhePosto vm={{ ...comHistorico, avisoInativo: "Este posto não consta mais como autorizado pela ANP." }} />);
+    render(<DetalhePosto vm={{ ...comHistorico, avisoInativo: "Este posto não consta mais como autorizado pela ANP." }} parado={false} />);
     expect(screen.getByText("Este posto não consta mais como autorizado pela ANP.")).toBeTruthy();
   });
 
   it("o histórico é uma lista, da mais recente para a mais antiga (FR-014)", () => {
-    render(<DetalhePosto vm={comHistorico} />);
+    render(<DetalhePosto vm={comHistorico} parado={false} />);
     const itens = screen.getAllByRole("listitem").map((li) => li.textContent);
     expect(itens).toEqual([`20/10/2026R$${NBSP}6,59`, `13/10/2026R$${NBSP}6,49`]);
+  });
+
+  it("o gráfico das coletas recentes tem os valores para leitores de tela, e a grade mostra a variação com sinal", () => {
+    render(<DetalhePosto vm={comHistorico} parado={false} />);
+    expect(screen.getByRole("img", { name: /Preço por coleta: 13\/10/ })).toBeTruthy();
+    expect(screen.getByText("Variação a cada coleta, em R$")).toBeTruthy();
+    expect(screen.getByText("+0,10")).toBeTruthy();
+  });
+
+  it("uma coleta só: sem gráfico e sem grade", () => {
+    render(<DetalhePosto vm={{ ...comHistorico, grafico: null, variacoesColetas: [] }} parado={false} />);
+    expect(screen.queryByRole("img", { name: /Preço por coleta/ })).toBeNull();
+    expect(screen.queryByText("Variação a cada coleta, em R$")).toBeNull();
   });
 });
 
@@ -132,7 +186,11 @@ describe("PainelDetalhe", () => {
         <PainelDetalhe modo="modal" cnpj={dados.cnpj} hoje="2026-10-27" />
       </QueryClientProvider>,
     );
-    expect((await screen.findByRole("dialog")).textContent).toContain("IGUEP INCORPORADORA GUEDES PEREIRA LTDA");
+    const dialogo = await screen.findByRole("dialog");
+    expect(dialogo.textContent).toContain("IGUEP INCORPORADORA GUEDES PEREIRA LTDA");
+    // O painel lê a preferência por menos movimento e a repassa ao Gasosinha.
+    expect(dialogo.textContent).toContain(`Subiu R$${NBSP}0,10 (+1,5%) desde 13/10/2026`);
+    expect(dialogo.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("false");
     await userEvent.click(screen.getByRole("button", { name: "Fechar" }));
     expect(voltar).toHaveBeenCalledTimes(1);
   });
@@ -146,6 +204,8 @@ describe("PainelDetalhe", () => {
     expect(html).toContain("IGUEP INCORPORADORA GUEDES PEREIRA LTDA");
     expect(html).toContain("6,59");
     const documento = new DOMParser().parseFromString(html, "text/html");
+    // No servidor a preferência por menos movimento é desconhecida: o Gasosinha começa parado.
+    expect(documento.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("true");
     const voltar = [...documento.querySelectorAll("a")].find((a) => a.textContent?.includes("Voltar ao mapa"));
     expect(voltar?.getAttribute("href")).toBe("/");
   });

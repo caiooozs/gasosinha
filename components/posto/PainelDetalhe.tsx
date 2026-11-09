@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useId, useSyncExternalStore } from "react";
 import { EstadoGasosinha } from "@/components/estados/EstadoGasosinha";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { usePrefereMenosMovimento } from "@/features/gasosinha/viewmodels/usePrefereMenosMovimento";
 import { useDetalhePosto } from "@/features/postos/viewmodels/useDetalhePosto";
 import type { DataISO } from "@/lib/formato";
 import { DetalhePosto } from "./DetalhePosto";
@@ -33,22 +34,36 @@ function useComputador(): boolean {
   );
 }
 
+function BotaoFechar({ onFechar }: { onFechar: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onFechar}
+      className="flex h-9 cursor-pointer items-center rounded-full bg-surface px-3.5 text-sm font-semibold text-ink hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+    >
+      Fechar
+    </button>
+  );
+}
+
 const LINK_VOLTAR =
   "inline-flex w-max items-center gap-1 rounded-sm text-sm font-semibold text-ink underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 /**
- * O único componente que chama os hooks do detalhe (contracts/ui.md): passa o `DetalheVM` ao
- * `DetalhePosto`, que só renderiza. No modo página, o detalhe fica na própria página, sem portal,
- * para o nome e o preço estarem no HTML (FR-013), e "Voltar ao mapa" leva para `/`.
+ * O único componente que chama os hooks do detalhe (contracts/ui.md): passa o `DetalheVM` e a
+ * preferência por menos movimento ao `DetalhePosto`, que só renderiza. No modo página, o detalhe
+ * fica na própria página, sem portal, para o nome e o preço estarem no HTML (FR-013), e "Voltar ao
+ * mapa" leva para `/`.
  */
 export function PainelDetalhe({ modo, cnpj, hoje }: PainelDetalheProps) {
   const vm = useDetalhePosto(cnpj, hoje);
+  const parado = usePrefereMenosMovimento();
   const router = useRouter();
   const computador = useComputador();
   const idTitulo = useId();
 
   const conteudo = vm ? (
-    <DetalhePosto vm={vm} idTitulo={idTitulo} />
+    <DetalhePosto vm={vm} parado={parado} idTitulo={idTitulo} />
   ) : (
     <EstadoGasosinha pose="pensando" titulo="Posto não encontrado" texto="Confira o link ou volte ao mapa para escolher outro posto." />
   );
@@ -77,23 +92,36 @@ export function PainelDetalhe({ modo, cnpj, hoje }: PainelDetalheProps) {
         side={computador ? "right" : "bottom"}
         showCloseButton={false}
         aria-describedby={undefined}
+        // No computador, o mapa continua à vista: o fundo não escurece nem desfoca.
+        overlayClassName={computador ? "bg-transparent supports-backdrop-filter:backdrop-blur-none" : undefined}
         className={
           computador
-            ? "w-full gap-0 overflow-y-auto bg-white p-0 sm:max-w-[420px]"
-            : "max-h-[88dvh] gap-0 overflow-y-auto rounded-t-[24px] bg-white p-0"
+            ? // Cartão de vidro flutuante (336 px) à direita, com altura pelo conteúdo. O vidro fica num
+              // filho, porque o Sheet anima a própria opacidade e isso apagaria o desfoque.
+              "gap-0 border-0 bg-transparent p-0 shadow-none data-[side=right]:inset-y-auto data-[side=right]:top-4 data-[side=right]:right-4 data-[side=right]:h-auto data-[side=right]:w-[336px] data-[side=right]:border-l-0 data-[side=right]:sm:max-w-[336px]"
+            : "max-h-[88dvh] gap-0 overflow-y-auto rounded-t-[24px] bg-bg p-0"
         }
       >
         <SheetTitle className="sr-only">{vm?.nome ?? "Posto não encontrado"}</SheetTitle>
-        <div className="sticky top-0 z-10 flex justify-end bg-white/95 px-3 pt-3 backdrop-blur-sm">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="flex h-9 cursor-pointer items-center rounded-full bg-surface px-3.5 text-sm font-semibold text-ink hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-          >
-            Fechar
-          </button>
-        </div>
-        {conteudo}
+        {computador ? (
+          // O cartão corta nas pontas arredondadas, e quem rola é o filho: a barra de rolagem padrão
+          // do Windows, no próprio cartão, deixava as pontas da direita retas.
+          <div className="glass flex max-h-[calc(100dvh-32px)] flex-col overflow-hidden rounded-[18px]">
+            <div className="rolagem-fina min-h-0 overflow-y-auto">
+              <div className="sticky top-0 z-10 flex justify-end px-3 pt-3">
+                <BotaoFechar onFechar={() => router.back()} />
+              </div>
+              {conteudo}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="sticky top-0 z-10 flex justify-end bg-bg/95 px-3 pt-3 backdrop-blur-sm">
+              <BotaoFechar onFechar={() => router.back()} />
+            </div>
+            {conteudo}
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );

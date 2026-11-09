@@ -54,6 +54,27 @@ export type ItemListaVM = {
   variacao: string | null;
   direcaoVariacao: DirecaoVariacao | null;
   maisBarato: boolean;
+  /**
+   * Quanto custa a mais que o mais barato da área ("+0,40", e o texto completo para leitores de
+   * tela). `null` para o próprio mais barato, coleta antiga, sem preço ou sem régua.
+   */
+  acimaDoMaisBarato: { curto: string; acessivel: string } | null;
+};
+
+/** A régua de preços da área visível (identidade visual, padrão do seuimposto). */
+export type ReguaVM = {
+  /** "R$ 0,40". */
+  diferenca: string;
+  /** "6,5%". */
+  percentual: string;
+  /** "R$ 6,19". */
+  menor: string;
+  /** "R$ 6,59". */
+  maior: string;
+  /** Um ponto por coleta recente, de 0 (mais barato) a 1 (mais caro). */
+  pontos: { cnpj: string; posicao: number; maisBarato: boolean }[];
+  /** A régua inteira em uma frase, para leitores de tela. */
+  descricao: string;
 };
 
 export type GrupoListaVM = {

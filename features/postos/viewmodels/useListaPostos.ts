@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import type { DataISO } from "@/lib/formato";
 import type { SentidoPreco } from "../domain/ordenar-lista";
 import type { PostoNoMapa } from "../domain/tipos";
-import { montarGruposLista, tituloContagem } from "./montar-vm";
-import type { GrupoListaVM, ItemListaVM } from "./tipos";
+import { montarGruposLista, montarRegua, tituloContagem } from "./montar-vm";
+import type { GrupoListaVM, ItemListaVM, ReguaVM } from "./tipos";
 import { useHoje } from "./useHoje";
 
 const QUANTOS_NA_FOLHA = 2;
@@ -17,6 +17,8 @@ export type ListaPostosVM = {
   vazia: boolean;
   /** "8 postos nesta área". */
   titulo: string;
+  /** A régua de preços da área, ou `null` sem duas coletas recentes com preços diferentes. */
+  regua: ReguaVM | null;
   sentido: SentidoPreco;
   definirSentido: (sentido: SentidoPreco) => void;
 };
@@ -30,11 +32,13 @@ export function useListaPostos(postos: readonly PostoNoMapa[], hoje: DataISO): L
   const [sentido, definirSentido] = useState<SentidoPreco>("asc");
   const grupos = useMemo(() => montarGruposLista(postos, hojeAtual, sentido), [postos, hojeAtual, sentido]);
   const primeiros = useMemo(() => grupos.flatMap((g) => g.itens).slice(0, QUANTOS_NA_FOLHA), [grupos]);
+  const regua = useMemo(() => montarRegua(postos, hojeAtual), [postos, hojeAtual]);
   return {
     grupos,
     primeiros,
     vazia: postos.length === 0,
     titulo: tituloContagem(postos.length),
+    regua,
     sentido,
     definirSentido,
   };

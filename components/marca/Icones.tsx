@@ -91,6 +91,19 @@ export const IconeMenos = (p: PropsIcone) => (
   </svg>
 );
 
+export const IconeLua = (p: PropsIcone) => (
+  <svg {...base("lua", "0 0 24 24", p, 2)}>
+    <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
+  </svg>
+);
+
+export const IconeSol = (p: PropsIcone) => (
+  <svg {...base("sol", "0 0 24 24", p, 2)}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" />
+  </svg>
+);
+
 export const IconeSemPreco = (p: PropsIcone) => (
   <svg {...base("sem-preco", "0 0 10 10", p, 1.5)}>
     <circle cx="5" cy="5" r="3.5" />

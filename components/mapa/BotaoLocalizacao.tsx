@@ -46,10 +46,10 @@ export function BotaoLocalizacao({ aoCentralizar, variante = "pilula" }: BotaoLo
         disabled={pedindo}
         aria-label={variante === "redondo" ? "Usar minha localização" : undefined}
         className={cn(
-          "flex cursor-pointer items-center justify-center bg-white text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-wait disabled:opacity-70",
+          "flex cursor-pointer items-center justify-center text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-wait disabled:opacity-70",
           variante === "redondo"
-            ? "size-12 rounded-full shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171F]"
-            : "h-11 gap-2 rounded-[12px] pr-4 pl-3 text-sm leading-4 font-semibold shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171A]",
+            ? "size-12 rounded-full bg-float shadow-[0_0_0_1px_var(--pin-ring),0_6px_16px_#1C19171F]"
+            : "glass h-11 gap-2 rounded-[12px] pr-4 pl-3 text-sm leading-4 font-semibold",
         )}
       >
         <IconeLocalizacao className={variante === "redondo" ? "size-[22px]" : "size-5"} />
@@ -60,7 +60,7 @@ export function BotaoLocalizacao({ aoCentralizar, variante = "pilula" }: BotaoLo
         role="status"
         className={cn(
           mensagem
-            ? "absolute bottom-full mb-2 w-max max-w-[260px] rounded-[10px] bg-ink px-3 py-2 text-sm text-white shadow-[0_6px_16px_#1C19171F]"
+            ? "absolute bottom-full mb-2 w-max max-w-[260px] rounded-[10px] bg-ink px-3 py-2 text-sm text-bg shadow-[0_6px_16px_#1C19171F]"
             : "sr-only",
           variante === "redondo" ? "right-0" : "left-0",
         )}

@@ -4,8 +4,9 @@ import { BOTAO_CONTORNO, BOTAO_PRIMARIO, EstadoGasosinha } from "@/components/es
 import { IconeSetaBaixo, IconeSetaCima } from "@/components/marca/Icones";
 import { PoseGasosinha } from "@/components/marca/Marca";
 import type { SentidoPreco } from "@/features/postos/domain/ordenar-lista";
-import type { EstadoCarga, GrupoListaVM } from "@/features/postos/viewmodels/tipos";
+import type { EstadoCarga, GrupoListaVM, ReguaVM } from "@/features/postos/viewmodels/tipos";
 import { LinhaPosto } from "./LinhaPosto";
+import { ReguaPrecos } from "./ReguaPrecos";
 
 export type ListaPostosProps = {
   /** "8 postos nesta área". */
@@ -21,6 +22,8 @@ export type ListaPostosProps = {
   busca?: ReactNode;
   /** Recebe o foco quando a pessoa troca para a lista no celular. */
   tituloRef?: Ref<HTMLHeadingElement>;
+  /** Régua de preços da área, abaixo do título. */
+  regua?: ReguaVM | null;
 };
 
 /**
@@ -29,23 +32,28 @@ export type ListaPostosProps = {
  * recebe do viewmodel.
  */
 export function ListaPostos(props: ListaPostosProps) {
-  const { titulo, grupos, vazia, sentido, onDefinirSentido, estado, onTentarDeNovo, onVerRegiaoInteira, busca, tituloRef } =
+  const { titulo, grupos, vazia, sentido, onDefinirSentido, estado, onTentarDeNovo, onVerRegiaoInteira, busca, tituloRef, regua } =
     props;
   const semNumeroAinda = estado === "carregando" && vazia;
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col gap-5 border-b border-line px-4 pb-4">
+      <div className="flex flex-col gap-5 border-b border-line px-4 pb-4 md:gap-3 md:px-3 md:pb-3">
         {busca}
         <div className="flex items-center gap-3 px-1">
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <h2 ref={tituloRef} tabIndex={-1} className="font-serif text-2xl font-semibold tracking-[-0.01em] text-ink outline-none">
+          <div className="flex min-w-0 flex-1 flex-col gap-1 md:gap-0.5">
+            <h2
+              ref={tituloRef}
+              tabIndex={-1}
+              className="font-serif text-2xl font-semibold tracking-[-0.01em] text-ink outline-none md:text-[22px] md:leading-7"
+            >
               {semNumeroAinda ? "Postos nesta área" : titulo}
             </h2>
-            <p className="text-sm text-ink-2">Área visível do mapa · gasolina comum</p>
+            <p className="text-sm text-ink-2 md:text-xs">Área visível do mapa · gasolina comum</p>
           </div>
-          <PoseGasosinha pose="preco" className="h-16 w-[92px]" />
+          <PoseGasosinha pose="preco" className="h-16 w-[92px] md:h-11 md:w-16" />
         </div>
+        {regua && <ReguaPrecos regua={regua} />}
         <OrdemPreco sentido={sentido} onDefinirSentido={onDefinirSentido} />
       </div>
 
@@ -80,7 +88,7 @@ export function ListaPostos(props: ListaPostosProps) {
           <button
             type="button"
             onClick={onTentarDeNovo}
-            className="shrink-0 cursor-pointer rounded-full bg-ink px-3.5 py-1.5 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            className="shrink-0 cursor-pointer rounded-full bg-ink px-3.5 py-1.5 text-sm font-semibold text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
           >
             Tentar de novo
           </button>
@@ -114,7 +122,7 @@ export function OrdemPreco({ sentido, onDefinirSentido }: { sentido: SentidoPrec
     { valor: "desc" as const, rotulo: "Maior preço", Icone: IconeSetaBaixo },
   ];
   return (
-    <div role="group" aria-label="Ordem de preço" className="flex rounded-[12px] bg-surface p-[3px]">
+    <div role="group" aria-label="Ordem de preço" className="flex rounded-[12px] bg-surface p-[3px] md:rounded-[10px] md:bg-glass-fill">
       {opcoes.map(({ valor, rotulo, Icone }) => {
         const ativo = sentido === valor;
         return (
@@ -124,9 +132,9 @@ export function OrdemPreco({ sentido, onDefinirSentido }: { sentido: SentidoPrec
             aria-pressed={ativo}
             onClick={() => onDefinirSentido(valor)}
             className={cn(
-              "flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-[9px] text-sm leading-4 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ink",
+              "flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-[9px] text-sm leading-4 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ink md:h-[30px] md:rounded-[8px]",
               ativo
-                ? "bg-white font-semibold text-ink shadow-[0_1px_2px_#1C19171A,0_0_0_1px_#1C19170F]"
+                ? "bg-seg-on font-semibold text-ink shadow-[0_1px_2px_#1C19171A,0_0_0_1px_var(--glass-ring)]"
                 : "font-medium text-ink-2 hover:text-ink",
             )}
           >

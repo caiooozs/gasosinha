@@ -11,7 +11,7 @@ export default function ErroModalPosto({ retry }: { error: unknown; retry: () =>
       role="dialog"
       aria-modal="true"
       aria-label="Não foi possível carregar este posto"
-      className="fixed inset-x-0 bottom-0 z-50 rounded-t-[24px] bg-white shadow-[0_-12px_32px_#1C19171A] md:inset-x-auto md:inset-y-0 md:right-0 md:w-[420px] md:rounded-none"
+      className="fixed inset-x-0 bottom-0 z-50 rounded-t-[24px] bg-bg shadow-[0_-12px_32px_#1C19171A] md:glass md:inset-x-auto md:top-4 md:right-4 md:bottom-auto md:w-[336px] md:rounded-[18px]"
     >
       <EstadoGasosinha
         papel="alert"

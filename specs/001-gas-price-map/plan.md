@@ -111,7 +111,10 @@ mesmo repositório.
 **Ficam de fora**: Recharts, SheetJS, bibliotecas de data, Google Maps e serviços de
 geocodificação.
 
-**Serviço externo**: OpenFreeMap (tiles), no plano gratuito (R5). Não há serviço de e-mail: o
+**Serviço externo**: OpenFreeMap (tiles), no plano gratuito (R5). O tema escuro usa o estilo
+`dark` do mesmo OpenFreeMap, com os mesmos tiles e a mesma atribuição: não é serviço novo
+(identidade "Glass e modo escuro", 2026-11-06). A escolha de tema fica no `localStorage` e é
+aplicada por um script inline no `<head>`, sem dependência nova. Não há serviço de e-mail: o
 mantenedor acompanha as fontes pelo aviso público do site (R15, decisão revista em 2026-11-02).
 Os limites e riscos estão em R16.
 
@@ -225,7 +228,7 @@ scripts/
 ├── gerar-sprites-provisorios.mjs     # sprites provisórios do Gasosinha
 └── fixtures/recortar-fontes-anp.ts   # gera as fixtures reais da ANP
 
-public/gasosinha/                     # sprite sheets PNG (subiu, caiu, estavel, neutro)
+public/gasosinha/                     # arte do mascote (poses claras e -dark) e os sprites provisórios
 vitest.config.mts                     # projetos node (*.test.ts) e jsdom (*.test.tsx); inclui features/, lib/, components/, supabase/functions/_shared/
 ```
 
@@ -242,8 +245,11 @@ ali quebra o build. Por isso, nenhum componente cliente lê a hora no render: o 
 posto, o detalhe é renderizado sem portal, porque o portal do `Sheet` não renderiza no servidor
 e o link precisa ser indexável. O `Sheet` fica só para o modal.
 
-**Insumo externo**: a arte final dos sprites do Gasosinha (4 reações) é um insumo de design.
-As tasks criam sprites provisórios com as mesmas dimensões, para não bloquear a implementação.
+**Insumo externo**: a arte do Gasosinha é um insumo de design. A Fase 1 criou sprites
+provisórios para não bloquear a implementação, mas a arte final chegou antes da US3. Por isso, as
+reações usam as poses dela (subiu → surpreso, caiu → feliz, estável → piscando, neutro →
+pensando), com as versões do tema escuro. Cada pose tem um quadro só, então a animação é um
+pulinho em degraus feito em CSS.
 
 ## Complexity Tracking
 

@@ -3,10 +3,14 @@ import {
   diasEntre,
   formatarData,
   formatarIdade,
+  formatarDataCurta,
+  formatarDiferencaCurta,
   formatarPercentual,
+  formatarPercentualSemSinal,
   formatarPreco,
   formatarVariacao,
   hojeEmSaoPaulo,
+  separarMoeda,
 } from "./index";
 
 // O Intl usa o espaço não separável (U+00A0) entre "R$" e o valor.
@@ -94,5 +98,38 @@ describe("variação", () => {
     expect(formatarVariacao({ diferencaMilesimos: 0, percentual: 0, desde: "2026-10-13" })).toBe(
       `${R$}0,00 (0,0%) desde 13/10/2026`,
     );
+  });
+});
+
+describe("partes da moeda", () => {
+  test("separa o símbolo do valor, para o valor aparecer maior que o 'R$'", () => {
+    expect(separarMoeda(formatarPreco(6590))).toEqual({ simbolo: "R$", valor: "6,59" });
+    expect(separarMoeda(formatarPreco(6599))).toEqual({ simbolo: "R$", valor: "6,599" });
+  });
+
+  test("texto sem o símbolo volta inteiro no valor", () => {
+    expect(separarMoeda("6,59")).toEqual({ simbolo: null, valor: "6,59" });
+  });
+});
+
+describe("data curta", () => {
+  test("AAAA-MM-DD vira dd/mm, para eixos de gráfico", () => {
+    expect(formatarDataCurta("2026-09-15")).toBe("15/09");
+  });
+});
+
+describe("diferença curta", () => {
+  test("com sinal e sem o símbolo da moeda; 3 casas só quando o valor tem 3", () => {
+    expect(formatarDiferencaCurta(200)).toBe("+0,20");
+    expect(formatarDiferencaCurta(-60)).toBe(`${MENOS}0,06`);
+    expect(formatarDiferencaCurta(0)).toBe("0,00");
+    expect(formatarDiferencaCurta(15)).toBe("+0,015");
+  });
+});
+
+describe("percentual sem sinal", () => {
+  test("uma casa decimal, para distâncias que não têm direção", () => {
+    expect(formatarPercentualSemSinal(6.5)).toBe("6,5%");
+    expect(formatarPercentualSemSinal(-3)).toBe("3,0%");
   });
 });

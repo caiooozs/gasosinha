@@ -35,7 +35,7 @@ export function AtribuicaoFontes({ atualizadoEm, variante = "texto", className }
 
   if (variante === "pilula") {
     return (
-      <p className={cn("flex h-7 items-center rounded-[8px] bg-white/90 px-2.5 text-xs text-ink-2", className)}>
+      <p className={cn("glass flex h-7 items-center rounded-[8px] px-2.5 text-xs text-ink-2", className)}>
         <span>
           Preços: ANP{atualizacao} · {mapa}
         </span>

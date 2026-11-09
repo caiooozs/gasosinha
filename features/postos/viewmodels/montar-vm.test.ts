@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PostoNoMapa } from "../domain/tipos";
-import { montarGruposLista, montarMarcadores, tituloContagem } from "./montar-vm";
+import { montarGruposLista, montarMarcadores, montarRegua, tituloContagem } from "./montar-vm";
 
 const HOJE = "2026-10-27";
 const NBSP = " ";
@@ -68,7 +68,19 @@ describe("montarGruposLista", () => {
       variacao: `+R$${NBSP}0,10 (+1,5%) desde 13/10/2026`,
       direcaoVariacao: "subiu",
       maisBarato: false,
+      acimaDoMaisBarato: null,
     });
+  });
+
+  it("cada coleta recente mostra quanto está acima do mais barato da área; o mais barato não", () => {
+    const [grupo] = montarGruposLista([recente, recenteBarato, antiga], HOJE, "asc");
+    expect(grupo.itens.map((i) => [i.nome, i.acimaDoMaisBarato])).toEqual([
+      ["RECENTE BARATO", null],
+      ["RECENTE", { curto: "+0,40", acessivel: `R$${NBSP}0,40 acima do mais barato da área` }],
+    ]);
+    // Coleta antiga não concorre: fica sem a diferença.
+    const antigas = montarGruposLista([recente, recenteBarato, antiga], HOJE, "asc")[1];
+    expect(antigas.itens[0].acimaDoMaisBarato).toBeNull();
   });
 
   it("marca o mais barato entre as coletas recentes da lista; queda vira direção 'caiu'", () => {
@@ -101,7 +113,28 @@ describe("montarGruposLista", () => {
       variacao: null,
       direcaoVariacao: null,
       maisBarato: false,
+      acimaDoMaisBarato: null,
     });
+  });
+});
+
+describe("montarRegua", () => {
+  it("a régua da área com os textos prontos: diferença, percentual, menor e maior preço", () => {
+    expect(montarRegua([recente, recenteBarato, antiga, semPreco], HOJE)).toEqual({
+      diferenca: `R$${NBSP}0,40`,
+      percentual: "6,5%",
+      menor: `R$${NBSP}6,19`,
+      maior: `R$${NBSP}6,59`,
+      pontos: [
+        { cnpj: "1", posicao: 1, maisBarato: false },
+        { cnpj: "4", posicao: 0, maisBarato: true },
+      ],
+      descricao: `Preços das coletas recentes da área: de R$${NBSP}6,19 a R$${NBSP}6,59, diferença de R$${NBSP}0,40 (6,5%).`,
+    });
+  });
+
+  it("sem duas coletas recentes com preços diferentes, não há régua", () => {
+    expect(montarRegua([recente, antiga], HOJE)).toBeNull();
   });
 });
 

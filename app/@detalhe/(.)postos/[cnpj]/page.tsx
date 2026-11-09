@@ -13,7 +13,7 @@ export default function ModalPosto({ params }: { params: Promise<{ cnpj: string 
   return (
     <Suspense
       fallback={
-        <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center rounded-t-[24px] bg-white px-5 py-6 shadow-[0_-12px_32px_#1C19171A] md:inset-x-auto md:inset-y-0 md:right-0 md:w-[420px] md:items-center md:rounded-none">
+        <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center rounded-t-[24px] bg-bg px-5 py-6 shadow-[0_-12px_32px_#1C19171A] md:glass md:inset-x-auto md:top-4 md:right-4 md:bottom-auto md:w-[336px] md:rounded-[18px]">
           <p role="status" className="text-sm text-ink-2">
             Carregando posto…
           </p>

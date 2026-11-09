@@ -35,6 +35,12 @@
   --color-green-deep: #0d422a;
   /* Contorno tracejado de "sem preço" (marcador e selo). */
   --color-line-dashed: #a8a29e;
+  /* Barra do app no celular, busca e botões redondos sobre o mapa, segmento ativo da ordem. */
+  --color-header: #ffffff;
+  --color-float: #ffffff;
+  --color-seg-on: #ffffff;
+  /* Campos dentro dos painéis de vidro (busca, ordem de preço, botões de contorno). */
+  --color-glass-fill: rgb(28 25 23 / 0.05);
 
   --text-xs: 12px;
   --text-xs--line-height: 16px;
@@ -56,6 +62,30 @@
   --tracking-tighter: -0.03em;
   --tracking-tight: -0.015em;
   --tracking-wide: 0.06em;
+
+  /*
+   * Pulinho do Gasosinha no detalhe do posto (FR-018): 4 quadros em 0,8 s, trocados em degraus
+   * (`step-end`), sem deslizar, como numa animação de pixel art. Quem prefere menos movimento
+   * não vê a animação (FR-020).
+   */
+  --animate-pulinho: pulinho 0.8s step-end infinite;
+  @keyframes pulinho {
+    0% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-3px);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+    75% {
+      transform: translateY(-3px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 }
 
 @theme inline {
@@ -139,6 +169,149 @@
   --sidebar-accent-foreground: #1c1917;
   --sidebar-border: #e7e5e4;
   --sidebar-ring: #1c1917;
+
+  /* Vidro dos painéis flutuantes (prévia "Glass e modo escuro"). */
+  --glass-bg: rgb(255 255 255 / 0.38);
+  --glass-solid: #ffffff;
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-ring: rgb(28 25 23 / 0.06);
+  --glass-shadow: 0 16px 40px rgb(28 25 23 / 0.12);
+  --glass-sheet-shadow: 0 -12px 32px rgb(28 25 23 / 0.1);
+  --glass-blur: 16px;
+  --glass-saturate: 200%;
+  /* Contorno das pílulas de preço sobre o mapa. */
+  --pin-ring: rgb(28 25 23 / 0.1);
+  /* Gráficos: grade quase invisível, linha de referência tracejada e eixos discretos. */
+  --chart-grid: rgb(28 25 23 / 0.08);
+  --chart-ref: rgb(28 25 23 / 0.32);
+  --chart-axis: #6f6a64;
+}
+
+/*
+ * Tema escuro: a classe `dark` no <html>, posta por features/tema antes da primeira pintura.
+ * Mesmos nomes de token, outros valores; os neutros seguem os do modo escuro do seuimposto.
+ * Contraste WCAG AA sobre o fundo #0F0E0D: ink 18:1; ink-2 13:1; ink-3 7,6:1 (6,4:1 sobre
+ * surface); green-ink sobre green-soft 9,4:1; yellow-ink sobre yellow-soft 10:1; branco sobre
+ * green continua 5,4:1. O mapa base troca para o estilo escuro do OpenFreeMap (MapaPostos).
+ */
+.dark {
+  color-scheme: dark;
+
+  --color-bg: #0f0e0d;
+  --color-surface: #22201d;
+  --color-surface-2: #2a2825;
+  --color-line: rgb(250 250 249 / 0.08);
+  --color-line-strong: rgb(250 250 249 / 0.16);
+  --color-ink: #fafaf9;
+  --color-ink-2: #d6d4cf;
+  --color-ink-3: #a6a39c;
+  --color-yellow-soft: rgb(255 200 28 / 0.14);
+  --color-yellow-line: rgb(255 200 28 / 0.28);
+  --color-yellow-ink: #ffd86b;
+  --color-green-soft: rgb(24 141 70 / 0.18);
+  --color-green-ink: #7bd8a2;
+  --color-line-dashed: #6f6c66;
+  --color-header: #151412;
+  --color-float: #22201d;
+  --color-seg-on: #34312c;
+  --color-glass-fill: rgb(250 250 249 / 0.06);
+
+  --glass-bg: rgb(21 20 18 / 0.55);
+  --glass-solid: #151412;
+  --glass-edge: rgb(250 250 249 / 0.1);
+  --glass-ring: rgb(250 250 249 / 0.06);
+  --glass-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+  --glass-sheet-shadow: 0 -12px 32px rgb(0 0 0 / 0.45);
+  --glass-saturate: 160%;
+  --pin-ring: rgb(250 250 249 / 0.12);
+  --chart-grid: rgb(250 250 249 / 0.07);
+  --chart-ref: rgb(250 250 249 / 0.3);
+  --chart-axis: #8f8b84;
+
+  /* As variáveis do shadcn/ui acompanham. */
+  --background: #0f0e0d;
+  --foreground: #fafaf9;
+  --card: #151412;
+  --card-foreground: #fafaf9;
+  --popover: #151412;
+  --popover-foreground: #fafaf9;
+  --primary: #fafaf9;
+  --primary-foreground: #1c1917;
+  --secondary: #22201d;
+  --secondary-foreground: #fafaf9;
+  --muted: #22201d;
+  --muted-foreground: #d6d4cf;
+  --accent: #22201d;
+  --accent-foreground: #fafaf9;
+  --border: rgb(250 250 249 / 0.08);
+  --input: rgb(250 250 249 / 0.16);
+  --ring: #fafaf9;
+  --chart-3: #a6a39c;
+  --chart-4: #d6d4cf;
+  --chart-5: #fafaf9;
+  --sidebar: #151412;
+  --sidebar-foreground: #fafaf9;
+  --sidebar-primary: #fafaf9;
+  --sidebar-primary-foreground: #1c1917;
+  --sidebar-accent: #22201d;
+  --sidebar-accent-foreground: #fafaf9;
+  --sidebar-border: rgb(250 250 249 / 0.08);
+  --sidebar-ring: #fafaf9;
+}
+
+/*
+ * Painel de vidro: lista e detalhe flutuantes no computador e controles do mapa. Sem suporte a
+ * backdrop-filter, ou com transparência reduzida no sistema, vira um painel sólido.
+ * Atrás do vidro passa o mapa, com água e parques: o texto terciário sobe para ink-2 para manter
+ * 4,5:1 em qualquer ponto (ink-3 ficaria perto de 3,8:1 sobre a água no tema claro).
+ */
+@utility glass {
+  --color-ink-3: var(--color-ink-2);
+  background-color: var(--glass-solid);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-edge),
+    0 0 0 1px var(--glass-ring),
+    var(--glass-shadow);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    background-color: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* A folha de baixo do celular: o mesmo vidro, com a sombra para cima. */
+@utility glass-folha {
+  --color-ink-3: var(--color-ink-2);
+  background-color: var(--glass-solid);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    inset 0 0 0 1px var(--glass-ring),
+    var(--glass-sheet-shadow);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    background-color: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/*
+ * Barra de rolagem fina, sem setas e com trilho transparente, para os painéis flutuantes. A barra
+ * padrão do Windows ocupa a borda inteira e deixa as pontas retas. Quem rola é um filho do cartão
+ * arredondado (com overflow-hidden), para a ponta cortar a barra também.
+ */
+@utility rolagem-fina {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-ink) 28%, transparent) transparent;
 }
 
 @layer base {

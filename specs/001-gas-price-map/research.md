@@ -379,7 +379,7 @@ do plano define explicitamente a consulta por área visível via RPC, e porque a
 continua funcionando se a região crescer. Fica registrada caso o tráfego do Supabase vire
 problema.
 
-## R14. Histórico do posto: lista, sem gráfico
+## R14. Histórico do posto: lista, e gráfico das coletas recentes (revisto em 2026-11-09)
 
 **Decisão**: o histórico é uma **lista** de coletas (data e valor), da mais recente para a mais
 antiga (FR-014). Nenhum gráfico entra no MVP, então não entram nem o componente de gráfico do
@@ -388,6 +388,14 @@ shadcn nem o Recharts.
 **Justificativa**: a entrada do plano dizia "gráfico ou lista, conforme a clarify". A spec
 fechada só exige a lista. Um gráfico acrescentaria uma dependência sem requisito que a sustente
 (Princípio VI), e com coletas esparsas por posto ele teria poucos pontos.
+
+**Revisão (2026-11-09)**: a lista continua, completa, e continua sendo o histórico do FR-014.
+Acima dela entra um gráfico em degraus das **até 8 coletas mais recentes**, e embaixo dele uma
+grade com a variação de cada coleta para a anterior. O gráfico é um SVG desenhado à mão, sem
+nenhuma dependência nova (nada de Recharts nem do componente de gráfico do shadcn). Ele só liga
+coletas reais e não interpola nem estima nenhum valor (Princípio I). A posição dos pontos vem de
+`features/postos/domain/historico.ts`, que é puro e testado. Para leitores de tela, o gráfico tem
+`role="img"` e a lista de valores no nome acessível. A lista logo abaixo é a alternativa a ele.
 
 ## R15. Como o mantenedor fica sabendo de falhas (FR-027)
 

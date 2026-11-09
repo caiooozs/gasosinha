@@ -3,7 +3,7 @@ import { IconeLista } from "@/components/marca/Icones";
 import { PoseGasosinha } from "@/components/marca/Marca";
 import { LinhaPosto } from "@/components/lista/LinhaPosto";
 import type { SentidoPreco } from "@/features/postos/domain/ordenar-lista";
-import type { EstadoCarga, ItemListaVM } from "@/features/postos/viewmodels/tipos";
+import type { EstadoCarga, ItemListaVM, ReguaVM } from "@/features/postos/viewmodels/tipos";
 
 export type FolhaResumoProps = {
   titulo: string;
@@ -19,16 +19,20 @@ export type FolhaResumoProps = {
   atribuicao: ReactNode;
   /** Botão de localização, encostado acima da folha. */
   localizacao: ReactNode;
+  /** Botão de tema, logo acima do de localização. */
+  tema?: ReactNode;
+  /** Com ela, o subtítulo mostra a faixa de preços da área ("De R$ 6,19 a R$ 6,59"). */
+  regua?: ReguaVM | null;
   verListaRef?: Ref<HTMLButtonElement>;
 };
 
 const BOTAO_PILULA =
-  "flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-line-strong bg-white px-3.5 text-sm leading-4 font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-line-strong bg-glass-fill px-3.5 text-sm leading-4 font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 /**
- * Folha inferior do mapa no celular ("01 Mapa · mobile"): resumo da área com o Gasosinha, as
- * primeiras linhas da lista e o botão "Ver lista". Também mostra os estados de carregamento, vazio
- * e erro, para eles não dependerem do mapa.
+ * Folha inferior do mapa no celular ("01 Mapa · mobile · glass"): de vidro, sobre o mapa, com o
+ * resumo da área, o Gasosinha, as primeiras linhas da lista e o botão "Ver lista". Também mostra
+ * os estados de carregamento, vazio e erro, para eles não dependerem do mapa.
  */
 export function FolhaResumo({
   titulo,
@@ -41,9 +45,11 @@ export function FolhaResumo({
   onVerRegiaoInteira,
   atribuicao,
   localizacao,
+  tema,
+  regua,
   verListaRef,
 }: FolhaResumoProps) {
-  let cabecalho: { titulo: string; texto: string; papel?: "status" | "alert" };
+  let cabecalho: { titulo: string; texto: ReactNode; papel?: "status" | "alert" };
   let acao: ReactNode = (
     <button ref={verListaRef} type="button" onClick={onVerLista} className={BOTAO_PILULA}>
       <IconeLista className="size-4" />
@@ -66,16 +72,26 @@ export function FolhaResumo({
         Ver a região inteira
       </button>
     );
+  } else if (regua) {
+    cabecalho = {
+      titulo,
+      texto: (
+        <>
+          De <b className="font-semibold text-ink tabular-nums">{regua.menor}</b> a{" "}
+          <b className="font-semibold text-ink tabular-nums">{regua.maior}</b>
+        </>
+      ),
+    };
   } else {
     cabecalho = { titulo, texto: sentido === "asc" ? "Do mais barato ao mais caro" : "Do mais caro ao mais barato" };
   }
 
   return (
-    <section
-      aria-label="Resumo da área visível"
-      className="relative rounded-t-[24px] bg-white shadow-[0_-1px_0_#1C19170F,0_-12px_32px_#1C19171A]"
-    >
-      <div className="absolute right-4 bottom-full mb-4">{localizacao}</div>
+    <section aria-label="Resumo da área visível" className="glass-folha relative rounded-t-[24px]">
+      <div className="absolute right-4 bottom-full mb-4 flex flex-col items-end gap-2">
+        {tema}
+        {localizacao}
+      </div>
 
       <div className="flex justify-center pt-2.5 pb-1.5" aria-hidden="true">
         <div className="h-1 w-9 rounded-[2px] bg-line-strong" />
@@ -96,7 +112,7 @@ export function FolhaResumo({
           <button
             type="button"
             onClick={onTentarDeNovo}
-            className="shrink-0 cursor-pointer rounded-full bg-ink px-3 py-1 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            className="shrink-0 cursor-pointer rounded-full bg-ink px-3 py-1 text-sm font-semibold text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
           >
             Tentar de novo
           </button>

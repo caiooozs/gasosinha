@@ -31,8 +31,8 @@ export function EstadoGasosinha({ pose, titulo, texto, papel, acao, children, cl
 
 /** Botão escuro de ação principal ("Usar minha localização", "Tentar de novo"). */
 export const BOTAO_PRIMARIO =
-  "inline-flex h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-ink px-5 text-base leading-[18px] font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "inline-flex h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-ink px-5 text-base leading-[18px] font-semibold text-bg transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 /** Botão de contorno ("Ver a região inteira", "Ver lista"). */
 export const BOTAO_CONTORNO =
-  "inline-flex h-[46px] w-full cursor-pointer items-center justify-center rounded-full border border-line-strong bg-white px-5 text-base leading-[18px] font-semibold text-ink transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "inline-flex h-[46px] w-full cursor-pointer items-center justify-center rounded-full border border-line-strong bg-transparent px-5 text-base leading-[18px] font-semibold text-ink transition-colors hover:bg-glass-fill focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";

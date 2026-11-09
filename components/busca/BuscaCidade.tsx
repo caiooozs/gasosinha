@@ -38,8 +38,8 @@ export function BuscaCidade({ aoSelecionar, variante = "painel" }: BuscaCidadePr
         className={cn(
           "flex h-12 items-center gap-2.5 rounded-[14px] px-3.5 focus-within:shadow-[inset_0_0_0_2px_var(--color-ink)]",
           variante === "flutuante"
-            ? "bg-white shadow-[0_0_0_1px_#1C191714,0_6px_16px_#1C19171A]"
-            : "bg-surface",
+            ? "bg-float shadow-[0_0_0_1px_var(--pin-ring),0_6px_16px_#1C19171A]"
+            : "bg-surface md:h-10 md:rounded-[12px] md:bg-glass-fill",
         )}
       >
         <IconeBusca className="size-[18px] shrink-0 text-ink" />
@@ -64,7 +64,7 @@ export function BuscaCidade({ aoSelecionar, variante = "painel" }: BuscaCidadePr
         <Command.List
           // Evita que o clique num resultado tire o foco do campo e feche a lista antes da seleção.
           onMouseDown={(e) => e.preventDefault()}
-          className="absolute top-full right-0 left-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-[14px] bg-white p-1.5 shadow-[0_0_0_1px_#1C191714,0_12px_32px_#1C19171F]"
+          className="absolute top-full right-0 left-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-[14px] bg-popover p-1.5 shadow-[0_0_0_1px_var(--pin-ring),0_12px_32px_#1C19171F]"
         >
           <Command.Empty className="flex items-center gap-3 px-2 py-2 text-left">
             <PoseGasosinha pose="pensando" className="size-14" />

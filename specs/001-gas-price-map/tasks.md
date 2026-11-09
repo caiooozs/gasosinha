@@ -1081,7 +1081,7 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
 
 ### Tests for User Story 3 (escrever primeiro; devem falhar) ⚠️
 
-- [ ] T092 [P] [US3] Escrever `features/gasosinha/domain/reacao.test.ts`.
+- [X] T092 [P] [US3] Escrever `features/gasosinha/domain/reacao.test.ts`.
 
   **`classificarReacao(atual?, anterior?)`**, comparando `precoMilesimos`:
   - maior → `'subiu'`;
@@ -1096,34 +1096,57 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
   - estável → `'Mesmo preço da coleta de 13/10/2026'`;
   - neutro com preço → `'Ainda não há coleta anterior para comparar'`;
   - neutro sem preço → `'Sem preço coletado'`.
-- [ ] T093 [P] [US3] Escrever `components/gasosinha/Gasosinha.test.tsx`:
-  - para cada reação, usa o sprite `/gasosinha/<reacao>.png` com `alt=""`;
+- [X] T093 [P] [US3] Escrever `components/gasosinha/Gasosinha.test.tsx`:
+  - para cada reação, usa a pose da arte em `public/gasosinha/`, nas versões clara e `-dark`,
+    com `alt=""`: subiu → `gasosinha-surpreso`, caiu → `gasosinha-feliz`, estável →
+    `gasosinha-piscando`, neutro → `gasosinha-pensando`;
   - o `texto` está visível dentro de um elemento com `aria-live="polite"`;
-  - com `parado`, o elemento do sprite tem `data-parado="true"` e não tem a classe de
-    animação.
+  - sem `parado`, o elemento animado tem `data-parado="false"` e a classe `animate-pulinho`;
+  - com `parado`, ele tem `data-parado="true"` e não tem a classe de animação.
 
 ### Implementation for User Story 3
 
-- [ ] T094 [US3] Implementar `features/gasosinha/domain/reacao.ts` (`classificarReacao`,
+- [X] T094 [US3] Implementar `features/gasosinha/domain/reacao.ts` (`classificarReacao`,
   `textoReacao` e tipo `Reacao`) até o T092 passar.
-- [ ] T095 [P] [US3] Implementar `features/gasosinha/viewmodels/usePrefereMenosMovimento.ts`:
+- [X] T095 [P] [US3] Implementar `features/gasosinha/viewmodels/usePrefereMenosMovimento.ts`:
   `useSyncExternalStore` sobre `matchMedia('(prefers-reduced-motion: reduce)')`, com valor
   `true` no servidor, ou seja, parado por padrão.
-- [ ] T096 [US3] Implementar `components/gasosinha/Gasosinha.tsx` e
-  `components/gasosinha/gasosinha.module.css` até o T093 passar:
-  - o sprite é um `div` com `background-image`, `image-rendering: pixelated`, 32×32 px
-    escalado 3× por `transform` ou `background-size`, e animação `steps(4)` de 0,8 s em
-    loop;
-  - com `parado`, mostra o quadro 0, sem animação;
-  - por segurança, há também `@media (prefers-reduced-motion: reduce) { animation: none }`.
-- [ ] T097 [US3] Integrar o Gasosinha ao detalhe em `features/postos/domain/detalhe.ts` e `components/posto/DetalhePosto.tsx`:
+- [X] T096 [US3] Implementar `components/gasosinha/Gasosinha.tsx` e a animação em
+  `app/globals.css` até o T093 passar:
+  - a pose da reação vem da arte do mascote, com a versão clara e a `-dark` alternadas pela
+    classe `dark` do `<html>`, como no `PoseGasosinha`. A arte tem um quadro por pose;
+  - a animação é um pulinho em 4 degraus de 0,8 s em loop: `--animate-pulinho` no `@theme`,
+    com `@keyframes pulinho` e `step-end`, para manter o jeito de pixel art;
+  - com `parado`, mostra a pose fixa, sem a classe de animação;
+  - por segurança, há também `motion-reduce:animate-none`.
+- [X] T097 [US3] Integrar o Gasosinha ao detalhe em `features/postos/domain/detalhe.ts` e `components/posto/DetalhePosto.tsx`:
   - estender `montarDetalheVM` em `features/postos/domain/detalhe.ts` com `reacao` e
     `textoReacao`, atualizando `features/postos/domain/detalhe.test.ts` antes;
   - renderizar `<Gasosinha reacao texto parado>` em `components/posto/DetalhePosto.tsx`, com
     `parado` vindo de `usePrefereMenosMovimento()`, chamado no `PainelDetalhe` e repassado ao
     `DetalhePosto`.
-- [ ] T098 [US3] Validar `components/gasosinha/Gasosinha.tsx` no detalhe com os cenários "Gasosinha" e "Menos movimento" do quickstart,
+- [X] T098 [US3] Validar `components/gasosinha/Gasosinha.tsx` no detalhe com os cenários "Gasosinha" e "Menos movimento" do quickstart,
   seção 6, nos quatro tipos de posto.
+
+  Validado em 09/11/2026 no `next dev`, com dados de produção, em `/postos/[cnpj]`:
+  - **Gasosinha**, um posto de cada tipo, no HTML do servidor e no navegador:
+    - subiu: pose surpreso, "Subiu R$ 0,26 (+4,0%) desde 08/01/2026";
+    - caiu: pose feliz, "Caiu R$ 0,12 (−1,7%) desde 19/10/2026";
+    - estável: pose piscando, "Mesmo preço da coleta de 28/09/2026";
+    - uma coleta: pose pensando, "Ainda não há coleta anterior para comparar";
+    - sem preço: pose pensando, "Sem preço coletado".
+  - No HTML só aparecem as duas imagens da pose (clara e `-dark`), com `alt=""`, e o texto fica
+    em `aria-live="polite"`. Os temas claro e escuro trocam a pose e as cores do balão.
+  - **Menos movimento**: o servidor manda o mascote parado (`data-parado="true"`). Depois da
+    hidratação, sem a preferência, ele anima com `pulinho 0.8s steps(1) infinite` em 3 alturas
+    (0, −3 e −6 px). A regra `@media (prefers-reduced-motion: reduce)` com `animation: none` está
+    no CSS servido. A troca real da preferência do sistema ficou coberta pelos testes do
+    `usePrefereMenosMovimento` e do `PainelDetalhe`, porque a automação do navegador não muda essa
+    configuração.
+  - Ajuste feito na validação: o balão neutro ganhou um contorno fino, porque sumia sobre o vidro
+    quando o mapa atrás era claro.
+  - Observação: o `next dev` que já estava aberto não gerou a classe nova do Tailwind, criada numa
+    pasta nova. Foi preciso reiniciar o servidor.
 
 **Checkpoint**: todas as histórias funcionam de forma independente. Antes de seguir,
 `npm run typecheck`, `npm run lint` e `npm test` passam.

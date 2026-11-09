@@ -3,13 +3,16 @@ import { cn } from "cn";
 import { IconeIgual, IconeRelogio, IconeSemPreco, IconeSetaBaixo, IconeSetaCima } from "@/components/marca/Icones";
 import type { DirecaoVariacao } from "@/features/postos/viewmodels/tipos";
 
-const SELO = "inline-flex w-max items-center gap-1 rounded-[4px] py-px pr-1.5 pl-[5px] text-xs leading-4 font-semibold";
+const SELO = "inline-flex w-max items-center gap-1 rounded-full py-px pr-2 pl-1.5 text-xs leading-4 font-semibold";
 
+/**
+ * "Mais barato": pílula verde-clara com contorno leve (identidade visual). O texto basta para
+ * identificar o posto; a cor só acompanha (Princípio VII).
+ */
 export function SeloMaisBarato() {
   return (
-    <span className="inline-flex w-max items-center gap-[3px] rounded-[4px] bg-green py-0.5 pr-1.5 pl-1 text-[11px] leading-[14px] font-semibold tracking-[0.02em] text-white uppercase">
-      <IconeSetaBaixo className="size-[11px]" espessura={2.25} />
-      mais barato
+    <span className="inline-flex h-5 w-max items-center rounded-full bg-green-soft px-2 text-[11.5px] leading-none font-semibold text-green-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-green)_22%,transparent)] md:h-[18px] md:px-[7px] md:text-[11px]">
+      Mais barato
     </span>
   );
 }
