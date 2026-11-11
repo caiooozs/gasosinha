@@ -8,7 +8,8 @@ export type ItemAgrupado =
 type Propriedades = { posto: PostoNoMapa };
 
 /** Mesmos parâmetros do agrupamento interno do MapLibre: 60 px de raio, agrupa até o zoom 15. */
-const OPCOES = { radius: 60, maxZoom: 15 } as const;
+export const OPCOES_AGRUPAMENTO = { radius: 60, maxZoom: 15 } as const;
+const OPCOES = OPCOES_AGRUPAMENTO;
 
 /**
  * Agrupa os postos que se sobrepõem no zoom atual (FR-009, R12), dentro da área `bbox`.

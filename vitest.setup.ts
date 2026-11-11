@@ -20,3 +20,11 @@ if (typeof window !== "undefined" && !window.matchMedia) {
     dispatchEvent: () => false,
   });
 }
+
+// O jsdom não implementa a captura de ponteiro, que a folha arrastável do celular (vaul) usa ao
+// tocar nela (D9). Nos testes, não há arraste: basta não quebrar.
+if (typeof Element !== "undefined" && !Element.prototype.setPointerCapture) {
+  Element.prototype.setPointerCapture = () => {};
+  Element.prototype.releasePointerCapture = () => {};
+  Element.prototype.hasPointerCapture = () => false;
+}

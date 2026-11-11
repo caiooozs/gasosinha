@@ -5,12 +5,11 @@ import type { DataISO } from "@/lib/formato";
 import type { SentidoPreco } from "../domain/ordenar-lista";
 import { paginarGrupos, textoMostrarMais } from "../domain/paginar";
 import type { PostoNoMapa } from "../domain/tipos";
-import { montarGruposLista, montarRegua, tituloContagem } from "./montar-vm";
-import type { GrupoListaVM, ItemListaVM, MostrarMaisVM, ReguaVM } from "./tipos";
+import { montarGruposLista, montarRegua, tituloContagem, tituloContagemCurto } from "./montar-vm";
+import type { GrupoListaVM, MostrarMaisVM, ReguaVM } from "./tipos";
 import { useHoje } from "./useHoje";
 import { usePaginacao } from "./usePaginacao";
 
-const QUANTOS_NA_FOLHA = 2;
 /** Quantos postos a lista mostra de cada vez (D2). */
 const POSTOS_POR_PAGINA = 20;
 const NOME_POSTOS = { singular: "posto", plural: "postos", feminino: false };
@@ -18,11 +17,11 @@ const NOME_POSTOS = { singular: "posto", plural: "postos", feminino: false };
 export type ListaPostosVM = {
   /** Os grupos da página visível: os primeiros postos, na ordem escolhida (D2). */
   grupos: GrupoListaVM[];
-  /** As primeiras linhas, na ordem escolhida: a folha do mapa no celular mostra estas. */
-  primeiros: ItemListaVM[];
   vazia: boolean;
   /** "8 postos nesta área": sempre o total da área, não só a página visível. */
   titulo: string;
+  /** "8 postos": o mesmo total, curto, para a pílula do celular (D9). */
+  tituloCurto: string;
   /** A régua de preços da área, ou `null` sem duas coletas recentes com preços diferentes. */
   regua: ReguaVM | null;
   sentido: SentidoPreco;
@@ -41,7 +40,6 @@ export function useListaPostos(postos: readonly PostoNoMapa[], hoje: DataISO): L
   const hojeAtual = useHoje(hoje);
   const [sentido, definirSentido] = useState<SentidoPreco>("asc");
   const todos = useMemo(() => montarGruposLista(postos, hojeAtual, sentido), [postos, hojeAtual, sentido]);
-  const primeiros = useMemo(() => todos.flatMap((g) => g.itens).slice(0, QUANTOS_NA_FOLHA), [todos]);
   const regua = useMemo(() => montarRegua(postos, hojeAtual), [postos, hojeAtual]);
 
   const chave = useMemo(() => `${sentido}|${postos.map((p) => p.cnpj).join(",")}`, [postos, sentido]);
@@ -50,9 +48,9 @@ export function useListaPostos(postos: readonly PostoNoMapa[], hoje: DataISO): L
 
   return {
     grupos: pagina.grupos,
-    primeiros,
     vazia: postos.length === 0,
     titulo: tituloContagem(postos.length),
+    tituloCurto: tituloContagemCurto(postos.length),
     regua,
     sentido,
     definirSentido,

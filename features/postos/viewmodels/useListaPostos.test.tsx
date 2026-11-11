@@ -63,9 +63,9 @@ describe("useListaPostos: paginação (D2)", () => {
     expect(result.current.grupos[0].itens[0].nome).toBe("POSTO 1-1");
   });
 
-  it("a folha do celular e a régua continuam olhando todos os postos da área", () => {
+  it("a régua e as contagens (inclusive a curta, da pílula do celular) continuam olhando todos os postos da área", () => {
     const { result } = renderHook(() => useListaPostos(postos(45), HOJE));
-    expect(result.current.primeiros.map((p) => p.nome)).toEqual(["POSTO 1-1", "POSTO 1-2"]);
     expect(result.current.regua?.pontos).toHaveLength(45);
+    expect(result.current.tituloCurto).toBe("45 postos");
   });
 });

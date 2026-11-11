@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: PageProps<"/postos/[cnpj]">):
 
 /**
  * "/postos/[cnpj]": link direto do posto, indexável (FR-013). O detalhe aparece na própria página,
- * no lugar da lista, ao lado do mapa centralizado no posto. Só compõe a tela; os dados vêm do
- * viewmodel de servidor.
+ * no cartão à direita (D4), com a lista à esquerda e o mapa centralizado no posto. Só compõe a
+ * tela; os dados vêm do viewmodel de servidor.
  */
 export default function PaginaPosto({ params }: PageProps<"/postos/[cnpj]">) {
   return (
@@ -49,7 +49,7 @@ async function ConteudoPosto({ cnpj }: { cnpj: string }) {
       <TelaMapa
         hoje={hoje}
         centroInicial={centro ?? undefined}
-        painel={<PainelDetalhe modo="pagina" cnpj={cnpj} hoje={hoje} />}
+        detalhe={<PainelDetalhe modo="pagina" cnpj={cnpj} hoje={hoje} />}
       />
     </HydrationBoundary>
   );

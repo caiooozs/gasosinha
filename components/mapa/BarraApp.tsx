@@ -1,16 +1,20 @@
 import { cn } from "cn";
+import type { ReactNode } from "react";
 import { Logotipo } from "@/components/marca/Marca";
 
 /**
  * Barra do app com o logotipo. No celular, mostra o produto ("Gasolina comum"); no painel do
- * computador, a região coberta.
+ * computador, a região coberta e, em `acao`, o botão de recolher a lista (D6).
  */
-export function BarraApp({ variante, className }: { variante: "celular" | "painel"; className?: string }) {
+export function BarraApp({ variante, className, acao }: { variante: "celular" | "painel"; className?: string; acao?: ReactNode }) {
   if (variante === "painel") {
     return (
-      <div className={cn("flex items-center justify-between px-4 pt-4 pb-3", className)}>
+      <div className={cn("flex items-center justify-between gap-2 px-4 pt-4 pb-3", className)}>
         <Logotipo className="text-lg" />
-        <p className="text-xs leading-4 text-ink-2">Recife e região</p>
+        <div className="flex items-center gap-1">
+          <p className="text-xs leading-4 text-ink-2">Recife e região</p>
+          {acao}
+        </div>
       </div>
     );
   }

@@ -467,6 +467,31 @@ projeto, em 14/10). O segredo próprio basta, e só o banco o conhece (Princípi
 - `sync-precos`: todo dia às 09:00 de Brasília (12:00 UTC);
 - `sync-postos`: toda segunda-feira às 06:00 de Brasília (09:00 UTC).
 
+## R18. Ponto de "você está aqui" num site (D7, 09/11/2026)
+
+**Decisão**: depois de "usar minha localização", o site acompanha a posição com
+`navigator.geolocation.watchPosition`, com alta precisão. O mapa segue a pessoa até ela arrastá-lo,
+e o botão volta a seguir. A seta de direção ficou de fora. A constituição foi emendada para
+permitir isso (v1.2.0, Princípio III).
+
+**Justificativa**: é o comportamento que as pessoas conhecem dos apps de mapa e ajuda quem está a
+caminho do posto. A posição continua só na memória da página e nunca sai do aparelho.
+
+**Limites de ser um site, e não um app**:
+
+- a posição só atualiza com o site aberto e visível. Com a tela apagada, em outro app ou com a aba
+  em segundo plano, o navegador pausa a página. O site também para o acompanhamento de propósito
+  (`clearWatch`), para poupar bateria e privacidade, e o retoma quando a aba volta;
+- no celular, com GPS, a precisão fica em torno de 5 a 20 m. No computador, a posição vem do Wi-Fi
+  e pode errar por centenas de metros. O halo em volta do ponto mostra essa margem, limitado a
+  480 px de diâmetro para não cobrir o mapa;
+- a seta de direção dependeria da bússola (`DeviceOrientationEvent`), que no iPhone pede outra
+  permissão;
+- a rota até o posto continua fora do escopo da spec.
+
+**Alternativas consideradas**: só a posição do clique (`getCurrentPosition`), como antes. É mais
+simples, mas o ponto ficaria parado enquanto a pessoa anda. O usuário escolheu acompanhar.
+
 ---
 
 ## Fontes consultadas

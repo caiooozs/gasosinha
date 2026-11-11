@@ -17,6 +17,7 @@ const comPreco: MarcadorVM = {
   antigo: false,
   semPreco: false,
   maisBarato: false,
+  selecionado: false,
 };
 
 describe("MarcadorPosto", () => {
@@ -72,6 +73,18 @@ describe("MarcadorPosto", () => {
     render(<MarcadorPosto vm={comPreco} onSelecionar={onSelecionar} />);
     await userEvent.click(screen.getByRole("button"));
     expect(onSelecionar).toHaveBeenCalledTimes(1);
+  });
+
+  it("o posto aberto no detalhe fica destacado, com aria-current e não só pela cor (D5)", () => {
+    const { rerender } = render(<MarcadorPosto vm={comPreco} onSelecionar={() => {}} />);
+    const botao = screen.getByRole("button");
+    expect(botao.getAttribute("aria-current")).toBeNull();
+    expect(botao.getAttribute("data-selecionado")).toBe("false");
+    rerender(<MarcadorPosto vm={{ ...comPreco, selecionado: true }} onSelecionar={() => {}} />);
+    expect(botao.getAttribute("aria-current")).toBe("true");
+    expect(botao.getAttribute("data-selecionado")).toBe("true");
+    // Pista de forma: o marcador cresce e ganha um anel, além de qualquer cor.
+    expect(botao.className).toContain("scale-110");
   });
 });
 

@@ -1,3 +1,25 @@
+<!--
+Sync Impact Report (rascunho para revisão; remover antes do commit)
+- Versão: 1.1.0 → 1.2.0 (MINOR: expansão material do Princípio III, sem remover nenhuma regra)
+- Princípio modificado: III. Localização É da Pessoa (mesmo título)
+  - Ampliado: a posição pode ser usada para centralizar o mapa e para mostrar um ponto com a
+    posição atual, que acompanha o movimento.
+  - Novo: a posição só é lida depois que a pessoa pede ("usar minha localização"); o site não
+    pede sozinho (antes só no FR-003 da spec).
+  - Novo: o acompanhamento para quando o site deixa de estar visível e só volta quando ele
+    reaparece.
+  - Reforçado: a posição existe só na memória da página.
+  - Sem mudança: não enviar nem guardar a posição, consultas só pela área visível e o site
+    funcionando quando a pessoa recusa a permissão.
+  - Justificativa atualizada para o novo uso.
+- Quality Gates: o item de revisão sobre a posição passa a conferir também a leitura só a pedido
+  e a parada do acompanhamento.
+- Seções adicionadas ou removidas: nenhuma.
+- Templates (.specify/templates/*): não precisam de mudança; leem a constituição na hora.
+- Pendências fora da constituição (T126 em specs/001-gas-price-map/tasks.md): atualizar o FR-004
+  da spec e o contrato do `useLocalizacao` em contracts/ui.md, que ainda dizem "apenas para
+  centralizar o mapa" e "não passa por estado React".
+-->
 # Constituição do Gasosinha
 
 O Gasosinha é um site público que mostra num mapa os postos de combustível de uma região, com o
@@ -44,17 +66,24 @@ leitura.
 
 ### III. Localização É da Pessoa
 
-- A posição do usuário DEVE ser usada apenas para centralizar o mapa.
-- A posição NÃO DEVE ser enviada ao backend nem armazenada em banco de dados, `localStorage`,
-  `sessionStorage`, cookies ou URL. Ela também NÃO DEVE ser registrada em logs ou ferramentas de
-  analytics, nem no cliente, nem no servidor, nem nas Edge Functions.
+- A posição do usuário PODE ser usada apenas para duas coisas: centralizar o mapa e mostrar no
+  mapa um ponto com a posição atual, que acompanha o movimento da pessoa.
+- A posição só PODE ser lida depois que a pessoa pedir, pela ação "usar minha localização". O site
+  NÃO DEVE pedir a localização sozinho ao abrir.
+- O acompanhamento do movimento DEVE parar quando o site deixa de estar visível (aba em segundo
+  plano, tela apagada ou outro app em primeiro plano) e só PODE voltar quando ele reaparecer.
+- A posição DEVE existir só na memória da página, enquanto ela estiver aberta. Ela NÃO DEVE ser
+  enviada ao backend nem armazenada em banco de dados, `localStorage`, `sessionStorage`, cookies
+  ou URL. Ela também NÃO DEVE ser registrada em logs ou ferramentas de analytics, nem no cliente,
+  nem no servidor, nem nas Edge Functions.
 - As consultas de postos DEVEM usar apenas a área visível do mapa (bounding box), nunca as
   coordenadas do usuário.
 - Se a pessoa recusar a permissão de localização, o site DEVE continuar funcionando, com o mapa
   numa região padrão e com busca ou navegação manual.
 
-**Justificativa**: saber onde alguém está é um dado pessoal sensível. O site só precisa dessa
-informação para posicionar o mapa, então não há motivo para guardá-la.
+**Justificativa**: saber onde alguém está é um dado pessoal sensível. O site usa essa informação
+só para posicionar o mapa e mostrar à própria pessoa onde ela está, sempre a pedido dela e sem que
+a posição saia do aparelho. Por isso não há motivo para guardá-la nem para enviá-la a ninguém.
 
 ### IV. TypeScript Estrito e MVVM
 
@@ -165,7 +194,8 @@ na tela. Um erro ali viola os Princípios I e II de uma vez e pode não ter volt
   - se todo preço exibido tem data e fonte;
   - se algum segredo vazou para o cliente;
   - se toda tabela tem RLS de só leitura;
-  - se a posição do usuário aparece em algum armazenamento ou log;
+  - se a posição do usuário aparece em algum armazenamento ou log, se ela só é lida depois do
+    pedido da pessoa e se o acompanhamento para quando o site deixa de estar visível;
   - se há regra de negócio dentro de componente.
 - Toda tela nova DEVE ser conferida quanto a:
   - layout no celular;
@@ -189,4 +219,4 @@ na tela. Um erro ali viola os Princípios I e II de uma vez e pode não ter volt
 - Decisões que o Princípio VI exige registrar (serviços pagos, dependências novas) DEVEM constar no
   plan.md antes da implementação.
 
-**Version**: 1.1.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-11-02
+**Version**: 1.2.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-11-09

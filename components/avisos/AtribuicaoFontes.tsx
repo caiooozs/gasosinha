@@ -3,8 +3,11 @@ import { cn } from "cn";
 export type AtribuicaoFontesProps = {
   /** "24/10/2026": última atualização bem-sucedida dos preços, quando conhecida. */
   atualizadoEm: string | null;
-  /** "texto": centralizado, na folha do celular e no fim da lista. "pilula": sobre o mapa, no computador. */
-  variante?: "texto" | "pilula";
+  /**
+   * "texto": centralizado, no fim da lista. "pilula": sobre o mapa, no computador. "linha": curta,
+   * colada na pílula do celular, sempre à vista (D9).
+   */
+  variante?: "texto" | "pilula" | "linha";
   className?: string;
 };
 
@@ -32,6 +35,22 @@ export function AtribuicaoFontes({ atualizadoEm, variante = "texto", className }
       </a>
     </>
   );
+
+  if (variante === "linha") {
+    // A fonte dos preços e os créditos do mapa, no menor espaço: o Princípio I pede a fonte numa
+    // atribuição permanente na mesma tela dos marcadores, e o FR-030 pede a do mapa. Em 320 px pode
+    // ocupar duas linhas; o texto completo fica no fim da lista.
+    return (
+      <p
+        className={cn(
+          "glass mx-auto w-max max-w-full rounded-full px-2.5 py-0.5 text-center text-[10.5px] leading-[14px] text-ink-2",
+          className,
+        )}
+      >
+        Preços: ANP · {mapa}
+      </p>
+    );
+  }
 
   if (variante === "pilula") {
     return (

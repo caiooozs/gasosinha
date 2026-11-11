@@ -57,8 +57,8 @@ e data da coleta ou com "sem preço". Não depende do detalhe do posto nem do ma
    mostra a região padrão com os marcadores de todos os postos autorizados que estão na área
    visível.
 2. **Given** o mapa está aberto, **When** a pessoa toca em "usar minha localização" e permite o
-   acesso, **Then** o mapa é centralizado na posição dela, e essa posição não sai do aparelho nem
-   fica guardada.
+   acesso, **Then** o mapa é centralizado na posição dela, um ponto de "você está aqui" aparece e
+   acompanha o movimento, e essa posição não sai do aparelho nem fica guardada.
 3. **Given** a pessoa negou a localização ou o aparelho não consegue obtê-la, **When** ela usa o
    site, **Then** o mapa continua na região padrão e tudo funciona normalmente, com um aviso curto
    de que a localização não está disponível.
@@ -213,9 +213,12 @@ movimento ativada.
   pessoa não pedir a localização nem buscar uma cidade.
 - **FR-003**: A pessoa DEVE poder pedir, por uma ação explícita, que o mapa seja centralizado na
   posição dela. O site NÃO DEVE pedir a localização automaticamente ao abrir.
-- **FR-004**: A posição da pessoa DEVE ser usada apenas para centralizar o mapa. Ela NÃO DEVE sair
-  do aparelho, ser guardada (inclusive no endereço da página) nem ser registrada. O que o site
-  pede ao servidor DEVE depender apenas da área que o mapa mostra.
+- **FR-004**: A posição da pessoa DEVE ser usada apenas para centralizar o mapa e para mostrar
+  nele um ponto de "você está aqui", que acompanha o movimento enquanto o site está visível e para
+  quando ele sai da tela (constituição v1.2.0, Princípio III). Com o acompanhamento ligado, o mapa
+  segue a pessoa até ela arrastá-lo. Ela NÃO DEVE sair do aparelho, ser guardada (inclusive no
+  endereço da página) nem ser registrada; fica só na memória da página. O que o site pede ao
+  servidor DEVE depender apenas da área que o mapa mostra.
 - **FR-005**: Se a localização for negada, estiver indisponível ou cair fora da região coberta, o
   mapa DEVE permanecer na região padrão. O site DEVE continuar utilizável e mostrar um aviso
   curto.
@@ -418,8 +421,8 @@ movimento ativada.
   Isso aceita o risco de demorar a perceber uma falha, inclusive uma pausa do projeto por
   inatividade, em troca de não depender de mais um serviço nem de mais um segredo.
 - **"Perto da pessoa"**: significa a área visível do mapa depois de centralizado. A lista não
-  ordena por distância, porque a posição só pode ser usada para centralizar o mapa (Princípio III
-  da constituição).
+  ordena por distância, porque a posição só pode ser usada para centralizar o mapa e mostrar o
+  ponto de "você está aqui" (Princípio III da constituição).
 - **Público**: qualquer pessoa, pelo navegador do celular ou do computador. Não há conta, perfil
   nem dado pessoal guardado.
 - **Fora do escopo desta feature**:

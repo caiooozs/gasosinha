@@ -41,6 +41,11 @@
   --color-seg-on: #ffffff;
   /* Campos dentro dos painéis de vidro (busca, ordem de preço, botões de contorno). */
   --color-glass-fill: rgb(28 25 23 / 0.05);
+  /*
+   * Ponto de "você está aqui" (D7): o azul que as pessoas reconhecem dos apps de mapa, com borda
+   * branca, para destacar nos temas claro e escuro.
+   */
+  --color-posicao: #1a73e8;
 
   --text-xs: 12px;
   --text-xs--line-height: 16px;

@@ -1157,7 +1157,7 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
 
 **Purpose**: qualidade, publicação e validação dos critérios de sucesso.
 
-- [ ] T099 [P] Fazer a auditoria dos Princípios II a IV e VIII em `app/`, `components/`, `features/`, `lib/` e `supabase/functions/`:
+- [X] T099 [P] Fazer a auditoria dos Princípios II a IV e VIII em `app/`, `components/`, `features/`, `lib/` e `supabase/functions/`:
   - **Princípio II**: `grep` para garantir que não há `any` sem justificativa, que nenhuma
     variável `NEXT_PUBLIC_*` contém `SERVICE_ROLE` ou `SECRET`, e que nenhum secret
     das Edge Functions usa o prefixo `NEXT_PUBLIC_`;
@@ -1167,7 +1167,7 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
   - **Princípio VIII**: só `lib/formato` formata moeda, data, idade, percentual e variação.
 
   Corrigir o que aparecer.
-- [ ] T100 Rodar os scripts de `package.json` (`npm run typecheck`, `npm run lint`, `npm test` e `npm run build`) e garantir que
+- [X] T100 Rodar os scripts de `package.json` (`npm run typecheck`, `npm run lint`, `npm test` e `npm run build`) e garantir que
   todos passam sem erro, inclusive sem erro de "current-time prerender" no build (Quality Gates
   da constituição).
 - [ ] T101 🙋 Com aprovação humana, publicar na Vercel (Hobby) com as variáveis de `.env.example`. Configurar
@@ -1188,7 +1188,7 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
      `problema_desde`;
   3. restaurar com `npx supabase secrets unset LPC_PAGINA_URL` e chamar de novo;
   4. conferir que o aviso some das duas páginas (FR-027 e SC-008).
-- [ ] T105 [P] Atualizar `README.md` em pt-BR com:
+- [X] T105 [P] Atualizar `README.md` em pt-BR com:
   - o que é o Gasosinha;
   - as fontes e a atribuição (ANP, OpenStreetMap e OpenFreeMap);
   - a arquitetura (MVVM e ingestão), com links para `specs/001-gas-price-map/`;
@@ -1343,6 +1343,349 @@ Hoje, na lista, o selo "−R$ 0,10 (−1,5%) desde 22/10/2026" quebra em duas li
       letra cai para 11 px ("−0,10 (−1,4%) 16/10"), e agora nenhum selo passa da coluna. O texto
       completo continua para leitores de tela.
 
+### D4 — Pelo link direto, o detalhe também fica à direita (apontado em 09/11/2026)
+
+Hoje, quem abre `/postos/[cnpj]` direto, ou atualiza a página com um posto aberto, cai no modo
+página. O `TelaMapa` recebe o detalhe no `painel` e o põe no lugar da lista, à esquerda. Assim a
+lista some e a pessoa não consegue navegar pelos outros postos. Pelo site, o detalhe abre à
+direita. O usuário quer o detalhe sempre à direita, venha a pessoa de onde vier.
+
+- [X] T119 Escrever os testes primeiro, no bloco `PainelDetalhe` de
+  `components/posto/DetalhePosto.test.tsx`, para o `modo="pagina"` no computador:
+  - o HTML do servidor continua com o nome e o preço, sem portal (FR-013, R11);
+  - o detalhe é um cartão à direita, não um diálogo, com `aria-labelledby` no nome;
+  - "Fechar" leva a `/` com `replace`, nunca voltando no histórico, para não sair do site (caso de
+    borda "Fechar o detalhe aberto por link").
+- [X] T120 Em `app/postos/[cnpj]/page.tsx` e `components/mapa/TelaMapa.tsx`, no computador:
+  - a lista continua à esquerda;
+  - o detalhe vai num cartão de vidro à direita, igual ao do modal (336 px, `top-4 right-4`),
+    renderizado no próprio HTML, sem portal;
+  - o mapa centraliza o posto descontando o cartão da direita, para ele não ficar escondido
+    embaixo;
+  - se um modal de outro posto abrir por cima (`useDetalheAberto()`), o cartão da página se
+    esconde, e volta quando o modal fecha;
+  - no celular não há lado. Seguir o comportamento do modal, a folha de baixo por cima do mapa,
+    se der para renderizar sem portal; se não der, manter a página como hoje. Confirmar com o
+    usuário na execução.
+- [X] T121 Atualizar `specs/001-gas-price-map/contracts/ui.md` (`<PainelDetalhe modo="pagina">` e
+  o `painel` do `<TelaMapa>`) e o cenário de link direto da seção 6 do quickstart.
+
+### D5 — Escolher um posto na lista centraliza o mapa nele (apontado em 09/11/2026)
+
+Hoje, escolher um posto na lista abre o detalhe, mas o mapa não se move. A pessoa não vê onde o
+posto fica. Só o link direto centraliza, pelo `centroInicial`.
+
+Pontos de atenção da análise:
+- centralizar muda a área visível, e a lista acompanha a área (FR-010). Ela se reordena e volta à
+  primeira página. O posto escolhido continua nela, porque o mapa centraliza nele, mas pode ficar
+  depois dos 20 primeiros;
+- por isso, ao fechar o detalhe, o item de origem pode não estar mais na lista. O foco precisa de
+  um destino alternativo: o marcador do posto ou o título da lista;
+- num zoom baixo, o posto está dentro de um grupo (cluster). Só mover o mapa não mostra o
+  marcador dele.
+
+- [X] T122 [P] Escrever `features/postos/domain/foco.test.ts` para `planejarFoco(posto, zoomAtual)`:
+  - com o posto visível sozinho no zoom atual, só move o centro e mantém o zoom;
+  - com o posto dentro de um grupo, aproxima até ele aparecer sozinho (`ZOOM_PONTO`, 15);
+  - a posição do posto vem dos `postosVisiveis` e nunca da posição da pessoa (Princípio III).
+- [X] T123 Implementar `features/postos/domain/foco.ts` e integrar:
+  - em `components/mapa/MapaPostos.tsx`, um comando novo no `ControleMapa` (`focarPosto`) que usa
+    `easeTo` e desconta a lista à esquerda e o cartão do detalhe à direita (`margensDoMapa`);
+  - em `components/mapa/TelaMapa.tsx`, ao escolher um posto na lista, focar o posto pelo CNPJ;
+  - destacar o marcador do posto aberto (`selecionado` no `MarcadorVM`, com o destaque também na
+    forma, não só na cor), em `features/postos/viewmodels/montar-vm.ts` e
+    `components/mapa/MarcadorPosto.tsx`, com os testes deles antes;
+  - ao fechar o detalhe, o foco volta ao item de origem; se ele não estiver mais na lista, vai
+    para o marcador do posto e, sem marcador, para o título da lista.
+
+### D6 — Lista mais compacta, para sobrar mais mapa (apontado em 09/11/2026; opção (a) escolhida)
+
+No computador, a lista é um cartão de 336 px à esquerda, com até 680 px de altura. Com o detalhe
+aberto à direita, sobram uns 800 px de mapa numa tela de 1536 px. Opções analisadas:
+- **(a) Lista recolhível** (recomendada): um botão "Recolher lista" deixa só uma pílula com a
+  contagem ("360 postos · Ver lista"), e o mapa fica inteiro. É o maior ganho e não piora a
+  leitura. A área visível passa a descontar só a pílula;
+- **(b) Cartão mais estreito e linhas mais compactas** (336 para cerca de 300 px, menos
+  espaçamento): ganha uns 36 px de largura, mas mais nomes de posto quebram em 3 linhas;
+- **(c) Altura menor** (máximo de 680 para cerca de 520 px): libera o canto inferior esquerdo,
+  mas mostra menos postos sem rolar.
+
+- [X] T124 🧭 Antes de implementar, confirmar com o usuário a opção (a), (b), (c) ou uma
+  combinação, e registrar a escolha aqui.
+
+  **Escolha do usuário em 09/11/2026: (a) lista recolhível.** O cartão continua com 336 px e
+  680 px de altura quando aberto.
+- [X] T125 Implementar a lista recolhível no computador (a partir de `md`), em
+  `components/mapa/TelaMapa.tsx` e `components/lista/ListaPostos.tsx`, com os testes antes. No
+  celular nada muda, porque lá a lista já alterna com o mapa ("Ver lista" e "Ver mapa"):
+  - um botão "Recolher lista" no cabeçalho do cartão troca o cartão por uma pílula no mesmo
+    canto, com a contagem e a ação de abrir ("360 postos · Ver lista"). A pílula mostra o mesmo
+    `titulo` do viewmodel, sempre o total da área;
+  - a busca de cidade continua alcançável com a lista recolhida, por um botão de busca na pílula
+    que expande a lista com o foco no campo;
+  - o estado de recolhido fica num viewmodel, não na view, e dura enquanto a página estiver
+    aberta. Abrir um posto não expande a lista;
+  - os botões têm nome acessível e `aria-expanded`. O foco vai para a pílula ao recolher e para o
+    título da lista ao expandir;
+  - a medição da cobertura (`cobertura.esquerda`) passa a descontar só a pílula quando a lista
+    está recolhida, para a contagem e a régua continuarem sendo só o que a pessoa vê;
+  - atualizar `contracts/ui.md` (o `<TelaMapa>` e um componente novo para a pílula, se houver).
+
+### D7 — Ponto de "você está aqui" no mapa (apontado em 09/11/2026; depende de emenda)
+
+O usuário quer um ponto com a posição da pessoa, como no Google Maps.
+
+**Bloqueio**: o Princípio III da constituição e o FR-004 da spec dizem que a posição "DEVE ser
+usada apenas para centralizar o mapa". Mostrar um ponto é outro uso, então este bloco só roda
+depois de uma emenda via `/speckit-constitution`. A governança diz que só o usuário muda a
+constituição.
+
+O resto do Princípio III continua valendo, e a implementação respeita tudo: a posição não vai ao
+backend, não é guardada (banco, `localStorage`, `sessionStorage`, cookies ou URL), não aparece
+em logs e não entra nas consultas, que seguem usando só a área visível.
+
+- [X] T126 🙋 O usuário emenda o Princípio III via `/speckit-constitution` (versão MINOR). Texto
+  sugerido: "a posição pode ser mostrada como um ponto no mapa, que acompanha o movimento
+  enquanto o site está visível, só no navegador e só em memória, depois que a pessoa pedir a
+  localização". Depois, atualizar o FR-004 da spec e o contrato do
+  `useLocalizacao` em `contracts/ui.md`, que hoje diz que a posição não passa por estado React.
+- [X] T127 Escrever os testes primeiro, em `features/localizacao/viewmodels/`:
+  - o ponto só aparece depois de "Usar minha localização"; o site continua sem pedir a
+    localização sozinho (FR-003);
+  - a posição fica só em memória: nada em `localStorage`, `sessionStorage`, cookies ou URL, e
+    nenhuma requisição a recebe (`fetch` simulado);
+  - permissão negada, erro ou revogação tiram o ponto e mostram o aviso de hoje (FR-005);
+  - acompanhamento: cada posição nova move o ponto; com a aba oculta, o acompanhamento para
+    (`clearWatch`) e volta quando ela reaparece;
+  - modo seguir: depois do clique, o mapa segue a posição. Arrastar o mapa desliga o modo seguir,
+    e o ponto continua se movendo. O botão de localização religa.
+- [X] T128 Implementar o ponto em `components/mapa/MapaPostos.tsx` e no viewmodel de
+  localização. Comportamento escolhido pelo usuário em 09/11/2026, como no Google Maps:
+  - **ponto**: azul, com um halo do tamanho da precisão informada pelo aparelho, e `aria-label`
+    "Você está aqui";
+  - **posição dinâmica**: depois do clique, `watchPosition` com alta precisão, e o ponto
+    acompanha o movimento. Com a aba oculta, como na tela apagada ou em outro app, o
+    acompanhamento para, para poupar bateria e privacidade, e volta quando a aba reaparece;
+  - **mapa que segue**: depois do clique, o mapa vai seguindo a pessoa. Se ela arrastar o mapa,
+    ele para de seguir e o ponto continua andando. Tocar de novo no botão de localização volta a
+    seguir. O botão mostra se o modo seguir está ligado (`aria-pressed`);
+  - **fora do escopo**: a seta de direção, que pediria a bússola e outra permissão no iPhone, e a
+    rota até o posto, que a spec já deixa de fora;
+  - **limites de site, para registrar no `research.md`**: a posição só atualiza com o site
+    aberto e visível. No computador, ela vem do Wi-Fi e pode errar por centenas de metros, o que
+    o halo mostra.
+- [X] T129 Validar D4 a D7 no navegador, nos temas claro e escuro, com 320, 375 e 1280 px:
+  - **D4**: o link direto e a atualização da página mostram o detalhe à direita e a lista à
+    esquerda; "Fechar" vai para `/`;
+  - **D5**: escolher um posto na lista centraliza e destaca o marcador, inclusive quando ele
+    estava dentro de um grupo; fechar devolve o foco;
+  - **D6**:
+    - recolher troca o cartão pela pílula, e o mapa ganha a área toda;
+    - a contagem e a régua passam a contar a área maior;
+    - a busca abre pela pílula;
+    - o foco vai e volta entre a pílula e o título da lista;
+    - com o detalhe aberto, recolher e expandir continuam funcionando;
+  - **D7**:
+    - o ponto aparece só depois do clique, nada é guardado, e no DevTools nenhuma requisição leva a
+      posição;
+    - com a posição simulada em movimento (Sensors do DevTools), o ponto anda e o mapa segue;
+    - arrastar o mapa para de seguir, e o botão religa;
+    - com a aba oculta e visível de novo, o acompanhamento para e volta.
+
+  Validado em 09/11/2026 no `next dev`, com dados de produção:
+  - **D4**:
+    - em `/postos/[cnpj]`, no computador (1536 px), o detalhe fica num cartão de 336 px à direita
+      (16 px da borda), a lista à esquerda e o marcador do posto no meio, fora dos cartões;
+    - "Fechar" aponta para `/`, e não há diálogo;
+    - no celular (375 px), o detalhe vira a folha de baixo: largura toda, 88% da altura.
+  - **D5**:
+    - escolher na lista um posto que estava dentro de um grupo aproxima o mapa e centraliza o
+      posto no mapa livre, entre a lista e o cartão (x=776);
+    - o marcador fica destacado (`aria-current`, maior e com anel);
+    - o `Esc` volta para `/` com o foco no item da lista, e o destaque some.
+  - **D6**:
+    - recolher troca o cartão pela pílula (423 × 48 px) com "368 postos nesta área · Ver lista",
+      e o foco vai para a pílula;
+    - "Ver lista" põe o foco no título, e a busca da pílula abre a lista com o foco no campo;
+    - num zoom mais perto, a contagem passou de 330 para 331 com a lista recolhida.
+  - **D7**, com a geolocalização da página trocada por uma falsa, que anda para o norte a cada
+    1,5 s, porque a automação não usa o Sensors do DevTools:
+    - o ponto aparece só depois do clique, com `aria-pressed="true"`, e o mapa segue (o ponto fica
+      parado na tela);
+    - arrastar desliga o modo seguir, e o ponto anda na tela (de y=209 para y=153). O botão religa
+      sem novo `watchPosition`;
+    - com a aba oculta, `clearWatch`; com ela visível de novo, outro `watchPosition`;
+    - nenhum armazenamento, cookie ou URL tem a coordenada, e nenhuma das 50 requisições a leva;
+    - ponto azul com borda branca e halo de 51 px para 60 m de precisão, legível nos temas claro e
+      escuro.
+  - Observação: de novo, o `next dev` não gerou as classes e o token novos do Tailwind (o ponto
+    saiu sem cor) até ser reiniciado, o mesmo problema da Fase 5.
+
+### D8 — A lista abre e fecha suave no computador (apontado e aplicado em 09/11/2026)
+
+Hoje, "Recolher lista" e "Ver lista" trocam o cartão pela pílula de uma vez: o cartão é escondido
+com `display: none`, que não anima.
+
+- [X] T130 Em `components/mapa/TelaMapa.tsx`, trocar o `display: none` por uma transição, no
+  computador:
+  - o cartão e a pílula ficam sempre montados;
+  - ao recolher, o cartão encolhe para o canto (escala 0,95, 12 px para a esquerda) e some em
+    300 ms, numa curva que desacelera no fim. A pílula aparece 120 ms depois, deslizando;
+  - ao abrir, o caminho inverso;
+  - a visibilidade não anima: ao mostrar, ela vira `visible` na hora, e o foco vai para a pílula
+    ou para o título como antes; ao esconder, ela só muda no fim, e o elemento sai do Tab e do
+    leitor de tela quando termina de sumir;
+  - com a lista recolhida, a cobertura da esquerda passa a ser 0, mesmo com o cartão ainda na
+    página;
+  - com menos movimento (`motion-reduce`), a troca é instantânea.
+- [X] T131 Validar no navegador (1536 px):
+  - a transição chega ao elemento (`opacity, translate, scale, visibility`; 300 ms, 300 ms,
+    300 ms, 0 s);
+  - ao recolher, a pílula fica visível e focável no mesmo instante, e o cartão termina com
+    opacidade 0, escala 0,95 e invisível;
+  - ao abrir, o cartão fica focável na hora e termina com opacidade 1, e a pílula termina
+    invisível;
+  - 404 testes, typecheck e lint passam.
+
+### D9 — Celular: mapa livre, com uma barra compacta embaixo (apontado em 09/11/2026; decidido no T132)
+
+Hoje no celular (captura do usuário, num iPhone de 375 px com as barras do Safari), a tela tem:
+- em cima, a barra do app (logotipo e "Gasolina comum") e a busca flutuante;
+- embaixo, a `FolhaResumo` fixa, com o título, a faixa de preços, "Ver lista", as duas primeiras
+  linhas da lista e a atribuição.
+
+A folha ocupa mais da metade da tela e não dá para recolhê-la. Sobra uma faixa pequena de mapa,
+pior em celulares menores (320 a 375 px de largura e 568 a 667 px de altura).
+
+A folha também guarda coisas que precisam continuar existindo:
+- os estados de carregando, vazio ("Ver a região inteira") e erro ("Tentar de novo");
+- o botão de localização;
+- a atribuição das fontes.
+
+Proposta, inspirada na pílula do computador (D6):
+- **Barra compacta embaixo**: uma pílula de vidro fixa acima da área segura
+  (`env(safe-area-inset-bottom)`). Ela mostra a contagem com a ação de abrir ("8 postos · Ver
+  lista") e o botão de busca. É a única coisa fixa embaixo, e o mapa fica livre;
+- **Estados na própria pílula**:
+  - carregando: "Buscando os preços…", em `role="status"`;
+  - vazio: "Nenhum posto aqui", com "Ver a região inteira";
+  - erro: "Não deu para carregar", com "Tentar de novo";
+- **Topo limpo**: a barra do app e a busca flutuante saem. O logotipo vai para o topo da lista, e a
+  busca abre pelo botão da pílula, como no computador, num campo no topo com o teclado já aberto;
+- **Botões redondos**: localização e tema flutuam à direita, logo acima da pílula. A localização
+  fica perto do polegar;
+- **Atribuição sempre à vista**: o Princípio I exige a fonte numa atribuição permanente e visível
+  na mesma tela dos marcadores, que mostram a idade no lugar da data, e o FR-030 exige a do mapa.
+  Fica uma linha curta, de 11 px, colada na pílula: "Preços: ANP · Mapa: © OpenStreetMap". O texto
+  completo vai na lista;
+- **Tocar na pílula abre os postos da área**, de um destes jeitos (decidir no T132):
+  - **(a) Folha arrastável com duas alturas** (recomendada): na metade da tela, com o mapa ainda à
+    vista em cima, ou em tela cheia. Uma alça serve para arrastar e fechar. Usa o `Drawer` do
+    shadcn (biblioteca `vaul`), uma dependência nova que precisa de justificativa no `plan.md`
+    (Princípio VI). É o padrão dos apps de mapa;
+  - **(b) Sem dependência nova**: a lista abre em tela cheia, como o "Ver lista" de hoje, com "Ver
+    mapa" para voltar. É mais simples, mas sem o meio-termo de ver mapa e lista juntos;
+- **Área visível**: embaixo, só a pílula (ou a folha na metade, se aberta) cobre o mapa. A contagem
+  e a lista passam a considerar muito mais mapa.
+
+- [X] T132 🧭 Antes de implementar, decidir com o usuário e registrar aqui:
+  - **(a) ou (b)** para a lista;
+  - **com a folha na metade, ela acompanha o mapa?** Ou seja, a lista se atualiza enquanto a pessoa
+    move o mapa. Recomendado: sim;
+  - **onde fica o botão de tema**: flutuando sobre o mapa ou no topo da lista. Recomendado: no topo
+    da lista, para limpar o mapa;
+  - **o detalhe do posto no celular** também vira uma folha que abre na metade, com o mapa
+    centralizado no posto acima dela? Hoje ele cobre 88% da tela e é modal;
+  - **o botão Voltar do Android** fecha a folha? Recomendado: não mexer no histórico; fechar é pela
+    alça, arrastando ou pelo botão.
+
+  **Decisões do usuário em 09/11/2026**, todas iguais às recomendações:
+  1. lista na opção **(a)**, folha arrastável com duas alturas (metade e tela cheia), com o
+     `Drawer` do shadcn (`vaul`);
+  2. **sim**, na metade a folha acompanha o mapa;
+  3. o botão de tema fica **no topo da lista**;
+  4. **sim**, o detalhe do posto no celular abre **na metade da tela**, com o mapa centralizado no
+     posto acima dele;
+  5. **não**, o botão Voltar do Android não fecha a folha, e o histórico não é usado para ela.
+- [X] T133 Escrever os testes primeiro:
+  - a pílula na versão do celular: contagem curta, "Ver lista" com `aria-expanded`, busca e os três
+    estados, cada um com o papel e a ação certos;
+  - o viewmodel do estado da lista, só em memória: `fechada`, `meia` ou `cheia`;
+  - foco: abrir a lista põe o foco no título, e fechar devolve o foco à pílula;
+  - a atribuição curta fica no documento em todos os estados;
+  - o detalhe no celular abre na altura `meia`, sem cobrir o mapa acima dele, e "Fechar" continua
+    voltando no histórico como hoje (D1).
+- [X] T134 Instalar o `Drawer` do shadcn (`npx shadcn@latest add drawer`, que traz o `vaul`) e
+  implementar a barra compacta e o topo limpo, em `components/mapa/TelaMapa.tsx`, numa versão nova
+  da pílula em `components/lista/PilulaLista.tsx` e trocando a `components/mapa/FolhaResumo.tsx`:
+  - tirar do celular a `BarraApp` e a busca flutuante;
+  - a busca abre num campo sobreposto no topo, com o foco nele;
+  - só o botão de localização fica flutuando, acima da pílula. O de tema vai para o topo da lista
+    (decisão 3);
+  - a atribuição curta fica permanente.
+- [X] T135 Implementar a lista no celular como `Drawer` com duas alturas (`snapPoints`: metade e
+  tela cheia), com alça para arrastar e fechar e sem usar o histórico (decisão 5). Ela leva:
+  - no topo, o logotipo e o botão de tema (decisão 3), e depois o cabeçalho de hoje: título, faixa
+    de preços, ordem e busca;
+  - a paginação do D2;
+  - o selo compacto do D3;
+  - na metade, o mapa acima continua usável, e a lista acompanha a área visível ao mover o mapa
+    (decisão 2). Em tela cheia, a lista cobre o mapa.
+- [X] T136 Ajustar o mapa ao novo layout:
+  - a cobertura de baixo (`cobertura.inferior`) passa a ser a pílula, ou a folha na metade;
+  - o foco no posto do D5, no celular, desconta a folha;
+  - o detalhe do posto no celular (`PainelDetalhe` no modo modal) vira um `Drawer` que abre na
+    metade da tela, com a opção de arrastar para a tela cheia (decisão 4). Na metade, o mapa acima
+    fica visível e usável, como no computador (D1), e centraliza o posto acima da folha.
+- [X] T137 Atualizar a documentação:
+  - `specs/001-gas-price-map/contracts/ui.md`: a `FolhaResumo` dá lugar à pílula, à lista em
+    `Drawer` e ao detalhe na metade da tela no celular;
+  - os cenários de celular da seção 6 do quickstart;
+  - o `plan.md`, com a justificativa da dependência nova (`vaul`, pelo `Drawer` do shadcn),
+    conforme o Princípio VI: alturas e gesto de arrastar acessíveis, que seriam arriscados de
+    escrever do zero; licença MIT; sem custo.
+- [X] T138 Validar no navegador em 320 × 568, 375 × 667 e 390 × 844 px, nos temas claro e escuro:
+  - com tudo fechado, o mapa ocupa pelo menos 80% da altura útil, e a fonte continua visível;
+  - abrir, arrastar entre as alturas e fechar a lista funciona, e a lista acompanha o mapa;
+  - a busca abre, encontra a cidade e fecha;
+  - os estados de carregando, vazio e erro aparecem na pílula;
+  - achar o posto mais barato perto em menos de 15 s (SC-004), pelo marcador verde no mapa ou com
+    um toque para abrir a lista;
+  - leitor de tela e teclado: a ordem do foco e os nomes acessíveis.
+
+  **Validado em 10/11/2026**, no `next dev`, em `iframe`s com o tamanho de cada celular:
+  - **Barra compacta**: "402 postos · Ver lista", a busca, o botão de localização na mesma linha e
+    a linha das fontes (duas linhas pequenas). A pílula não passa da borda em nenhum tamanho;
+  - **Mapa livre**: 82% em 320 × 568, 85% em 375 × 667 e 88% em 390 × 844. Na primeira versão, o
+    botão de localização ficava numa linha só para ele, acima da pílula, e o mapa ficava em 77%;
+    ele passou para a mesma linha da pílula;
+  - **Folha da lista**, em 375 × 667:
+    - abre na metade (topo em 50% da tela), com o nome "Postos da área visível", o logotipo, o botão
+      de tema e 20 postos;
+    - a contagem passa a descontar a metade coberta;
+    - o foco vai para o título da lista, e a pílula fica com `aria-expanded="true"`;
+    - "Fechar lista" fecha e devolve o foco à pílula;
+    - arrastar a alça para cima leva à tela cheia;
+    - arrastar a alça para baixo, a partir da metade, fecha (a pílula volta a
+      `aria-expanded="false"`);
+  - **Busca**: o botão da pílula abre o campo no topo (y=27), com o foco nele e "Cancelar".
+    "jaboatao" encontra "Jaboatão dos Guararapes"; escolher fecha o campo, e o mapa vai até lá (402
+    para 214 postos);
+  - **Detalhe**:
+    - escolher um posto na folha da lista fecha a lista e abre o detalhe na metade da tela
+      (deslocamento de 333,5 px em 667);
+    - o marcador do posto fica destacado e centralizado acima da folha (y=151);
+    - "Fechar" volta para `/`, o destaque some, e o foco vai para a pílula, porque o item de origem
+      estava na lista, que fechou;
+  - **Link direto**: o cartão ocupa a metade de baixo (334 px de 667), com "Fechar" para `/` e o
+    marcador destacado acima dele (y=151);
+  - **Temas**: claro e escuro, com o mapa na metade de cima e a folha legível na de baixo;
+  - **Na primeira tentativa**, a extensão do Chrome desconectou no meio da validação; ela foi
+    retomada quando a extensão voltou. O gesto de arrastar foi simulado com eventos de ponteiro,
+    e vale conferir num celular de verdade;
+  - os estados da pílula (carregando, vazio e erro), o foco e os nomes acessíveis estão nos testes
+    do `PilulaCelular`, do `FolhaLista` e do `PainelDetalhe`.
+
 **Checkpoint**: `npm run typecheck`, `npm run lint` e `npm test` passam.
 
 ---
@@ -1373,7 +1716,13 @@ Hoje, na lista, o selo "−R$ 0,10 (−1,5%) desde 22/10/2026" quebra em duas li
 - **Polish (Fase 6)**: depende das histórias que forem publicadas.
 - **Detalhes (Fase 7)**: depende das Fases 3 a 5, cujas telas ela ajusta. De preferência roda
   antes da Fase 6. Os blocos D1, D2 e D3 são independentes entre si. Dentro de cada bloco, os
-  testes vêm antes da implementação. O T118 valida tudo no fim.
+  testes vêm antes da implementação. O T118 valida D1 a D3. Os blocos D4 a D7 vieram depois:
+  - o D5 aproveita o cartão à direita do D4, então roda depois dele;
+  - o D6 está decidido (T124: lista recolhível) e pode rodar;
+  - o D7 espera a emenda da constituição (T126).
+
+  O T129 valida D4 a D7. O D8 já foi aplicado. O D9, do celular, já tem as decisões do T132 e
+  muda a mesma área do D6 e do D8 (`TelaMapa` e `PilulaLista`), então roda por último.
 
 ### User Story Dependencies
 

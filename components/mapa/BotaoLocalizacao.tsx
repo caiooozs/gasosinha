@@ -1,9 +1,6 @@
-"use client";
-
 import { cn } from "cn";
-import { useState } from "react";
 import { IconeLocalizacao } from "@/components/marca/Icones";
-import { useLocalizacao, type ResultadoLocalizacao } from "@/features/localizacao/viewmodels/useLocalizacao";
+import type { EstadoLocalizacao, ResultadoLocalizacao } from "@/features/localizacao/viewmodels/useAcompanharLocalizacao";
 
 const MENSAGENS: Record<ResultadoLocalizacao, string | null> = {
   centralizado: null,
@@ -13,43 +10,37 @@ const MENSAGENS: Record<ResultadoLocalizacao, string | null> = {
 };
 
 export type BotaoLocalizacaoProps = {
-  aoCentralizar: (lng: number, lat: number) => void;
+  /** Vem do `useAcompanharLocalizacao`, chamado no `TelaMapa`: os dois botões (celular e computador) mostram o mesmo estado. */
+  estado: Pick<EstadoLocalizacao, "seguindo" | "pedindo" | "resultado">;
+  onUsar: () => void;
   /** "redondo": só o ícone, no canto do mapa (celular). "pilula": ícone e texto (computador). */
   variante?: "redondo" | "pilula";
 };
 
 /**
- * "Usar minha localização" (FR-003 a FR-005). Só pede permissão no clique, nunca ao montar. Guarda
- * apenas o resultado (para a mensagem), nunca a coordenada (Princípio III).
+ * "Usar minha localização" (FR-003 a FR-005, D7). Só renderiza: o pedido, o acompanhamento e o
+ * modo seguir ficam no viewmodel. É um botão de alternar: `aria-pressed` diz se o mapa está
+ * seguindo a pessoa. Com o modo seguir ligado, ele fica escuro (contraste e `aria-pressed`, não só
+ * cor). Nunca recebe a coordenada (Princípio III).
  */
-export function BotaoLocalizacao({ aoCentralizar, variante = "pilula" }: BotaoLocalizacaoProps) {
-  const { pedir } = useLocalizacao(aoCentralizar);
-  const [resultado, setResultado] = useState<ResultadoLocalizacao | null>(null);
-  const [pedindo, setPedindo] = useState(false);
-
-  async function aoClicar() {
-    setPedindo(true);
-    setResultado(null);
-    try {
-      setResultado(await pedir());
-    } finally {
-      setPedindo(false);
-    }
-  }
-
+export function BotaoLocalizacao({ estado, onUsar, variante = "pilula" }: BotaoLocalizacaoProps) {
+  const { seguindo, pedindo, resultado } = estado;
   const mensagem = resultado ? MENSAGENS[resultado] : null;
   return (
     <div className="relative">
       <button
         type="button"
-        onClick={aoClicar}
+        onClick={onUsar}
         disabled={pedindo}
+        aria-busy={pedindo}
+        aria-pressed={seguindo}
         aria-label={variante === "redondo" ? "Usar minha localização" : undefined}
         className={cn(
-          "flex cursor-pointer items-center justify-center text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-wait disabled:opacity-70",
+          "flex cursor-pointer items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-wait disabled:opacity-70",
           variante === "redondo"
-            ? "size-12 rounded-full bg-float shadow-[0_0_0_1px_var(--pin-ring),0_6px_16px_#1C19171F]"
-            : "glass h-11 gap-2 rounded-[12px] pr-4 pl-3 text-sm leading-4 font-semibold",
+            ? "size-12 rounded-full shadow-[0_0_0_1px_var(--pin-ring),0_6px_16px_#1C19171F]"
+            : "h-11 gap-2 rounded-[12px] pr-4 pl-3 text-sm leading-4 font-semibold",
+          seguindo ? "bg-ink text-bg" : variante === "redondo" ? "bg-float text-ink" : "glass text-ink",
         )}
       >
         <IconeLocalizacao className={variante === "redondo" ? "size-[22px]" : "size-5"} />

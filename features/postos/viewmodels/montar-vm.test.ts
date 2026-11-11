@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PostoNoMapa } from "../domain/tipos";
-import { montarGruposLista, montarMarcadores, montarRegua, tituloContagem } from "./montar-vm";
+import { montarGruposLista, montarMarcadores, montarRegua, tituloContagem, tituloContagemCurto } from "./montar-vm";
 
 const HOJE = "2026-10-27";
 const NBSP = " ";
@@ -36,6 +36,11 @@ describe("tituloContagem", () => {
   it("singular e plural", () => {
     expect(tituloContagem(1)).toBe("1 posto nesta área");
     expect(tituloContagem(8)).toBe("8 postos nesta área");
+  });
+
+  it("a forma curta, para a pílula do celular (D9)", () => {
+    expect(tituloContagemCurto(1)).toBe("1 posto");
+    expect(tituloContagemCurto(8)).toBe("8 postos");
   });
 });
 
@@ -162,6 +167,7 @@ describe("montarMarcadores", () => {
         antigo: true,
         semPreco: false,
         maisBarato: false,
+        selecionado: false,
       },
       {
         cnpj: "3",
@@ -173,6 +179,7 @@ describe("montarMarcadores", () => {
         antigo: false,
         semPreco: true,
         maisBarato: false,
+        selecionado: false,
       },
       {
         cnpj: "4",
@@ -184,8 +191,25 @@ describe("montarMarcadores", () => {
         antigo: false,
         semPreco: false,
         maisBarato: true,
+        selecionado: false,
       },
     ]);
     expect(grupos).toEqual([{ id: 7, lng: -34.9, lat: -8.0, quantidade: 12, zoomExpansao: 13 }]);
+  });
+
+  it("marca como selecionado o marcador do posto aberto no detalhe (D5)", () => {
+    const { marcadores } = montarMarcadores(
+      [
+        { tipo: "posto", posto: antiga },
+        { tipo: "posto", posto: recenteBarato },
+      ],
+      HOJE,
+      new Set(),
+      "4",
+    );
+    expect(marcadores.map((m) => [m.cnpj, m.selecionado])).toEqual([
+      ["2", false],
+      ["4", true],
+    ]);
   });
 });

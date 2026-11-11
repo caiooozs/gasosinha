@@ -72,6 +72,14 @@ export const IconeLista = (p: PropsIcone) => (
   </svg>
 );
 
+/** Recolher a lista para o canto (D6): um painel com a seta apontando para a borda. */
+export const IconeRecolher = (p: PropsIcone) => (
+  <svg {...base("recolher", "0 0 16 16", p, 1.75)}>
+    <rect x="2" y="2.5" width="12" height="11" rx="2" />
+    <path d="M6 2.5v11M11 6l-2 2 2 2" />
+  </svg>
+);
+
 export const IconeMapa = (p: PropsIcone) => (
   <svg {...base("mapa", "0 0 20 20", p, 1.75)}>
     <path d="M2.5 5.2L7.3 3l5.4 2.2L17.5 3v11.8l-4.8 2.2-5.4-2.2-4.8 2.2V5.2z" />

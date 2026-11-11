@@ -30,7 +30,12 @@ export const TITULOS_GRUPO: Record<GrupoLista, string> = {
 
 /** "1 posto nesta área", "8 postos nesta área". */
 export function tituloContagem(quantidade: number): string {
-  return `${quantidade} ${quantidade === 1 ? "posto" : "postos"} nesta área`;
+  return `${tituloContagemCurto(quantidade)} nesta área`;
+}
+
+/** "1 posto", "8 postos": para a pílula do celular, que precisa caber em 320 px (D9). */
+export function tituloContagemCurto(quantidade: number): string {
+  return `${quantidade} ${quantidade === 1 ? "posto" : "postos"}`;
 }
 
 
@@ -109,11 +114,15 @@ export function montarRegua(postos: readonly PostoNoMapa[], hoje: DataISO): Regu
   };
 }
 
-/** Marcadores individuais e grupos do mapa, com preço, idade e nome acessível prontos (FR-007 a FR-009). */
+/**
+ * Marcadores individuais e grupos do mapa, com preço, idade e nome acessível prontos (FR-007 a
+ * FR-009). O marcador do posto `selecionado` (o aberto no detalhe) fica destacado (D5).
+ */
 export function montarMarcadores(
   itens: readonly ItemAgrupado[],
   hoje: DataISO,
   maisBaratos: ReadonlySet<string>,
+  selecionado: string | null = null,
 ): { marcadores: MarcadorVM[]; grupos: GrupoVM[] } {
   const marcadores: MarcadorVM[] = [];
   const grupos: GrupoVM[] = [];
@@ -135,6 +144,7 @@ export function montarMarcadores(
       antigo: posto.coletaAtual ? calcularIdade(posto.coletaAtual.data, hoje).antiga : false,
       semPreco: !posto.coletaAtual,
       maisBarato,
+      selecionado: posto.cnpj === selecionado,
     });
   }
   return { marcadores, grupos };

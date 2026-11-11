@@ -23,6 +23,8 @@ export type MarcadorVM = {
   semPreco: boolean;
   /** Menor preço entre as coletas recentes da área visível. */
   maisBarato: boolean;
+  /** O posto aberto no detalhe: o marcador fica destacado (D5). */
+  selecionado: boolean;
 };
 
 export type GrupoVM = {

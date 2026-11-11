@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { DataISO } from "@/lib/formato";
 import { agruparPostos } from "../domain/agrupar";
 import { filtrarNaAreaVisivel, quantizarBbox } from "../domain/bbox";
+import { planejarFoco, type PlanoFoco } from "../domain/foco";
 import { cnpjsMaisBaratos } from "../domain/mais-barato";
 import type { Bbox, PostoNoMapa } from "../domain/tipos";
 import { buscarPostosNaArea } from "../services/postos.service";
@@ -19,6 +20,8 @@ export type EntradaPostosNaArea = {
   zoom: number;
   /** O "hoje" calculado no servidor (`hojeParaRender`). */
   hoje: DataISO;
+  /** CNPJ do posto aberto no detalhe: o marcador dele fica destacado (D5). */
+  selecionado?: string | null;
 };
 
 export type PostosNaArea = {
@@ -30,6 +33,8 @@ export type PostosNaArea = {
   marcadores: MarcadorVM[];
   grupos: GrupoVM[];
   tentarDeNovo: () => void;
+  /** Para onde o mapa vai para mostrar o posto sozinho, fora de um grupo (D5); `null` sem ele. */
+  focoDoPosto: (cnpj: string) => PlanoFoco | null;
 };
 
 const NENHUM: PostoNoMapa[] = [];
@@ -38,7 +43,7 @@ const NENHUM: PostoNoMapa[] = [];
  * Postos da área visível do mapa (contracts/ui.md). Quantiza a área (R13), consulta o RPC,
  * agrupa os marcadores e monta rótulos e nomes acessíveis com o "hoje" de `useHoje`.
  */
-export function usePostosNaArea({ bboxVisivel, zoom, hoje }: EntradaPostosNaArea): PostosNaArea {
+export function usePostosNaArea({ bboxVisivel, zoom, hoje, selecionado = null }: EntradaPostosNaArea): PostosNaArea {
   const hojeAtual = useHoje(hoje);
   const bboxQuantizada = useMemo(() => (bboxVisivel ? quantizarBbox(bboxVisivel) : null), [bboxVisivel]);
   const foraDaRegiao = bboxVisivel !== null && bboxQuantizada === null;
@@ -69,8 +74,8 @@ export function usePostosNaArea({ bboxVisivel, zoom, hoje }: EntradaPostosNaArea
     if (!bboxVisivel) return { marcadores: [], grupos: [] };
     // O "mais barato" é o da área visível, o mesmo que a lista mostra.
     const maisBaratos = cnpjsMaisBaratos(postosVisiveis, hojeAtual);
-    return montarMarcadores(agruparPostos(postos, bboxQuantizada ?? bboxVisivel, zoom), hojeAtual, maisBaratos);
-  }, [postos, postosVisiveis, bboxVisivel, bboxQuantizada, zoom, hojeAtual]);
+    return montarMarcadores(agruparPostos(postos, bboxQuantizada ?? bboxVisivel, zoom), hojeAtual, maisBaratos, selecionado);
+  }, [postos, postosVisiveis, bboxVisivel, bboxQuantizada, zoom, hojeAtual, selecionado]);
 
   let estado: EstadoCarga = "pronto";
   if (consulta.isError && !foraDaRegiao) estado = "erro";
@@ -84,5 +89,7 @@ export function usePostosNaArea({ bboxVisivel, zoom, hoje }: EntradaPostosNaArea
     marcadores,
     grupos,
     tentarDeNovo: () => void refetch(),
+    // Os mesmos postos e o mesmo zoom dos marcadores, para o posto aparecer sozinho de fato.
+    focoDoPosto: (cnpj) => planejarFoco(postos, cnpj, zoom),
   };
 }

@@ -195,7 +195,7 @@ describe("PainelDetalhe", () => {
     expect(voltar).toHaveBeenCalledTimes(1);
   });
 
-  it('modo="pagina": o HTML do servidor já tem o nome e o preço, sem portal, e "Voltar ao mapa" leva a /', () => {
+  it('modo="pagina": o HTML do servidor já tem o nome e o preço, sem portal, e "Fechar" leva a / (D4)', () => {
     const html = renderToString(
       <QueryClientProvider client={clienteComDados()}>
         <PainelDetalhe modo="pagina" cnpj={dados.cnpj} hoje="2026-10-27" />
@@ -206,8 +206,22 @@ describe("PainelDetalhe", () => {
     const documento = new DOMParser().parseFromString(html, "text/html");
     // No servidor a preferência por menos movimento é desconhecida: o Gasosinha começa parado.
     expect(documento.querySelector("[data-parado]")?.getAttribute("data-parado")).toBe("true");
-    const voltar = [...documento.querySelectorAll("a")].find((a) => a.textContent?.includes("Voltar ao mapa"));
-    expect(voltar?.getAttribute("href")).toBe("/");
+    // "Fechar" é um link para o mapa do site, nunca um "voltar" que poderia sair dele.
+    const fechar = [...documento.querySelectorAll("a")].find((a) => a.textContent?.trim() === "Fechar");
+    expect(fechar?.getAttribute("href")).toBe("/");
+    expect(html).not.toContain("Voltar ao mapa");
+  });
+
+  it('modo="pagina": é um cartão nomeado pelo posto, não um diálogo, e "Fechar" não volta no histórico (D4)', async () => {
+    render(
+      <QueryClientProvider client={clienteComDados()}>
+        <PainelDetalhe modo="pagina" cnpj={dados.cnpj} hoje="2026-10-27" />
+      </QueryClientProvider>,
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const cartao = screen.getByRole("region", { name: "IGUEP INCORPORADORA GUEDES PEREIRA LTDA" });
+    expect(within(cartao).getByRole("link", { name: "Fechar" }).getAttribute("href")).toBe("/");
+    expect(voltar).not.toHaveBeenCalled();
   });
 
   describe("histórico longo: as 6 coletas mais recentes e o resto sob demanda (D2)", () => {
@@ -250,6 +264,19 @@ describe("PainelDetalhe", () => {
       const documento = new DOMParser().parseFromString(html, "text/html");
       expect(documento.querySelectorAll("ol[aria-label='Todas as coletas'] li")).toHaveLength(6);
     });
+  });
+
+  it("no celular, o detalhe abre como folha na metade da tela, sem escurecer nem travar o toque no mapa (D9)", async () => {
+    render(
+      <QueryClientProvider client={clienteComDados()}>
+        <PainelDetalhe modo="modal" cnpj={dados.cnpj} hoje="2026-10-27" />
+      </QueryClientProvider>,
+    );
+    const folha = await screen.findByRole("dialog", { name: "IGUEP INCORPORADORA GUEDES PEREIRA LTDA" });
+    expect(folha.getAttribute("data-vaul-drawer-direction")).toBe("bottom");
+    expect(document.querySelector("[data-vaul-overlay]")).toBeNull();
+    // O mapa acima da folha continua respondendo ao toque: a página não fica com os toques travados.
+    await waitFor(() => expect(document.body.style.pointerEvents).not.toBe("none"));
   });
 
   describe("no computador, o detalhe não trava o mapa nem a lista (D1)", () => {
