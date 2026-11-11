@@ -157,6 +157,19 @@ Depois, abra o site em produção (Vercel).
 **Esperado**: em menos de 3 s os marcadores da área visível estão desenhados e o mapa responde a
 arrastar e aproximar. Registre a medição (média de 3 tentativas) no PR.
 
+Pela linha de comando, o mesmo perfil fica assim. Com `devtools`, o Lighthouse ignora `rttMs` e
+`throughputKbps`: use `requestLatencyMs` e `downloadThroughputKbps`.
+
+```powershell
+npx lighthouse https://gasosinha.vercel.app/ --only-categories=performance --form-factor=mobile `
+  --throttling-method=devtools --throttling.requestLatencyMs=170 `
+  --throttling.downloadThroughputKbps=9000 --throttling.uploadThroughputKbps=9000 `
+  --throttling.cpuSlowdownMultiplier=4 --output=json --output-path=./lh.json
+```
+
+O instante dos primeiros marcadores é a marca `gasosinha:marcadores-na-tela` (em "User Timing" no
+relatório).
+
 ## 8. Falha de fonte e aviso (FR-027 e SC-008; área sensível, com sua aprovação)
 
 Este teste roda em produção: enquanto ele dura, o aviso de fonte fica visível para o público.

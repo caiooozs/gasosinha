@@ -59,4 +59,10 @@ describe("nomeAcessivelMarcador", () => {
   it("posto sem coleta → '…, sem preço'", () => {
     expect(nomeAcessivelMarcador(semColeta)).toBe("IGUEP INCORPORADORA GUEDES PEREIRA LTDA, VIBRA, sem preço");
   });
+
+  it("com a idade curta do marcador, o nome contém o texto visível, logo depois do preço (WCAG 2.5.3, T103)", () => {
+    expect(nomeAcessivelMarcador(iguep, { idadeCurta: "há 7 d" })).toBe(
+      `IGUEP INCORPORADORA GUEDES PEREIRA LTDA, VIBRA, gasolina comum R$${NBSP}6,59 há 7 d, coletado em 20/10/2026`,
+    );
+  });
 });

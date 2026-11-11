@@ -140,7 +140,7 @@ export function montarMarcadores(
       lat: posto.lat,
       preco: partes?.preco ?? null,
       idade: partes?.idade ?? null,
-      nomeAcessivel: nomeAcessivelMarcador(posto, { maisBarato }),
+      nomeAcessivel: nomeAcessivelMarcador(posto, { maisBarato, idadeCurta: partes?.idade }),
       antigo: posto.coletaAtual ? calcularIdade(posto.coletaAtual.data, hoje).antiga : false,
       semPreco: !posto.coletaAtual,
       maisBarato,

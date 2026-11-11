@@ -71,6 +71,8 @@ export function MarcadorPosto({ vm, onSelecionar }: MarcadorPostoProps) {
         {vm.maisBarato && <IconeSetaBaixo className="size-3.5" />}
         {vm.antigo && <IconeRelogio className="size-3 text-yellow-ink" />}
         <span className="text-sm leading-4 font-semibold tracking-[-0.01em]">{vm.preco}</span>
+        {/* Um espaço só no texto (o flex o ignora na tela): o texto visível fica "R$ 6,59 há 7 d",
+            como no nome acessível (WCAG 2.5.3). */}{" "}
         <span
           className={cn(
             "text-[11px] leading-[14px] font-medium",

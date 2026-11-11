@@ -32,6 +32,8 @@ describe("MarcadorPosto", () => {
     const texto = screen.getByRole("button").textContent ?? "";
     expect(texto).toContain(`R$${NBSP}6,59`);
     expect(texto).toContain("há 7 d");
+    // Preço e idade separados por espaço no texto: o nome acessível os contém do mesmo jeito (WCAG 2.5.3).
+    expect(texto).toContain(`R$${NBSP}6,59 há 7 d`);
   });
 
   it("sem preço tem outra forma (data-variante) e o texto 'sem preço' (FR-008)", () => {

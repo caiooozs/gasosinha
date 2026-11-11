@@ -77,6 +77,10 @@ const ZOOM_MAXIMO_GRUPO = 18;
 // O cartão do detalhe à direita (336 px) mais o espaço entre ele e o mapa livre.
 const LARGURA_DETALHE = 336 + 16;
 
+// Marcas de tempo do carregamento do mapa, para medir o SC-003 (T102).
+const MARCA_MAPA_CARREGADO = "gasosinha:mapa-carregado";
+const MARCA_MARCADORES = "gasosinha:marcadores-na-tela";
+
 const BOTAO_ZOOM =
   "flex size-11 cursor-pointer items-center justify-center text-ink hover:bg-glass-fill focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink";
 
@@ -203,6 +207,17 @@ export function MapaPostos({
     [aoMudarArea],
   );
 
+  // A área visível já é conhecida quando o mapa é criado (a posição inicial é aplicada no
+  // construtor): os postos são pedidos nesse instante, em paralelo com o estilo e os tiles, sem
+  // esperar o `load` do mapa (SC-003). O `onLoad` repete o pedido, que o cache da consulta absorve.
+  const ligarMapa = useCallback(
+    (instancia: MapRef | null) => {
+      mapaRef.current = instancia;
+      if (instancia) informarArea(instancia.getMap());
+    },
+    [informarArea],
+  );
+
   // Quando um painel muda de tamanho (a folha cresce, a lista aparece), a área visível muda junto.
   const { esquerda, inferior } = cobertura;
   useEffect(() => {
@@ -220,10 +235,17 @@ export function MapaPostos({
     mapa.easeTo({ center: [lngPessoa, latPessoa], padding: margensDoMapa(coberturaRef.current), duration: 600 });
   }, [seguirPessoa, lngPessoa, latPessoa]);
 
+  // Marca de tempo para medir o SC-003 (o mapa utilizável em menos de 3 s): o instante em que os
+  // primeiros marcadores entram na tela. O Lighthouse e o DevTools leem as marcas (`performance.mark`).
+  const temMarcadores = marcadores.length > 0 || grupos.length > 0;
+  useEffect(() => {
+    if (temMarcadores && performance.getEntriesByName(MARCA_MARCADORES).length === 0) performance.mark(MARCA_MARCADORES);
+  }, [temMarcadores]);
+
   return (
     <div className="absolute inset-0">
       <Mapa
-        ref={mapaRef}
+        ref={ligarMapa}
         mapStyle={escuro ? ESTILO_ESCURO : ESTILO}
         initialViewState={
           centroInicial
@@ -241,6 +263,7 @@ export function MapaPostos({
         style={{ width: "100%", height: "100%" }}
         onLoad={(e) => {
           carregouRef.current = true;
+          performance.mark(MARCA_MAPA_CARREGADO);
           informarArea(e.target);
         }}
         onMoveEnd={(e) => informarArea(e.target)}

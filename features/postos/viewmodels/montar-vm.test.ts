@@ -163,7 +163,8 @@ describe("montarMarcadores", () => {
         lat: -8.06,
         preco: `R$${NBSP}5,99`,
         idade: "há 5 sem",
-        nomeAcessivel: `ANTIGA, bandeira não informada, gasolina comum R$${NBSP}5,99, coletado em 22/09/2026`,
+        // O nome contém o texto visível do marcador ("R$ 5,99 há 5 sem") e a data completa (T103).
+        nomeAcessivel: `ANTIGA, bandeira não informada, gasolina comum R$${NBSP}5,99 há 5 sem, coletado em 22/09/2026`,
         antigo: true,
         semPreco: false,
         maisBarato: false,
@@ -187,7 +188,7 @@ describe("montarMarcadores", () => {
         lat: -8.06,
         preco: `R$${NBSP}6,19`,
         idade: "há 2 d",
-        nomeAcessivel: `RECENTE BARATO, ALE, gasolina comum R$${NBSP}6,19, coletado em 25/10/2026, mais barato da área`,
+        nomeAcessivel: `RECENTE BARATO, ALE, gasolina comum R$${NBSP}6,19 há 2 d, coletado em 25/10/2026, mais barato da área`,
         antigo: false,
         semPreco: false,
         maisBarato: true,

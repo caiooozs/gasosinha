@@ -1170,17 +1170,59 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
 - [X] T100 Rodar os scripts de `package.json` (`npm run typecheck`, `npm run lint`, `npm test` e `npm run build`) e garantir que
   todos passam sem erro, inclusive sem erro de "current-time prerender" no build (Quality Gates
   da constituição).
-- [ ] T101 🙋 Com aprovação humana, publicar na Vercel (Hobby) com as variáveis de `.env.example`. Configurar
+- [X] T101 🙋 Com aprovação humana, publicar na Vercel (Hobby) com as variáveis de `.env.example`. Configurar
   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` e `NEXT_PUBLIC_SITE_URL`. **Não**
   configurar a service role na Vercel. Depois, definir `SITE_URL` nos secrets das Edge Functions
   (`npx supabase secrets set SITE_URL=<url da Vercel>`), porque ela é usada no `User-Agent`.
+
+  Feito em 11/11/2026:
+  - o usuário publicou em https://gasosinha.vercel.app, que responde 200 com a versão das Fases 6
+    e 7;
+  - o `SITE_URL` foi adicionado pelo painel do Supabase. O CLI estava conectado a outra conta e
+    recebeu 403; depois do login com a conta dona do projeto, o `secrets list` mostra o
+    `SITE_URL`;
+  - nos 17 arquivos JavaScript da página inicial e da página de um posto não há chave secreta,
+    service role nem `CRON_SECRET`, só a chave publishable. O único `sb_secret_` é o prefixo que a
+    biblioteca do Supabase usa para reconhecer o tipo de chave.
 - [ ] T102 Medir o SC-003 em produção, conforme `specs/001-gas-price-map/quickstart.md`, seção 7: perfil de 9 Mbps e 170 ms,
   CPU 4× mais lenta e cache vazio, com média de 3 tentativas. Se passar de 3 s, otimizar:
   carregar o mapa sob demanda, adiar o estilo, reduzir o JavaScript inicial. Registrar o
   resultado na descrição do PR.
-- [ ] T103 Rodar o Lighthouse (Acessibilidade) em `/` e `/postos/<cnpj>`, conforme o quickstart,
+
+  Parcial em 11/11/2026 (falta a medição em produção, depois do deploy destas mudanças):
+  - a medição usa o Lighthouse 12.8 pela linha de comando. Com `--throttling-method=devtools`, ele
+    ignora `rttMs` e `throughputKbps` e aplica `requestLatencyMs` e `downloadThroughputKbps`, que
+    ficam no padrão "Slow 4G" (1,47 Mbps e 562 ms). Por isso, as primeiras medições (inclusive a de
+    produção, com TTI de 12,45 s) saíram num perfil mais lento que o do quickstart. O comando
+    certo leva `--throttling.requestLatencyMs=170 --throttling.downloadThroughputKbps=9000
+    --throttling.uploadThroughputKbps=9000 --throttling.cpuSlowdownMultiplier=4`;
+  - o mapa grava as marcas `gasosinha:marcadores-na-tela` e `gasosinha:mapa-carregado`
+    (`performance.mark`), que o Lighthouse mostra em "User Timing";
+  - otimizações:
+    1. os postos são pedidos quando o mapa é criado, sem esperar o `load` do estilo
+       (`ligarMapa` em `components/mapa/MapaPostos.tsx`);
+    2. a conexão com os tiles e com o Supabase é aberta de antemão (`app/conexoes-antecipadas.tsx`);
+    3. o download do MapLibre começa quando o módulo é avaliado, e não no primeiro render
+       (`components/mapa/MapaCarregavel.tsx`). O mapa já era carregado sob demanda;
+  - build de produção local (`next start`), no perfil do quickstart, marcadores na tela:
+    - com as otimizações 1 e 2: 3,28 s, 3,76 s e 4,18 s (média de 3,74 s);
+    - com as três: 3,14 s, 3,07 s, 3,07 s, 3,22 s e 3,12 s (média de 3,12 s);
+  - com as três otimizações, o TTI fica em cerca de 3,9 s e o mapa base completo em cerca de 4,0 s;
+  - no perfil "Slow 4G", os marcadores caíram de cerca de 12,0 s para 7,9 s;
+  - se a produção passar de 3 s, a próxima opção é pedir os postos da RMR antes de o mapa existir.
+    Ela mexe na decisão R13 (consulta por área) e precisa da decisão do usuário.
+- [X] T103 Rodar o Lighthouse (Acessibilidade) em `/` e `/postos/<cnpj>`, conforme o quickstart,
   seção 9. Corrigir as falhas de contraste, de nome acessível e de foco (SC-009).
-- [ ] T104 🙋 Com aprovação humana, simular a falha de fonte em produção, conforme `specs/001-gas-price-map/quickstart.md`, seção 8.
+
+  Feito em 11/11/2026:
+  - em produção, as duas páginas tiveram nota 100. O Lighthouse apontou o nome acessível dos
+    marcadores, que não continha o texto visível ("R$ 6,59 há 7 d"; WCAG 2.5.3);
+  - correção: `nomeAcessivelMarcador` recebe a idade curta, e o marcador tem um espaço de texto
+    entre o preço e a idade;
+  - no build local com a correção: nota 100 em `/` e em `/postos/00191498001350`, sem nenhuma
+    auditoria com falha;
+  - conferir de novo em produção depois do deploy.
+- [X] T104 🙋 Com aprovação humana, simular a falha de fonte em produção, conforme `specs/001-gas-price-map/quickstart.md`, seção 8.
   Antes de pedir a aprovação, avisar que, durante o teste, o aviso de fonte fica visível ao
   público.
   1. trocar `LPC_PAGINA_URL` por uma URL inválida e chamar o `sync-precos` duas vezes;
@@ -1188,6 +1230,17 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
      `problema_desde`;
   3. restaurar com `npx supabase secrets unset LPC_PAGINA_URL` e chamar de novo;
   4. conferir que o aviso some das duas páginas (FR-027 e SC-008).
+
+  Feito em 11/11/2026, com a aprovação do usuário:
+  - antes: as duas fontes sem problema. O `LPC_PAGINA_URL` não existia nos secrets (a função
+    usa o padrão), então o `unset` voltou ao estado original;
+  - as duas chamadas com a URL inválida responderam 502 `fonte_indisponivel`. A linha `precos`
+    ficou com `em_problema` e `tipo_problema = falha`, e o `problema_desde` não mudou entre elas
+    (12:14:05 UTC);
+  - em `/` e em `/postos/00191498001350`, renderizadas pelo Chrome headless, apareceu o aviso
+    "Alguns dados podem estar desatualizados. Última atualização bem-sucedida em 11/11/2026.";
+  - depois do `unset`, a chamada respondeu 200 sem edições novas. O problema foi limpo e o aviso
+    sumiu das duas páginas.
 - [X] T105 [P] Atualizar `README.md` em pt-BR com:
   - o que é o Gasosinha;
   - as fontes e a atribuição (ANP, OpenStreetMap e OpenFreeMap);

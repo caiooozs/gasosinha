@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { AvisoFonte } from "@/components/avisos/AvisoFonte";
 import { ScriptTema } from "@/components/tema/ScriptTema";
+import { ConexoesAntecipadas } from "./conexoes-antecipadas";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -44,6 +45,8 @@ export default function RootLayout({ children, detalhe }: LayoutProps<"/">) {
       </head>
       {/* Altura fixa da janela: a tela do mapa ocupa o que sobra abaixo do aviso de fonte. */}
       <body className="flex h-dvh flex-col">
+        {/* Conexões abertas de antemão com os tiles e o Supabase (SC-003). */}
+        <ConexoesAntecipadas />
         <Providers>
           {/* O aviso aparece em todas as rotas, inclusive /postos/[cnpj] (SC-008). */}
           <Suspense fallback={null}>

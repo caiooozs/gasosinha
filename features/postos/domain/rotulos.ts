@@ -31,13 +31,16 @@ export function partesRotuloMarcador(posto: PostoNoMapa, hoje: DataISO): { preco
 
 /**
  * Nome lido por leitores de tela, com a data completa da coleta (FR-007, Princípio I):
- * "NOME, BANDEIRA, gasolina comum R$ 6,59, coletado em 20/10/2026" ou "NOME, BANDEIRA, sem preço".
- * O "mais barato da área" também entra no nome, porque no marcador ele é verde e tem uma seta.
+ * "NOME, BANDEIRA, gasolina comum R$ 6,59 há 7 d, coletado em 20/10/2026" ou "NOME, BANDEIRA, sem
+ * preço". Com a `idadeCurta` do marcador, o nome contém o texto visível dele ("R$ 6,59 há 7 d"),
+ * para quem usa comando de voz dizer o que vê (WCAG 2.5.3). O "mais barato da área" também entra
+ * no nome, porque no marcador ele é verde e tem uma seta.
  */
-export function nomeAcessivelMarcador(posto: PostoNoMapa, opcoes: { maisBarato?: boolean } = {}): string {
+export function nomeAcessivelMarcador(posto: PostoNoMapa, opcoes: { maisBarato?: boolean; idadeCurta?: string } = {}): string {
   const inicio = `${posto.nome}, ${bandeiraParaExibir(posto.bandeira)}`;
   const coleta = posto.coletaAtual;
   if (!coleta) return `${inicio}, ${SEM_PRECO}`;
-  const nome = `${inicio}, gasolina comum ${formatarPreco(coleta.precoMilesimos)}, coletado em ${formatarData(coleta.data)}`;
+  const rotulo = opcoes.idadeCurta ? `${formatarPreco(coleta.precoMilesimos)} ${opcoes.idadeCurta}` : formatarPreco(coleta.precoMilesimos);
+  const nome = `${inicio}, gasolina comum ${rotulo}, coletado em ${formatarData(coleta.data)}`;
   return opcoes.maisBarato ? `${nome}, mais barato da área` : nome;
 }
