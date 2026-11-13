@@ -170,6 +170,15 @@ npx lighthouse https://gasosinha.vercel.app/ --only-categories=performance --for
 O instante dos primeiros marcadores é a marca `gasosinha:marcadores-na-tela` (em "User Timing" no
 relatório).
 
+O 4× de CPU pressupõe um computador rápido. Confira o "BenchmarkIndex" no rodapé do relatório
+(ou em `environment.benchmarkIndex` no JSON):
+- de 1.500 a 2.000, use 4×;
+- de 1.000 a 1.500, use 2×;
+- acima de 2.000, use um valor maior que 4×.
+
+A regra segue o guia de throttling do Lighthouse, para simular um celular intermediário. Feche
+outros programas antes de medir: com pouca RAM livre, o índice cai pela metade.
+
 ## 8. Falha de fonte e aviso (FR-027 e SC-008; área sensível, com sua aprovação)
 
 Este teste roda em produção: enquanto ele dura, o aviso de fonte fica visível para o público.

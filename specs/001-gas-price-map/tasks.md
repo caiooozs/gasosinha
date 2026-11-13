@@ -1211,6 +1211,25 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
   - no perfil "Slow 4G", os marcadores caíram de cerca de 12,0 s para 7,9 s;
   - se a produção passar de 3 s, a próxima opção é pedir os postos da RMR antes de o mapa existir.
     Ela mexe na decisão R13 (consulta por área) e precisa da decisão do usuário.
+
+  Medição em produção em 13/11/2026 (deploy do commit 6f99193). **O SC-003 não passa**:
+  - o preconnect está no ar: o React o envia no cabeçalho HTTP `Link`, não no HTML;
+  - a CPU da máquina de medição varia muito. O Lighthouse mostra o "BenchmarkIndex" a cada
+    rodada: era cerca de 2.600 em 11/11 e ficou entre 1.080 e 1.300 em 13/11, com pouca RAM
+    livre. O guia de throttling do Lighthouse diz que o 4× padrão pressupõe um desktop de
+    1.500 a 2.000 simulando um celular intermediário; num desktop de 1.000 a 1.500, o
+    recomendado é 2×. Ou seja, a média de 3,12 s de 11/11 saiu otimista, porque a CPU estava
+    acima da faixa, e as rodadas com 4× de 13/11 saíram pessimistas;
+  - na mesma condição da máquina, rodadas alternadas com CPU 4×: marcadores em 5,95 s no build
+    local e em 6,33 s em produção. A produção não é mais lenta que o local;
+  - em produção, com a CPU calibrada (2×, BenchmarkIndex de 1.076 a 1.300) e o restante do
+    perfil do quickstart:
+    - marcadores: 3,50 s, 3,32 s, 3,46 s, 4,02 s e 3,38 s (média de 3,53 s);
+    - TTI: média de 4,9 s; mapa base completo: cerca de 4,9 s; LCP: cerca de 1,2 s; TBT: cerca de 1,3 s;
+  - próximos passos possíveis, que dependem da decisão do usuário:
+    - pedir os postos antes de o mapa existir (mexe na R13; economiza cerca de 0,3 s);
+    - mostrar algo útil antes do MapLibre, como a lista vinda do servidor;
+    - ou registrar no plan.md que o SC-003 fica em cerca de 3,5 s com o MapLibre.
 - [X] T103 Rodar o Lighthouse (Acessibilidade) em `/` e `/postos/<cnpj>`, conforme o quickstart,
   seção 9. Corrigir as falhas de contraste, de nome acessível e de foco (SC-009).
 
@@ -1221,7 +1240,8 @@ com uma só coleta, com e sem "reduzir movimento" ativo no sistema. Conferir os 
     entre o preço e a idade;
   - no build local com a correção: nota 100 em `/` e em `/postos/00191498001350`, sem nenhuma
     auditoria com falha;
-  - conferir de novo em produção depois do deploy.
+  - em 13/11/2026, já com o deploy, a produção também tirou 100 nas duas páginas, sem nenhuma
+    auditoria com falha (a de nome acessível passa).
 - [X] T104 🙋 Com aprovação humana, simular a falha de fonte em produção, conforme `specs/001-gas-price-map/quickstart.md`, seção 8.
   Antes de pedir a aprovação, avisar que, durante o teste, o aviso de fonte fica visível ao
   público.
